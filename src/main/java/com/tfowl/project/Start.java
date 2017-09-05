@@ -2,9 +2,9 @@ package com.tfowl.project;
 
 import com.tfowl.project.game.ShadowBlocksGame;
 import com.tfowl.project.util.JulLoggingSystem;
+import com.tfowl.project.util.ResourceLoader;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.util.ResourceLoader;
 
 import java.io.IOException;
 import java.util.logging.LogManager;
