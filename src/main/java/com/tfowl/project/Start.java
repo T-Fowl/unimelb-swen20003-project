@@ -1,8 +1,13 @@
 package com.tfowl.project;
 
 import com.tfowl.project.game.ShadowBlocksGame;
+import com.tfowl.project.util.JulLoggingSystem;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.util.ResourceLoader;
+
+import java.io.IOException;
+import java.util.logging.LogManager;
 
 /**
  * Created by Thomas on 1/09/2017.
@@ -13,6 +18,17 @@ public class Start {
 	private static final int SCREEN_HEIGHT = 600;
 
 	public static void main(String[] args) {
+
+		try {
+			LogManager.getLogManager().readConfiguration(
+					ResourceLoader.getResourceAsStream("logging.properties")
+			);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		org.newdawn.slick.util.Log.setLogSystem(new JulLoggingSystem());
+
 
 		ShadowBlocksGame game = new ShadowBlocksGame();
 		try {
