@@ -13,6 +13,12 @@ public class Level {
 	private int playerStartY;
 
 	public Level(int tileCountHorizontal, int tileCountVertical) {
+		this(tileCountHorizontal, tileCountVertical, 0, 0);
+	}
+
+	public Level(int tileCountHorizontal, int tileCountVertical, int playerStartX, int playerStartY) {
+		this.playerStartX = playerStartX;
+		this.playerStartY = playerStartY;
 		this.tileCountHorizontal = tileCountHorizontal;
 		this.tileCountVertical = tileCountVertical;
 		this.locations = new Location[tileCountHorizontal][tileCountVertical];
