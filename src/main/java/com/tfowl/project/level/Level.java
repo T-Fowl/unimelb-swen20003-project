@@ -25,4 +25,20 @@ public class Level {
 	public int getTileCountVertical() {
 		return tileCountVertical;
 	}
+
+	public int getPlayerStartX() {
+		return playerStartX;
+	}
+
+	public void setPlayerStartX(int playerStartX) {
+		this.playerStartX = playerStartX;
+	}
+
+	public int getPlayerStartY() {
+		return playerStartY;
+	}
+
+	public void setPlayerStartY(int playerStartY) {
+		this.playerStartY = playerStartY;
+	}
 }
