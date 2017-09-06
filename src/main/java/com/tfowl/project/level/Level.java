@@ -5,5 +5,21 @@ package com.tfowl.project.level;
  */
 public class Level {
 
-	LevelLocation[][] locations;
+	private int tileCountHorizontal;
+	private int tileCountVertical;
+	private LevelLocation[][] locations;
+
+	public Level(int tileCountHorizontal, int tileCountVertical) {
+		this.tileCountHorizontal = tileCountHorizontal;
+		this.tileCountVertical = tileCountVertical;
+		this.locations = new LevelLocation[tileCountHorizontal][tileCountVertical];
+	}
+
+	public int getTileCountHorizontal() {
+		return tileCountHorizontal;
+	}
+
+	public int getTileCountVertical() {
+		return tileCountVertical;
+	}
 }

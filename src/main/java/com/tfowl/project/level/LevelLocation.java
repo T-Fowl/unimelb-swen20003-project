@@ -2,6 +2,7 @@ package com.tfowl.project.level;
 
 import com.tfowl.project.tile.Tile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,5 +10,21 @@ import java.util.List;
  */
 public class LevelLocation {
 
-	List<Tile> tiles;
+	private List<Tile> tiles;
+
+	public LevelLocation() {
+		tiles = new ArrayList<>();
+	}
+
+	public int getTileCount() {
+		return tiles.size();
+	}
+
+	public void addTileAtTop(Tile tile) {
+		addTile(tile, getTileCount());
+	}
+
+	public void addTile(Tile tile, int index) {
+		tiles.add(index, tile);
+	}
 }
