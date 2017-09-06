@@ -9,6 +9,9 @@ public class Level {
 	private int tileCountVertical;
 	private LevelLocation[][] locations;
 
+	private int playerStartX;
+	private int playerStartY;
+
 	public Level(int tileCountHorizontal, int tileCountVertical) {
 		this.tileCountHorizontal = tileCountHorizontal;
 		this.tileCountVertical = tileCountVertical;
