@@ -25,7 +25,7 @@ public class Start {
 					ResourceLoader.getResourceAsStream("logging.properties")
 			);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("Error configuring the logging system: " + e.getLocalizedMessage());
 		}
 
 		/* Tie in the Slick logging system with the JUL one */
