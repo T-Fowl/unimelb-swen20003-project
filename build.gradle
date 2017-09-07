@@ -1,12 +1,91 @@
+import net.minecraftforge.gradle.tasks.GenEclipseRunTask
+
+plugins {
+    id 'java'
+    id 'eclipse'
+    id "net.minecraftforge.gradle.forge" version "2.0.2" apply false
+}
+
 group 'com.tfowl'
 version '1.0-rc3'
 
-apply plugin: 'java'
-
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+project.ext.mainClassName = 'com.tfowl.project.Start'
 
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////Everything below here is for exporting the project for submission//////////////////////
+/////////////////////////////////////////////It is also a mess///////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* Load the student-specific properties from gradle.student.properties */
+project.ext.studentProperties = new Properties()
+project.ext.studentProperties.load(new FileInputStream("student.properties"))
+project.ext.studentid = project.ext.studentProperties.getProperty("studentid", "unknown_student_id")
+project.ext.studentusername = project.ext.studentProperties.getProperty("studentusername", "unknown_student_username")
+
+def submissionGroup = 'Project Submission'
+def submittedProjectName = "${project.name}-${studentusername}-${studentid}"
+def submittedProjectZip = "${submittedProjectName}.zip"
+def launchFileName = "RunProjectFor${studentusername}-${studentid}.launch"
+
+
+
+
+task generateEclipseLaunch(type: GenEclipseRunTask) {
+    projectName submittedProjectName
+    mainClass mainClassName
+    runDir "\${project_loc}"
+    outputFile launchFileName
+
+    doLast {
+        delete "\${project_loc}"
+    }
+}
+
+task cleanEclipseLaunch(type: Delete) {
+    delete launchFileName
+}
+
+task zipWholeProject(type: Zip, dependsOn: [tasks.eclipse, generateEclipseLaunch]) {
+    archiveName = submittedProjectZip
+    from(project.projectDir) {
+        exclude('.gradle')
+        exclude('.idea')
+        exclude('specification.pdf') //No need to include this
+        exclude('student.properties') //Stays on local machine
+        clean.targetFiles.each {
+            exclude it.name //If it is targeted by clean (i.e. is a build output) don't include
+        }
+        exclude(submittedProjectZip) //We don't want to include this zip itself
+    }
+    destinationDir project.projectDir
+}
+
+task cleanZippedProject(type: Delete, dependsOn: [cleanEclipse, cleanEclipseLaunch]) {
+    delete submittedProjectZip
+}
+
+task extractJavaLibraries(type: Copy) {
+    description "Copies the dependencies of the project into the $libraries_directory folder"
+    from configurations.runtime
+    into libraries_directory
+}
+
+task cleanJavaLibraries(type: Delete) {
+    description "Deletes the dependencies in the $libraries_directory folder"
+    delete libraries_directory
 }
 
 task extractNativeLibraries(type: Copy) {
@@ -18,14 +97,39 @@ task extractNativeLibraries(type: Copy) {
         }
     }
     into natives_directory
-    include "*.dll"
-    include "*.so"
-    include "*.jnilib"
+    include '*.dll', '*.so', '*.jnilib'
 }
 
-dependencies {
+task cleanNativeLibraries(type: Delete) {
+    description "Deletes the native libraries from the $natives_directory folder"
+    delete natives_directory
+}
 
-    compile group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
+cleanEclipse.doLast {
+    delete '.settings'
+}
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+eclipseClasspath {
+    dependsOn(extractJavaLibraries, extractNativeLibraries)
+}
+
+eclipse {
+    classpath {
+
+    }
+    jdt {}
+    project {
+        name = submittedProjectName
+        comment = "Project 1 for SWEN20003 by $studentusername ($studentid)"
+    }
+}
+
+task exportSubmission(dependsOn: zipWholeProject) {
+    description 'Exports this project as a zipped eclipse project for submission'
+    group submissionGroup
+}
+
+task cleanSubmission(type: Delete, dependsOn: cleanZippedProject) {
+    description 'Cleans all files involved in submitting the project'
+    group submissionGroup
 }

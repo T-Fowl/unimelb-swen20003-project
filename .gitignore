@@ -1,8 +1,19 @@
 .gradle
 .idea
 
+.classpath
+.project
+.settings
+
+*.launch
+swen20003*.zip
+
 out
 build
 natives
+libs
+
+# Contains student-specific info (e.g. student id & username)
+student.properties
 
 specification.pdf
