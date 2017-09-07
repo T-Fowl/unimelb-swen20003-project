@@ -30,7 +30,7 @@ public class TileManager {
 	public static Optional<Tile> getTileFromName(String name) {
 		return Optional.ofNullable(
 				loadedTiles.computeIfAbsent(name.toLowerCase().trim(), tileName -> {
-					Image tileImage = ResourceLoader.getImageResource(tileName);
+					Image tileImage = ResourceLoader.getImageResource("tiles/" + tileName);
 					return null == tileImage ? null : new Tile(tileName, tileImage);
 				})
 		);

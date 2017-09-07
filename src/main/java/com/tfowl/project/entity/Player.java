@@ -22,7 +22,7 @@ public class Player extends Entity implements IRenderable {
 	}
 
 	public void init() throws SlickException {
-		sprite = ResourceLoader.getImageResource(PLAYER_TILE_NAME);
+		sprite = ResourceLoader.getImageResource(PLAYER_TILE_NAME + "/" + PLAYER_TILE_NAME);
 	}
 
 	@Override
