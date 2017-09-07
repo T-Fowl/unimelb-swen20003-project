@@ -1,3 +1,4 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 import net.minecraftforge.gradle.tasks.GenEclipseRunTask
 
 plugins {
@@ -7,7 +8,7 @@ plugins {
 }
 
 group 'com.tfowl'
-version '1.0-rc3'
+version '1.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -18,10 +19,17 @@ repositories {
     mavenCentral()
 }
 
+
+configurations {
+    exported
+}
+
 dependencies {
-    compile group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
+    // group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    compile fileTree(dir: libraries_directory, include: ['*.jar'])
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,8 +47,6 @@ def submissionGroup = 'Project Submission'
 def submittedProjectName = "${project.name}-${studentusername}-${studentid}"
 def submittedProjectZip = "${submittedProjectName}.zip"
 def launchFileName = "RunProjectFor${studentusername}-${studentid}.launch"
-
-
 
 
 task generateEclipseLaunch(type: GenEclipseRunTask) {
@@ -69,6 +75,7 @@ task zipWholeProject(type: Zip, dependsOn: [tasks.eclipse, generateEclipseLaunch
             exclude it.name //If it is targeted by clean (i.e. is a build output) don't include
         }
         exclude(submittedProjectZip) //We don't want to include this zip itself
+        filter(ReplaceTokens, tokens: [STUDENTID: studentid, STUDENTNAME: studentusername])
     }
     destinationDir project.projectDir
 }
@@ -110,12 +117,15 @@ cleanEclipse.doLast {
 }
 
 eclipseClasspath {
-    dependsOn(extractJavaLibraries, extractNativeLibraries)
 }
 
 eclipse {
-    classpath {
+    //pathVariables 'BUNDLED_LIBRARIES': file(libraries_directory)
 
+    classpath {
+        minusConfigurations += [configurations.testRuntime]
+        plusConfigurations += [configurations.compile]
+//        plusConfigurations += [configurations.exported]
     }
     jdt {}
     project {
