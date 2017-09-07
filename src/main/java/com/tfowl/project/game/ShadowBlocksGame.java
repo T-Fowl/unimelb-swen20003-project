@@ -1,6 +1,8 @@
 package com.tfowl.project.game;
 
 import com.tfowl.project.level.Level;
+import com.tfowl.project.logging.Logger;
+import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Strings;
 import com.tfowl.project.util.ResourceLoader;
 import com.tfowl.project.world.World;
@@ -18,6 +20,8 @@ import java.io.IOException;
  */
 public class ShadowBlocksGame extends BasicGame {
 
+	private static final Logger logger = LoggerFactory.getLogger(ShadowBlocksGame.class);
+
 	public ShadowBlocksGame() {
 		this(Strings.DEFAULT_WINDOW_TITLE);
 	}
@@ -31,11 +35,14 @@ public class ShadowBlocksGame extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
+		logger.info("Initializing game");
+
 		/* Initialise the world and then load a level */
 		world.init();
 		try {
 			world.loadLevel(Level.readFromStream(ResourceLoader.getResourceAsStream("levels/0.lvl")));
 		} catch (IOException e) {
+			logger.error("Loading level 0", e);
 			e.printStackTrace();
 		}
 	}

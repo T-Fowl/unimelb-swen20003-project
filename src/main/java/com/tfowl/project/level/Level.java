@@ -2,6 +2,8 @@ package com.tfowl.project.level;
 
 import com.tfowl.project.entity.Player;
 import com.tfowl.project.graphics.IRenderable;
+import com.tfowl.project.logging.Logger;
+import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.tile.Tile;
 import com.tfowl.project.tile.TileManager;
@@ -20,6 +22,8 @@ import java.util.Scanner;
  * Created by Thomas on 6/09/2017.
  */
 public class Level implements IRenderable {
+
+	private static final Logger logger = LoggerFactory.getLogger(Level.class);
 
 	/* Size of the level */
 	private int tileCountHorizontal;
@@ -151,11 +155,12 @@ public class Level implements IRenderable {
 					TileManager.getTileFromName(tileName).ifPresent(location::addTileAtTop);
 				}
 			}
-
 			return building;
 		} catch (InputMismatchException e) {
+			logger.error("Reading from stream", e);
 			throw new IOException("Invalid level file.");
 		} catch (NoSuchElementException e) {
+			logger.error("Reading from stream", e);
 			throw new IOException("Level file finished early.");
 		}
 	}

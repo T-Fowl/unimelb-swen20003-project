@@ -1,5 +1,7 @@
 package com.tfowl.project.util;
 
+import com.tfowl.project.logging.Logger;
+import com.tfowl.project.logging.LoggerFactory;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
@@ -14,6 +16,8 @@ import java.net.URL;
  */
 public class ResourceLoader {
 
+	private static final Logger logger = LoggerFactory.getLogger(ResourceLoader.class);
+
 	private static final String IMAGE_RESOURCE_DIR = "images";
 	private static final String DEFAULT_IMAGE_EXRENSION = ".png";
 	private static final String LEVEL_RESOURCE_DIR = "levels";
@@ -25,6 +29,7 @@ public class ResourceLoader {
 		try {
 			return new Image(getResourceAsStream(IMAGE_RESOURCE_DIR + "/" + ref), ref, false);
 		} catch (SlickException e) {
+			logger.error("Loading an image resource", e);
 			return null;
 		}
 	}
@@ -34,6 +39,7 @@ public class ResourceLoader {
 	}
 
 	public static InputStream getResourceAsStream(String ref) {
+		logger.info("Loading resource: {0}", ref);
 		return org.newdawn.slick.util.ResourceLoader.getResourceAsStream(ref);
 	}
 

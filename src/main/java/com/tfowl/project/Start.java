@@ -1,9 +1,10 @@
 package com.tfowl.project;
 
 import com.tfowl.project.game.ShadowBlocksGame;
+import com.tfowl.project.logging.Logger;
+import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.util.JulLoggingSystem;
-import com.tfowl.project.util.ResourceLoader;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
@@ -17,16 +18,24 @@ import java.util.logging.LogManager;
  */
 public class Start {
 
-	public static void main(String[] args) {
+	private static final Logger logger;
 
+	static {
 		try {
 			/* Configure the JUL logging system. */
 			LogManager.getLogManager().readConfiguration(
-					ResourceLoader.getResourceAsStream("logging.properties")
+					Thread.currentThread().getContextClassLoader().getResourceAsStream("logging.properties")
 			);
 		} catch (IOException e) {
+			/* The logger of this class is not initialised yet, fall back to System.err */
 			System.err.println("Error configuring the logging system: " + e.getLocalizedMessage());
 		}
+		logger = LoggerFactory.getLogger(Start.class);
+	}
+
+
+	public static void main(String[] args) {
+		logger.info("Starting application.");
 
 		/* Tie in the Slick logging system with the JUL one */
 		org.newdawn.slick.util.Log.setLogSystem(new JulLoggingSystem());
@@ -39,8 +48,10 @@ public class Start {
 			container.setShowFPS(true);
 			container.setVSync(true);
 			container.setDisplayMode(Graphical.DEFAULT_SCREEN_WIDTH, Graphical.DEFAULT_SCREEN_HEIGHT, Graphical.DEFAULT_FULLSCREEN_FLAG);
+			logger.info("Game container start.");
 			container.start();
 		} catch (SlickException e) {
+			logger.error("Creating game", e);
 			e.printStackTrace();
 		}
 	}
