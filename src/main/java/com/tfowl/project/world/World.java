@@ -1,11 +1,7 @@
 package com.tfowl.project.world;
 
-import com.tfowl.project.entity.Entity;
 import com.tfowl.project.entity.Player;
 import com.tfowl.project.level.Level;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Thomas on 6/09/2017.
@@ -13,11 +9,10 @@ import java.util.List;
 public class World {
 
 	private Level level;
-	private List<Entity> entities;
 	private Player player;
 
 	public World() {
-		entities = new ArrayList<>();
+
 	}
 
 	public Level getLevel() {
@@ -26,14 +21,6 @@ public class World {
 
 	public void setLevel(Level level) {
 		this.level = level;
-	}
-
-	public List<Entity> getEntities() {
-		return entities;
-	}
-
-	public void setEntities(List<Entity> entities) {
-		this.entities = entities;
 	}
 
 	public Player getPlayer() {
