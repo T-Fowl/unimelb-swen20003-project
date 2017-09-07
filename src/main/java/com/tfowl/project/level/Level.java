@@ -137,7 +137,7 @@ public class Level implements IRenderable {
 				int tileX = scanner.nextInt();
 				int tileY = scanner.nextInt();
 
-				if (tileName.equalsIgnoreCase(Player.PLAYER_TILE_NAME)) {
+				if (tileName.equalsIgnoreCase(Player.PLAYER_NAME)) {
 					building.playerStartX = tileX;
 					building.playerStartY = tileY;
 				} else {

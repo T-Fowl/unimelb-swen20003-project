@@ -13,16 +13,16 @@ import org.newdawn.slick.SlickException;
  */
 public class Player extends Entity implements IRenderable {
 
-	public static final String PLAYER_TILE_NAME = "player";
+	public static final String PLAYER_NAME = "player";
 
 	private Image sprite;
 
 	public Player() {
-		super(PLAYER_TILE_NAME);
+		super(PLAYER_NAME);
 	}
 
 	public void init() throws SlickException {
-		sprite = ResourceLoader.getImageResource(PLAYER_TILE_NAME + "/" + PLAYER_TILE_NAME);
+		sprite = ResourceLoader.getImageResource(PLAYER_NAME + "/" + PLAYER_NAME);
 	}
 
 	@Override
