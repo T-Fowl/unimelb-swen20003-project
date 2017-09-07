@@ -4,6 +4,7 @@ import com.tfowl.project.game.ShadowBlocksGame;
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Graphical;
+import com.tfowl.project.reference.Resources;
 import com.tfowl.project.util.JulLoggingSystem;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
@@ -24,10 +25,12 @@ public class Start {
 		try {
 			/* Configure the JUL logging system. */
 			LogManager.getLogManager().readConfiguration(
-					Thread.currentThread().getContextClassLoader().getResourceAsStream("logging.properties")
+					Thread.currentThread().getContextClassLoader()
+							.getResourceAsStream(Resources.DEFAULT_LOGGING_CONFIG)
 			);
 		} catch (IOException e) {
-			/* The logger of this class is not initialised yet, fall back to System.err */
+			/* The logger of this class is not initialised yet, fall back to System.err
+			* If this does happen, all loggers will not be configured correctly. */
 			System.err.println("Error configuring the logging system: " + e.getLocalizedMessage());
 		}
 		logger = LoggerFactory.getLogger(Start.class);

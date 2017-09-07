@@ -34,8 +34,12 @@ public class TileManager {
 	public static Optional<Tile> getTileFromName(String name) {
 		return Optional.ofNullable(
 				loadedTiles.computeIfAbsent(name.toLowerCase().trim(), tileName -> {
-					Image tileImage = ResourceLoader.getImageResource("tiles/" + tileName);
-					return null == tileImage ? null : new Tile(tileName, tileImage);
+					try {
+						Image tileImage = ResourceLoader.getImageResource("tiles/" + tileName);
+						return new Tile(tileName, tileImage);
+					} catch (Throwable t) {
+						return null;
+					}
 				})
 		);
 	}

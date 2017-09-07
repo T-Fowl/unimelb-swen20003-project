@@ -1,6 +1,5 @@
 package com.tfowl.project.game;
 
-import com.tfowl.project.level.Level;
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Strings;
@@ -36,7 +35,7 @@ public class ShadowBlocksGame extends BasicGame {
 		/* Initialise the world and then load a level */
 		world.init();
 		try {
-			world.loadLevel(Level.readFromStream(ResourceLoader.getResourceAsStream("levels/0.lvl")));
+			world.loadLevel(ResourceLoader.getLevelResource("0"));
 		} catch (IOException e) {
 			logger.error("Loading level 0", e);
 			e.printStackTrace();

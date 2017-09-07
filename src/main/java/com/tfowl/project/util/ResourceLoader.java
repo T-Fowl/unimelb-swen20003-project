@@ -1,16 +1,17 @@
 package com.tfowl.project.util;
 
+import com.tfowl.project.level.Level;
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
+import com.tfowl.project.reference.Resources;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 /**
- * Utility class used to loading resources. Generally delegates most operations to
- * {@link org.newdawn.slick.util.ResourceLoader}.
+ * Utility class used to loading resources.
  * <p>
  * Created by Thomas on 5/09/2017.
  */
@@ -18,26 +19,30 @@ public class ResourceLoader {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceLoader.class);
 
-	private static final String IMAGE_RESOURCE_DIR = "images";
-	private static final String DEFAULT_IMAGE_EXTENSION = ".png";
-	private static final String LEVEL_RESOURCE_DIR = "levels";
-
-	public static Image getImageResource(String ref) {
-		if (ref.indexOf('.') < 0) {
-			ref = ref + DEFAULT_IMAGE_EXTENSION;
-		}
-		try {
-			return new Image(getResourceAsStream(IMAGE_RESOURCE_DIR + "/" + ref), ref, false);
-		} catch (SlickException e) {
-			logger.error("Loading an image resource", e);
-			return null;
-		}
+	private static String fixExtension(String ref, String defaultExtension) {
+		return ref.indexOf('.') < 0 ? ref + '.' + defaultExtension : ref;
 	}
 
-	public static URL getResource(String ref) {
-		return org.newdawn.slick.util.ResourceLoader.getResource(ref);
+	public static Image getImageResource(String name) throws SlickException {
+		name = fixExtension(name, Resources.DEFAULT_IMAGE_EXTENSION);
+		logger.info("Loading image resource: {0}", name);
+		return new Image(Resources.IMAGES_DIRECTORY + "/" + name);
 	}
 
+	public static Level getLevelResource(String name) throws IOException {
+		name = fixExtension(name, Resources.DEFAULT_LEVEL_EXTENSION);
+		logger.info("Loading level resource: {0}", name);
+		return Level.readFromStream(getResourceAsStream(Resources.LEVELS_DIRECTORY + "/" + name));
+	}
+
+	/**
+	 * Loads the specified resource as a stream. Delegates to the implementation
+	 * in the slick library.
+	 *
+	 * @param ref The reference to the resource to retrieve
+	 * @return A stream from which the resource can be read
+	 * @see org.newdawn.slick.util.ResourceLoader#getResourceAsStream(String)
+	 */
 	public static InputStream getResourceAsStream(String ref) {
 		logger.info("Loading resource: {0}", ref);
 		return org.newdawn.slick.util.ResourceLoader.getResourceAsStream(ref);

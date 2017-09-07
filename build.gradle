@@ -1,5 +1,5 @@
 group 'com.tfowl'
-version '1.0-rc1'
+version '1.0-rc2'
 
 apply plugin: 'java'
 
