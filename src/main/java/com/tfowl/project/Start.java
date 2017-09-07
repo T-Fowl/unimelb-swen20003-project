@@ -1,6 +1,7 @@
 package com.tfowl.project;
 
 import com.tfowl.project.game.ShadowBlocksGame;
+import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.util.JulLoggingSystem;
 import com.tfowl.project.util.ResourceLoader;
 import org.newdawn.slick.AppGameContainer;
@@ -13,9 +14,6 @@ import java.util.logging.LogManager;
  * Created by Thomas on 1/09/2017.
  */
 public class Start {
-
-	private static final int SCREEN_WIDTH = 800;
-	private static final int SCREEN_HEIGHT = 600;
 
 	public static void main(String[] args) {
 
@@ -35,7 +33,7 @@ public class Start {
 			AppGameContainer container = new AppGameContainer(game);
 			container.setShowFPS(true);
 			container.setVSync(true);
-			container.setDisplayMode(SCREEN_WIDTH, SCREEN_HEIGHT, false);
+			container.setDisplayMode(Graphical.DEFAULT_SCREEN_WIDTH, Graphical.DEFAULT_SCREEN_HEIGHT, Graphical.DEFAULT_FULLSCREEN_FLAG);
 			container.start();
 		} catch (SlickException e) {
 			e.printStackTrace();

@@ -24,7 +24,7 @@ public class ShadowBlocksGame extends BasicGame {
 		super(title);
 	}
 
-	World world = new World();
+	private World world = new World();
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
