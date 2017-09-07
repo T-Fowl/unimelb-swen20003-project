@@ -1,6 +1,7 @@
 package com.tfowl.project.tile;
 
 
+import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.util.ResourceLoader;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -13,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Created by Thomas on 6/09/2017.
  */
-public class Tile {
+public class Tile implements IRenderable {
 
 	private static ConcurrentMap<String, Tile> loadedTiles;
 
@@ -33,6 +34,17 @@ public class Tile {
 		return name;
 	}
 
+	@Override
+	public int getRenderedWidth() throws SlickException {
+		return 32;
+	}
+
+	@Override
+	public int getRenderedHeight() throws SlickException {
+		return 32;
+	}
+
+	@Override
 	public void draw(Graphics g, int x, int y) throws SlickException {
 		g.drawImage(sprite, x, y);
 	}

@@ -1,6 +1,7 @@
 package com.tfowl.project.level;
 
 import com.tfowl.project.entity.Player;
+import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.tile.Tile;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -14,7 +15,7 @@ import java.util.Scanner;
 /**
  * Created by Thomas on 6/09/2017.
  */
-public class Level {
+public class Level implements IRenderable {
 
 	private int tileCountHorizontal;
 	private int tileCountVertical;
@@ -59,6 +60,17 @@ public class Level {
 		this.playerStartY = playerStartY;
 	}
 
+	@Override
+	public int getRenderedWidth() throws SlickException {
+		return 32 * tileCountHorizontal;
+	}
+
+	@Override
+	public int getRenderedHeight() throws SlickException {
+		return 32 * tileCountVertical;
+	}
+
+	@Override
 	public void draw(Graphics g, int gx, int gy) throws SlickException {
 		for (int x = 0; x < tileCountHorizontal; x++) {
 			for (int y = 0; y < tileCountVertical; y++) {

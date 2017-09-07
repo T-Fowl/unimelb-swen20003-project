@@ -39,6 +39,6 @@ public class ShadowBlocksGame extends BasicGame {
 
 	@Override
 	public void render(GameContainer container, Graphics g) throws SlickException {
-		level0.draw(g, 0, 0);
+		level0.drawCentered(g, container.getWidth() / 2, container.getHeight() / 2);
 	}
 }
