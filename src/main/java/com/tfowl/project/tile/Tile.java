@@ -13,6 +13,11 @@ import org.newdawn.slick.SlickException;
  */
 public class Tile implements IRenderable {
 
+	/* The names of all tiles that block the player */
+	private static final String[] NON_WALKABLE_TILES = {
+			"wall"
+	};
+
 	/* The name / id of the tile */
 	private final String name;
 
@@ -35,10 +40,14 @@ public class Tile implements IRenderable {
 
 	/**
 	 * Determine is this tile blocks the player.
+	 *
 	 * @param t Tile to test.
 	 * @return True if the tile blocks the player, false otherwise.
 	 */
 	public static boolean isTileBlocking(Tile t) {
-		return t.name.equalsIgnoreCase("wall");
+		for (String nonWalkable : NON_WALKABLE_TILES)
+			if (nonWalkable.equalsIgnoreCase(t.getName()))
+				return true;
+		return false;
 	}
 }
