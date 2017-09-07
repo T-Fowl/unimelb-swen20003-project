@@ -11,9 +11,9 @@ import java.net.URL;
  */
 public class ResourceLoader {
 
-	private static final String IMAGE_RESOURCE_DIR = "/images";
+	private static final String IMAGE_RESOURCE_DIR = "images";
 	private static final String DEFAULT_IMAGE_EXRENSION = ".png";
-	private static final String LEVEL_RESOURCE_DIR = "/levels";
+	private static final String LEVEL_RESOURCE_DIR = "levels";
 
 	public static Image getImageResource(String ref) {
 		if (ref.indexOf('.') < 0) {

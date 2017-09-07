@@ -1,6 +1,8 @@
 package com.tfowl.project.level;
 
 import com.tfowl.project.tile.Tile;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,5 +28,13 @@ public class Location {
 
 	public void addTile(Tile tile, int index) {
 		tiles.add(index, tile);
+	}
+
+	public void draw(Graphics g, int x, int y) throws SlickException {
+		//Should we go through and draw all of them? In case the tiles
+		//on top have transparency?
+		if (tiles.size() > 0) {
+			tiles.get(tiles.size() - 1).draw(g, x, y);
+		}
 	}
 }

@@ -2,7 +2,9 @@ package com.tfowl.project.tile;
 
 
 import com.tfowl.project.util.ResourceLoader;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +31,10 @@ public class Tile {
 
 	public String getName() {
 		return name;
+	}
+
+	public void draw(Graphics g, int x, int y) throws SlickException {
+		g.drawImage(sprite, x, y);
 	}
 
 	public static Optional<Tile> getTileFromName(String name) {
