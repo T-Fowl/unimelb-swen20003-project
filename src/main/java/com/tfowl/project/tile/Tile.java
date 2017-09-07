@@ -39,6 +39,6 @@ public class Tile implements IRenderable {
 	 * @return True if the tile blocks the player, false otherwise.
 	 */
 	public static boolean isTileBlocking(Tile t) {
-		return t.name.equalsIgnoreCase("wall") || t.name.equalsIgnoreCase("stone");
+		return t.name.equalsIgnoreCase("wall");
 	}
 }
