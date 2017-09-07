@@ -2,6 +2,7 @@ package com.tfowl.project.tile;
 
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
+import com.tfowl.project.reference.Resources;
 import com.tfowl.project.util.ResourceLoader;
 import org.newdawn.slick.Image;
 
@@ -35,7 +36,8 @@ public class TileManager {
 		return Optional.ofNullable(
 				loadedTiles.computeIfAbsent(name.toLowerCase().trim(), tileName -> {
 					try {
-						Image tileImage = ResourceLoader.getImageResource("tiles/" + tileName);
+						Image tileImage = ResourceLoader.getImageResource(
+								Resources.TILES_DIRECTORY_NAME + "/" + tileName);
 						return new Tile(tileName, tileImage);
 					} catch (Throwable t) {
 						return null;

@@ -13,6 +13,9 @@ public class Resources {
 	public static final String IMAGES_DIRECTORY = RESOURCES_ROOT + "/images";
 	public static final String LEVELS_DIRECTORY = RESOURCES_ROOT + "/levels";
 
+	public static final String PLAYER_IMAGE_DIRECTORY_NAME = "player";
+	public static final String TILES_DIRECTORY_NAME = "tiles";
+
 	public static final String DEFAULT_IMAGE_EXTENSION = "png";
 	public static final String DEFAULT_LEVEL_EXTENSION = "lvl";
 

@@ -1,6 +1,7 @@
 package com.tfowl.project.entity;
 
 import com.tfowl.project.graphics.IRenderable;
+import com.tfowl.project.reference.Resources;
 import com.tfowl.project.util.ResourceLoader;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -22,7 +23,7 @@ public class Player extends Entity implements IRenderable {
 	}
 
 	public void init() throws SlickException {
-		sprite = ResourceLoader.getImageResource(PLAYER_NAME + "/" + PLAYER_NAME);
+		sprite = ResourceLoader.getImageResource(Resources.PLAYER_IMAGE_DIRECTORY_NAME + "/" + PLAYER_NAME);
 	}
 
 	@Override
