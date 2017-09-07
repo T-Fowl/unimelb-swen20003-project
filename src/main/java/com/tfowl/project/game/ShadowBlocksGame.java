@@ -23,15 +23,11 @@ public class ShadowBlocksGame extends BasicGame {
 	private static final Logger logger = LoggerFactory.getLogger(ShadowBlocksGame.class);
 
 	public ShadowBlocksGame() {
-		this(Strings.DEFAULT_WINDOW_TITLE);
-	}
-
-	public ShadowBlocksGame(String title) {
-		super(title);
+		super(Strings.DEFAULT_WINDOW_TITLE);
 	}
 
 	/* The word in which the player, plays */
-	private World world = new World();
+	private final World world = new World();
 
 	@Override
 	public void init(GameContainer container) throws SlickException {

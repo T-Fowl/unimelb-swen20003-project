@@ -8,7 +8,7 @@ package com.tfowl.project.entity;
 public class Entity {
 
 	/* name of the entity - analogous to an id */
-	private String name;
+	private final String name;
 
 	/* position in the world */
 	private int x;
@@ -64,23 +64,17 @@ public class Entity {
 	 * Moves the entity by the specified about along the x axis.
 	 *
 	 * @param delta Amount to move. Positive is right, negative is left.
-	 * @return The new x coordinate.
 	 */
-	public int moveX(int delta) {
-		int newX = getX() + delta;
-		setX(newX);
-		return newX;
+	public void moveX(int delta) {
+		setX(getX() + delta);
 	}
 
 	/**
 	 * Moves the entity by the specified about along the y axis.
 	 *
 	 * @param delta Amount to move. Positive is down, negative is up.
-	 * @return The new y coordinate.
 	 */
-	public int moveY(int delta) {
-		int newY = getY() + delta;
-		setY(newY);
-		return newY;
+	public void moveY(int delta) {
+		setY(getY() + delta);
 	}
 }

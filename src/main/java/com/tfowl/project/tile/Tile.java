@@ -14,10 +14,10 @@ import org.newdawn.slick.SlickException;
 public class Tile implements IRenderable {
 
 	/* The name / id of the tile */
-	private String name;
+	private final String name;
 
 	/* Image to draw for this Tile */
-	private Image sprite;
+	private final Image sprite;
 
 	public Tile(String name, Image sprite) {
 		this.name = name;

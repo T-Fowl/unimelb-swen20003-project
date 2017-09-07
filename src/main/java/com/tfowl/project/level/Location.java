@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class Location implements IRenderable {
 
-	private List<Tile> tiles;
+	private final List<Tile> tiles;
 
 	Location() {
 		tiles = new ArrayList<>();

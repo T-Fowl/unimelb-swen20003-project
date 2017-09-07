@@ -5,9 +5,14 @@ package com.tfowl.project.logging;
  * <p>
  * https://github.com/qos-ch/slf4j/blob/master/slf4j-api/src/main/java/org/slf4j/Logger.java
  * <p>
+ * Not all of the methods are implemented, just the basics of each and then more were added as they were needed.
+ * <p>
  * Created by Thomas on 7/09/2017.
  */
+@SuppressWarnings({"unused"})
 public interface Logger {
+
+	/* All methods self-explanatory */
 
 	public String getName();
 

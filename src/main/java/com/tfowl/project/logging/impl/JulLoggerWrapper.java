@@ -8,12 +8,14 @@ import java.util.logging.Level;
  * JUL implementation of {@link Logger}.
  * Inspired by https://github.com/qos-ch/slf4j/blob/master/slf4j-jdk14/src/main/java/org/slf4j/jul/JDK14LoggerAdapter.java
  * <p>
+ * If simply a wrapper around a {@link java.util.logging.Logger}.
+ * <p>
  * Created by Thomas on 7/09/2017.
  */
 public class JulLoggerWrapper implements Logger {
 
-	private String name;
-	private java.util.logging.Logger logger;
+	private final String name;
+	private final java.util.logging.Logger logger;
 
 	public JulLoggerWrapper(java.util.logging.Logger logger) {
 		this.logger = logger;

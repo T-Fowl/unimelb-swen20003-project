@@ -22,10 +22,10 @@ public class JulLoggingSystem implements LogSystem {
 	 *	SEVERE  -> ERROR
 	*/
 
-	private static Level DEBUG = Level.FINE;
-	private static Level ERROR = Level.SEVERE;
+	private static final Level DEBUG = Level.FINE;
+	private static final Level ERROR = Level.SEVERE;
 
-	private Logger logger;
+	private final Logger logger;
 
 	/**
 	 * Creates a new instance with an underlying {@link java.util.logging.Logger} of name <b>com.tfowl.project.util.JulLoggingSystem</b>.

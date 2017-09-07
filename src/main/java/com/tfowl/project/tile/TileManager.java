@@ -19,7 +19,7 @@ public class TileManager {
 	private static final Logger logger = LoggerFactory.getLogger(TileManager.class);
 
 	/* A map of all loaded tiles. key = id(name) */
-	private static ConcurrentMap<String, Tile> loadedTiles;
+	private static final ConcurrentMap<String, Tile> loadedTiles;
 
 	static {
 		loadedTiles = new ConcurrentHashMap<>();

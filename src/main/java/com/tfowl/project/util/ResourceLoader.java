@@ -19,12 +19,12 @@ public class ResourceLoader {
 	private static final Logger logger = LoggerFactory.getLogger(ResourceLoader.class);
 
 	private static final String IMAGE_RESOURCE_DIR = "images";
-	private static final String DEFAULT_IMAGE_EXRENSION = ".png";
+	private static final String DEFAULT_IMAGE_EXTENSION = ".png";
 	private static final String LEVEL_RESOURCE_DIR = "levels";
 
 	public static Image getImageResource(String ref) {
 		if (ref.indexOf('.') < 0) {
-			ref = ref + DEFAULT_IMAGE_EXRENSION;
+			ref = ref + DEFAULT_IMAGE_EXTENSION;
 		}
 		try {
 			return new Image(getResourceAsStream(IMAGE_RESOURCE_DIR + "/" + ref), ref, false);

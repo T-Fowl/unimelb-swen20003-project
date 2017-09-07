@@ -26,21 +26,21 @@ public class Level implements IRenderable {
 	private static final Logger logger = LoggerFactory.getLogger(Level.class);
 
 	/* Size of the level */
-	private int tileCountHorizontal;
-	private int tileCountVertical;
+	private final int tileCountHorizontal;
+	private final int tileCountVertical;
 
 	/* All of the locations in the level */
-	private Location[][] locations;
+	private final Location[][] locations;
 
 	/* Player starting coordinates */
 	private int playerStartX;
 	private int playerStartY;
 
-	public Level(int tileCountHorizontal, int tileCountVertical) {
+	private Level(int tileCountHorizontal, int tileCountVertical) {
 		this(tileCountHorizontal, tileCountVertical, 0, 0);
 	}
 
-	public Level(int tileCountHorizontal, int tileCountVertical, int playerStartX, int playerStartY) {
+	private Level(int tileCountHorizontal, int tileCountVertical, int playerStartX, int playerStartY) {
 		this.playerStartX = playerStartX;
 		this.playerStartY = playerStartY;
 		this.tileCountHorizontal = tileCountHorizontal;
