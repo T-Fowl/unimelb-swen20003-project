@@ -39,6 +39,10 @@ public class Tile implements IRenderable {
 		g.drawImage(sprite, x, y);
 	}
 
+	public static boolean isTileBlocking(Tile t) {
+		return t.name.equalsIgnoreCase("wall") || t.name.equalsIgnoreCase("stone");
+	}
+
 	public static Optional<Tile> getTileFromName(String name) {
 		return Optional.ofNullable(
 				loadedTiles.computeIfAbsent(name.toLowerCase().trim(), tileName -> {

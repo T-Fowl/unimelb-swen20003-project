@@ -60,6 +60,19 @@ public class Level implements IRenderable {
 		this.playerStartY = playerStartY;
 	}
 
+	public boolean isBlockWalkable(int x, int y) {
+		if (null == locations[x][y])
+			return false;
+		Location location = locations[x][y];
+		if (0 == location.getTileCount())
+			return false;
+		for (Tile tile : location.getTiles()) {
+			if (Tile.isTileBlocking(tile))
+				return false;
+		}
+		return true;
+	}
+
 	@Override
 	public int getRenderedWidth() throws SlickException {
 		return Graphical.TILE_SIDE_LENGTH * tileCountHorizontal;

@@ -4,6 +4,7 @@ import com.tfowl.project.entity.Player;
 import com.tfowl.project.level.Level;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 /**
@@ -34,6 +35,35 @@ public class World {
 		player.draw(g,
 				(gc.getWidth() - level.getRenderedWidth()) / 2 + 32 * player.getxCoordinate(),
 				(gc.getHeight() - level.getRenderedHeight()) / 2 + 32 * player.getyCoordinate());
+	}
+
+	public void update(Input input, int delta) {
+		boolean playerNotMoved = true;
+
+		if (input.isKeyPressed(Input.KEY_UP) || input.isKeyPressed(Input.KEY_W)) {
+			if (level.isBlockWalkable(player.getxCoordinate(), player.getyCoordinate() - 1)) {
+				player.setyCoordinate(player.getyCoordinate() - 1);
+				playerNotMoved = false;
+			}
+		}
+		if ((input.isKeyPressed(Input.KEY_RIGHT) || input.isKeyPressed(Input.KEY_D)) && playerNotMoved) {
+			if (level.isBlockWalkable(player.getxCoordinate() + 1, player.getyCoordinate())) {
+				player.setxCoordinate(player.getxCoordinate() + 1);
+				playerNotMoved = false;
+			}
+		}
+		if ((input.isKeyPressed(Input.KEY_DOWN) || input.isKeyPressed(Input.KEY_S)) && playerNotMoved) {
+			if (level.isBlockWalkable(player.getxCoordinate(), player.getyCoordinate() + 1)) {
+				player.setyCoordinate(player.getyCoordinate() + 1);
+				playerNotMoved = false;
+			}
+		}
+		if ((input.isKeyPressed(Input.KEY_LEFT) || input.isKeyPressed(Input.KEY_A)) && playerNotMoved) {
+			if (level.isBlockWalkable(player.getxCoordinate() - 1, player.getyCoordinate())) {
+				player.setxCoordinate(player.getxCoordinate() - 1);
+				playerNotMoved = false;
+			}
+		}
 	}
 
 	public Level getLevel() {

@@ -38,7 +38,7 @@ public class ShadowBlocksGame extends BasicGame {
 
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
-
+		world.update(container.getInput(), delta);
 	}
 
 	@Override

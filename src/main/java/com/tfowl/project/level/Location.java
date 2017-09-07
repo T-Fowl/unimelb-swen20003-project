@@ -31,6 +31,10 @@ public class Location implements IRenderable {
 		tiles.add(index, tile);
 	}
 
+	protected List<Tile> getTiles() {
+		return tiles;
+	}
+
 	@Override
 	public void draw(Graphics g, int x, int y) throws SlickException {
 		//Should we go through and draw all of them? In case the tiles
