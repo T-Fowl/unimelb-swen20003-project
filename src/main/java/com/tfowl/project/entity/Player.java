@@ -30,20 +30,28 @@ public class Player implements Entity, IRenderable {
 		sprite = ResourceLoader.getImageResource(PLAYER_TILE_NAME);
 	}
 
-	public int getxCoordinate() {
+	public int getX() {
 		return xCoordinate;
 	}
 
-	public void setxCoordinate(int xCoordinate) {
+	public void setX(int xCoordinate) {
 		this.xCoordinate = xCoordinate;
 	}
 
-	public int getyCoordinate() {
+	public void moveX(int delta) {
+		setX(getX() + delta);
+	}
+
+	public int getY() {
 		return yCoordinate;
 	}
 
-	public void setyCoordinate(int yCoordinate) {
+	public void setY(int yCoordinate) {
 		this.yCoordinate = yCoordinate;
+	}
+
+	public void moveY(int delta) {
+		setY(getY() + delta);
 	}
 
 	@Override

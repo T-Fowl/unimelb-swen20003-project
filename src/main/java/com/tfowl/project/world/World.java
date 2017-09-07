@@ -26,41 +26,41 @@ public class World {
 
 	public void loadLevel(Level level) {
 		this.level = level;
-		player.setxCoordinate(level.getPlayerStartX());
-		player.setyCoordinate(level.getPlayerStartY());
+		player.setX(level.getPlayerStartX());
+		player.setY(level.getPlayerStartY());
 	}
 
 	public void draw(Graphics g, GameContainer gc) throws SlickException {
 		level.drawCentered(g, gc.getWidth() / 2, gc.getHeight() / 2);
 		player.draw(g,
-				(gc.getWidth() - level.getRenderedWidth()) / 2 + 32 * player.getxCoordinate(),
-				(gc.getHeight() - level.getRenderedHeight()) / 2 + 32 * player.getyCoordinate());
+				(gc.getWidth() - level.getRenderedWidth()) / 2 + 32 * player.getX(),
+				(gc.getHeight() - level.getRenderedHeight()) / 2 + 32 * player.getY());
 	}
 
 	public void update(Input input, int delta) {
 		boolean playerNotMoved = true;
 
 		if (input.isKeyPressed(Input.KEY_UP) || input.isKeyPressed(Input.KEY_W)) {
-			if (level.isBlockWalkable(player.getxCoordinate(), player.getyCoordinate() - 1)) {
-				player.setyCoordinate(player.getyCoordinate() - 1);
+			if (level.isBlockWalkable(player.getX(), player.getY() - 1)) {
+				player.moveY(-1);
 				playerNotMoved = false;
 			}
 		}
 		if ((input.isKeyPressed(Input.KEY_RIGHT) || input.isKeyPressed(Input.KEY_D)) && playerNotMoved) {
-			if (level.isBlockWalkable(player.getxCoordinate() + 1, player.getyCoordinate())) {
-				player.setxCoordinate(player.getxCoordinate() + 1);
+			if (level.isBlockWalkable(player.getX() + 1, player.getY())) {
+				player.moveX(1);
 				playerNotMoved = false;
 			}
 		}
 		if ((input.isKeyPressed(Input.KEY_DOWN) || input.isKeyPressed(Input.KEY_S)) && playerNotMoved) {
-			if (level.isBlockWalkable(player.getxCoordinate(), player.getyCoordinate() + 1)) {
-				player.setyCoordinate(player.getyCoordinate() + 1);
+			if (level.isBlockWalkable(player.getX(), player.getY() + 1)) {
+				player.moveY(1);
 				playerNotMoved = false;
 			}
 		}
 		if ((input.isKeyPressed(Input.KEY_LEFT) || input.isKeyPressed(Input.KEY_A)) && playerNotMoved) {
-			if (level.isBlockWalkable(player.getxCoordinate() - 1, player.getyCoordinate())) {
-				player.setxCoordinate(player.getxCoordinate() - 1);
+			if (level.isBlockWalkable(player.getX() - 1, player.getY())) {
+				player.moveX(-1);
 				playerNotMoved = false;
 			}
 		}
