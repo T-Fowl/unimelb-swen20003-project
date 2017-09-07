@@ -7,6 +7,7 @@ import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.tile.Tile;
 import com.tfowl.project.tile.TileManager;
+import com.tfowl.project.util.Direction;
 import org.newdawn.slick.SlickException;
 
 import java.io.IOException;
@@ -73,13 +74,15 @@ public class Level implements IRenderable {
 	}
 
 	/**
-	 * Determines if a location in the level is walkable by a player.
+	 * Determines if a player at position (x,y) can walk in direction dir.
 	 *
-	 * @param x The x coordinate of the location to test.
-	 * @param y The y coordinate of the location to test.
+	 * @param x The x coordinate of the player.
+	 * @param y The y coordinate of the player.
 	 * @return True if the player can walk on this location, false otherwise.
 	 */
-	public boolean isLocationWalkable(int x, int y) {
+	public boolean canWalkInDirection(int x, int y, Direction dir) {
+		x += dir.getX();
+		y += dir.getY();
 		if (null == locations[x][y])
 			return false;
 		Location location = locations[x][y];

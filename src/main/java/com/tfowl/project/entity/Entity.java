@@ -1,5 +1,7 @@
 package com.tfowl.project.entity;
 
+import com.tfowl.project.util.Direction;
+
 /**
  * An entity is a game object with dynamic properties, such as location.
  * <p>
@@ -76,5 +78,16 @@ public class Entity {
 	 */
 	public void moveY(int delta) {
 		setY(getY() + delta);
+	}
+
+	/**
+	 * Moves the entity by the specified amount in some direction.
+	 *
+	 * @param direction The direction to move.
+	 * @param units     Amount to move by.
+	 */
+	public void move(Direction direction, int units) {
+		moveX(direction.getX() * units);
+		moveY(direction.getY() * units);
 	}
 }

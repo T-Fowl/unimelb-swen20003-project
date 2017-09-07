@@ -15,6 +15,9 @@ public class Graphical {
 	public static final int DEFAULT_SCREEN_HEIGHT = 600;
 	public static final boolean DEFAULT_FULLSCREEN_FLAG = false;
 
+	/* How many units a player should move in a single update */
+	public static final int PLAYER_MOVEMENT_UNITS = 1;
+
 	/* No instancing */
 	private Graphical() {
 	}

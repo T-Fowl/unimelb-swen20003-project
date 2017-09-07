@@ -2,6 +2,9 @@ package com.tfowl.project.world;
 
 import com.tfowl.project.entity.Player;
 import com.tfowl.project.level.Level;
+import com.tfowl.project.reference.Graphical;
+import com.tfowl.project.util.Direction;
+import com.tfowl.project.util.InputUtil;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -46,8 +49,8 @@ public class World {
 		/* Draw the level centered, then the player at the correct location */
 		level.drawCentered(g, gc.getWidth() / 2, gc.getHeight() / 2);
 		player.draw(g,
-				(gc.getWidth() - level.getRenderedWidth()) / 2 + 32 * player.getX(),
-				(gc.getHeight() - level.getRenderedHeight()) / 2 + 32 * player.getY());
+				(gc.getWidth() - level.getRenderedWidth()) / 2 + Graphical.TILE_SIDE_LENGTH * player.getX(),
+				(gc.getHeight() - level.getRenderedHeight()) / 2 + Graphical.TILE_SIDE_LENGTH * player.getY());
 	}
 
 	public void update(Input input, int delta) {
@@ -55,27 +58,27 @@ public class World {
 		boolean playerNotMoved = true;
 
 		/* Go through the 4 cardinal directions and move the player if appropriate. Only one move per update. */
-		if (input.isKeyPressed(Input.KEY_UP) || input.isKeyPressed(Input.KEY_W)) {
-			if (level.isLocationWalkable(player.getX(), player.getY() - 1)) {
-				player.moveY(-1);
+		if (InputUtil.isUp(input)) {
+			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.UP)) {
+				player.move(Direction.UP, Graphical.PLAYER_MOVEMENT_UNITS);
 				playerNotMoved = false;
 			}
 		}
-		if ((input.isKeyPressed(Input.KEY_RIGHT) || input.isKeyPressed(Input.KEY_D)) && playerNotMoved) {
-			if (level.isLocationWalkable(player.getX() + 1, player.getY())) {
-				player.moveX(1);
+		if (InputUtil.isRight(input) && playerNotMoved) {
+			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.RIGHT)) {
+				player.move(Direction.RIGHT, Graphical.PLAYER_MOVEMENT_UNITS);
 				playerNotMoved = false;
 			}
 		}
-		if ((input.isKeyPressed(Input.KEY_DOWN) || input.isKeyPressed(Input.KEY_S)) && playerNotMoved) {
-			if (level.isLocationWalkable(player.getX(), player.getY() + 1)) {
-				player.moveY(1);
+		if (InputUtil.isDown(input) && playerNotMoved) {
+			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.DOWN)) {
+				player.move(Direction.DOWN, Graphical.PLAYER_MOVEMENT_UNITS);
 				playerNotMoved = false;
 			}
 		}
-		if ((input.isKeyPressed(Input.KEY_LEFT) || input.isKeyPressed(Input.KEY_A)) && playerNotMoved) {
-			if (level.isLocationWalkable(player.getX() - 1, player.getY())) {
-				player.moveX(-1);
+		if (InputUtil.isLeft(input) && playerNotMoved) {
+			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.LEFT)) {
+				player.move(Direction.LEFT, Graphical.PLAYER_MOVEMENT_UNITS);
 				playerNotMoved = false;
 			}
 		}
