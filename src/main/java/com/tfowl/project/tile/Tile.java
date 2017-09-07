@@ -35,16 +35,6 @@ public class Tile implements IRenderable {
 	}
 
 	@Override
-	public int getRenderedWidth() throws SlickException {
-		return 32;
-	}
-
-	@Override
-	public int getRenderedHeight() throws SlickException {
-		return 32;
-	}
-
-	@Override
 	public void draw(Graphics g, int x, int y) throws SlickException {
 		g.drawImage(sprite, x, y);
 	}

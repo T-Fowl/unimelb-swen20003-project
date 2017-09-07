@@ -2,8 +2,8 @@ package com.tfowl.project.level;
 
 import com.tfowl.project.entity.Player;
 import com.tfowl.project.graphics.IRenderable;
+import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.tile.Tile;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import java.io.IOException;
@@ -62,20 +62,20 @@ public class Level implements IRenderable {
 
 	@Override
 	public int getRenderedWidth() throws SlickException {
-		return 32 * tileCountHorizontal;
+		return Graphical.TILE_SIDE_LENGTH * tileCountHorizontal;
 	}
 
 	@Override
 	public int getRenderedHeight() throws SlickException {
-		return 32 * tileCountVertical;
+		return Graphical.TILE_SIDE_LENGTH * tileCountVertical;
 	}
 
 	@Override
-	public void draw(Graphics g, int gx, int gy) throws SlickException {
+	public void draw(org.newdawn.slick.Graphics g, int gx, int gy) throws SlickException {
 		for (int x = 0; x < tileCountHorizontal; x++) {
 			for (int y = 0; y < tileCountVertical; y++) {
 				if (null != locations[x][y])
-					locations[x][y].draw(g, gx + x * 32, gy + y * 32);
+					locations[x][y].draw(g, gx + x * Graphical.TILE_SIDE_LENGTH, gy + y * Graphical.TILE_SIDE_LENGTH);
 			}
 		}
 	}

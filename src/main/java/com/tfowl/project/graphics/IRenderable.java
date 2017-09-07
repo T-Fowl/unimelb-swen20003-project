@@ -1,5 +1,6 @@
 package com.tfowl.project.graphics;
 
+import com.tfowl.project.reference.Graphical;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
@@ -8,9 +9,13 @@ import org.newdawn.slick.SlickException;
  */
 public interface IRenderable {
 
-	public int getRenderedWidth() throws SlickException;
+	public default int getRenderedWidth() throws SlickException {
+		return Graphical.TILE_SIDE_LENGTH;
+	}
 
-	public int getRenderedHeight() throws SlickException;
+	public default int getRenderedHeight() throws SlickException {
+		return Graphical.TILE_SIDE_LENGTH;
+	}
 
 	public void draw(Graphics g, int gx, int gy) throws SlickException;
 

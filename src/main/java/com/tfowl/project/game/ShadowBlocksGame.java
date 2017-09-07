@@ -1,7 +1,9 @@
 package com.tfowl.project.game;
 
 import com.tfowl.project.level.Level;
+import com.tfowl.project.reference.Strings;
 import com.tfowl.project.util.ResourceLoader;
+import com.tfowl.project.world.World;
 import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -14,19 +16,21 @@ import java.io.IOException;
  */
 public class ShadowBlocksGame extends BasicGame {
 
-
-	private static final String SCREEN_TITLE = "Shadow Blocks";
-
 	public ShadowBlocksGame() {
-		super(SCREEN_TITLE);
+		this(Strings.DEFAULT_WINDOW_TITLE);
 	}
 
-	Level level0 = null;
+	public ShadowBlocksGame(String title) {
+		super(title);
+	}
+
+	World world = new World();
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
+		world.init();
 		try {
-			level0 = Level.readFromStream(ResourceLoader.getResourceAsStream("levels/0.lvl"));
+			world.loadLevel(Level.readFromStream(ResourceLoader.getResourceAsStream("levels/0.lvl")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -39,6 +43,6 @@ public class ShadowBlocksGame extends BasicGame {
 
 	@Override
 	public void render(GameContainer container, Graphics g) throws SlickException {
-		level0.drawCentered(g, container.getWidth() / 2, container.getHeight() / 2);
+		world.draw(g, container);
 	}
 }

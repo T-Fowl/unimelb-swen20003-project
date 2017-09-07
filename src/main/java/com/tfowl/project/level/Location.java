@@ -32,20 +32,6 @@ public class Location implements IRenderable {
 	}
 
 	@Override
-	public int getRenderedWidth() throws SlickException {
-		//Should we go through and draw all of them? In case the tiles
-		//on top have transparency?
-		return 32;
-	}
-
-	@Override
-	public int getRenderedHeight() throws SlickException {
-		//Should we go through and draw all of them? In case the tiles
-		//on top have transparency?
-		return 32;
-	}
-
-	@Override
 	public void draw(Graphics g, int x, int y) throws SlickException {
 		//Should we go through and draw all of them? In case the tiles
 		//on top have transparency?
