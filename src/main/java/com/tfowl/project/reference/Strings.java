@@ -7,8 +7,15 @@ package com.tfowl.project.reference;
  */
 public class Strings {
 
+
+	/* Field should be filled-in by gradle when building and exporting the project */
+	public static final String STUDENT_ID = "@STUDENTID@";
+
+	/* Fifty percent pain
+	 * And a hundred percent reason to remember the name */
 	public static final String GAME_NAME = "Shadow Blocks";
-	public static final String DEFAULT_WINDOW_TITLE = GAME_NAME;
+
+	public static final String DEFAULT_WINDOW_TITLE = GAME_NAME + " (Student id: " + STUDENT_ID + ")";
 
 	/* No instancing */
 	private Strings() {

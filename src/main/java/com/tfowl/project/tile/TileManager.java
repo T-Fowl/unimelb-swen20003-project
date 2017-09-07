@@ -1,7 +1,5 @@
 package com.tfowl.project.tile;
 
-import com.tfowl.project.logging.Logger;
-import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Resources;
 import com.tfowl.project.util.ResourceLoader;
 import org.newdawn.slick.Image;
@@ -16,8 +14,6 @@ import java.util.concurrent.ConcurrentMap;
  * Created by Thomas on 7/09/2017.
  */
 public class TileManager {
-
-	private static final Logger logger = LoggerFactory.getLogger(TileManager.class);
 
 	/* A map of all loaded tiles. key = id(name) */
 	private static final ConcurrentMap<String, Tile> loadedTiles;
@@ -40,7 +36,7 @@ public class TileManager {
 								Resources.TILES_DIRECTORY_NAME + "/" + tileName);
 						return new Tile(tileName, tileImage);
 					} catch (Throwable t) {
-						return null;
+						return null; //Causes the map to not be updated, and the optional to be empty
 					}
 				})
 		);

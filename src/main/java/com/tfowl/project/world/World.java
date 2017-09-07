@@ -53,33 +53,33 @@ public class World {
 				(gc.getHeight() - level.getRenderedHeight()) / 2 + Graphical.TILE_SIDE_LENGTH * player.getY());
 	}
 
-	public void update(Input input, int delta) {
+	public void update(Input input) {
 		/* One move per update. This stops diagonal movement. */
-		boolean playerNotMoved = true;
+		boolean hasPlayerMoved = false;
 
 		/* Go through the 4 cardinal directions and move the player if appropriate. Only one move per update. */
 		if (InputUtil.isUp(input)) {
 			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.UP)) {
 				player.move(Direction.UP, Graphical.PLAYER_MOVEMENT_UNITS);
-				playerNotMoved = false;
+				hasPlayerMoved = true;
 			}
 		}
-		if (InputUtil.isRight(input) && playerNotMoved) {
+		if (InputUtil.isRight(input) && !hasPlayerMoved) {
 			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.RIGHT)) {
 				player.move(Direction.RIGHT, Graphical.PLAYER_MOVEMENT_UNITS);
-				playerNotMoved = false;
+				hasPlayerMoved = true;
 			}
 		}
-		if (InputUtil.isDown(input) && playerNotMoved) {
+		if (InputUtil.isDown(input) && !hasPlayerMoved) {
 			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.DOWN)) {
 				player.move(Direction.DOWN, Graphical.PLAYER_MOVEMENT_UNITS);
-				playerNotMoved = false;
+				hasPlayerMoved = true;
 			}
 		}
-		if (InputUtil.isLeft(input) && playerNotMoved) {
+		if (InputUtil.isLeft(input) && !hasPlayerMoved) {
 			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.LEFT)) {
 				player.move(Direction.LEFT, Graphical.PLAYER_MOVEMENT_UNITS);
-				playerNotMoved = false;
+				hasPlayerMoved = true; //Not needed but kept for future expansion of this method
 			}
 		}
 	}

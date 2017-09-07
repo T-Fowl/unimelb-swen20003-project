@@ -13,7 +13,9 @@ import org.newdawn.slick.SlickException;
  */
 public class Tile implements IRenderable {
 
-	/* The names of all tiles that block the player */
+	/* The names of all tiles that block the player
+	*  Later on I would like to load this from a config file
+	*  But this is good enough for now */
 	private static final String[] NON_WALKABLE_TILES = {
 			"wall"
 	};

@@ -42,7 +42,7 @@ public class ShadowBlocksGame extends BasicGame {
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
 		/* Update the world */
-		world.update(container.getInput(), delta);
+		world.update(container.getInput());
 
 		/* Check for escape being pressed, exit the game */
 		if(container.getInput().isKeyPressed(Input.KEY_ESCAPE))

@@ -21,10 +21,12 @@ public enum Direction {
 		this.j = j;
 	}
 
+	/* Get the unit direction moved in the x axis */
 	public int getX() {
 		return i;
 	}
 
+	/* Get the unit direction moved in the y axis */
 	public int getY() {
 		return j;
 	}
