@@ -4,6 +4,7 @@ import com.tfowl.project.entity.Player;
 import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.tile.Tile;
+import com.tfowl.project.tile.TileManager;
 import org.newdawn.slick.SlickException;
 
 import java.io.IOException;
@@ -114,7 +115,7 @@ public class Level implements IRenderable {
 					Location location = building.locations[tileX][tileY];
 					if (null == location)
 						location = building.locations[tileX][tileY] = new Location();
-					Tile.getTileFromName(tileName).ifPresent(location::addTileAtTop);
+					TileManager.getTileFromName(tileName).ifPresent(location::addTileAtTop);
 				}
 			}
 

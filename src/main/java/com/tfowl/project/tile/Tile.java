@@ -2,25 +2,14 @@ package com.tfowl.project.tile;
 
 
 import com.tfowl.project.graphics.IRenderable;
-import com.tfowl.project.util.ResourceLoader;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by Thomas on 6/09/2017.
  */
 public class Tile implements IRenderable {
-
-	private static ConcurrentMap<String, Tile> loadedTiles;
-
-	static {
-		loadedTiles = new ConcurrentHashMap<>();
-	}
 
 	private String name;
 	private Image sprite;
@@ -41,14 +30,5 @@ public class Tile implements IRenderable {
 
 	public static boolean isTileBlocking(Tile t) {
 		return t.name.equalsIgnoreCase("wall") || t.name.equalsIgnoreCase("stone");
-	}
-
-	public static Optional<Tile> getTileFromName(String name) {
-		return Optional.ofNullable(
-				loadedTiles.computeIfAbsent(name.toLowerCase().trim(), tileName -> {
-					Image tileImage = ResourceLoader.getImageResource(tileName);
-					return null == tileImage ? null : new Tile(tileName, tileImage);
-				})
-		);
 	}
 }
