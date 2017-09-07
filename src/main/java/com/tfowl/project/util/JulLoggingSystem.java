@@ -5,6 +5,10 @@ import org.newdawn.slick.util.LogSystem;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A {@link java.util.logging.Logger java.util.logging (JUL)} implementation of {@link LogSystem} for slick2d.
+ * Simply delegated most logging calls to an underlying {@link java.util.logging.Logger} instance, with some {@link Level} changes.
+ */
 public class JulLoggingSystem implements LogSystem {
 
 	/*
@@ -23,12 +27,11 @@ public class JulLoggingSystem implements LogSystem {
 
 	private Logger logger;
 
+	/**
+	 * Creates a new instance with an underlying {@link java.util.logging.Logger} of name <b>com.tfowl.project.util.JulLoggingSystem</b>.
+	 */
 	public JulLoggingSystem() {
-		this(Logger.getLogger(JulLoggingSystem.class.getName()));
-	}
-
-	public JulLoggingSystem(Logger logger) {
-		this.logger = logger;
+		this.logger = Logger.getLogger(JulLoggingSystem.class.getName());
 	}
 
 	@Override

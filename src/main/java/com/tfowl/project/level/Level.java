@@ -14,14 +14,21 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
+ * A level is responsible for holding reference to the location of all {@link Tile Tiles} and eventually {@link com.tfowl.project.entity.Entity Entities}.
+ * Also has the starting location of the player.
+ * <p>
  * Created by Thomas on 6/09/2017.
  */
 public class Level implements IRenderable {
 
+	/* Size of the level */
 	private int tileCountHorizontal;
 	private int tileCountVertical;
+
+	/* All of the locations in the level */
 	private Location[][] locations;
 
+	/* Player starting coordinates */
 	private int playerStartX;
 	private int playerStartY;
 
@@ -61,7 +68,14 @@ public class Level implements IRenderable {
 		this.playerStartY = playerStartY;
 	}
 
-	public boolean isBlockWalkable(int x, int y) {
+	/**
+	 * Determines if a location in the level is walkable by a player.
+	 *
+	 * @param x The x coordinate of the location to test.
+	 * @param y The y coordinate of the location to test.
+	 * @return True if the player can walk on this location, false otherwise.
+	 */
+	public boolean isLocationWalkable(int x, int y) {
 		if (null == locations[x][y])
 			return false;
 		Location location = locations[x][y];
@@ -86,24 +100,39 @@ public class Level implements IRenderable {
 
 	@Override
 	public void draw(org.newdawn.slick.Graphics g, int gx, int gy) throws SlickException {
+		/* Iterate through all locations and draw them */
 		for (int x = 0; x < tileCountHorizontal; x++) {
 			for (int y = 0; y < tileCountVertical; y++) {
+				/* Some locations will be null as they are empty space */
 				if (null != locations[x][y])
 					locations[x][y].draw(g, gx + x * Graphical.TILE_SIDE_LENGTH, gy + y * Graphical.TILE_SIDE_LENGTH);
 			}
 		}
 	}
 
+	/**
+	 * Reads and parses the {@link InputStream} into a {@link Level} instance.
+	 * <p>
+	 * The format of the stream is meant to be CSV. The first line should have 2 attributes (dimensions
+	 * of the level), with all remaining lines having 3 attributes (tile name, tile x, tile y).
+	 *
+	 * @param is Stream to read and parse.
+	 * @return The {@link Level} parsed from the stream.
+	 * @throws IOException If there is an error in reading.
+	 */
 	public static Level readFromStream(InputStream is) throws IOException {
 		try (Scanner scanner = new Scanner(is)) {
+			/* This means we don't have to split on every line, we can just read 2/3 terms at a time. */
 			scanner.useDelimiter("\\p{javaWhitespace}+|,");
 
 			int width = scanner.nextInt();
 			int height = scanner.nextInt();
 
+			/* Make a new level instance to construct */
 			Level building = new Level(width, height);
 
 			while (scanner.hasNextLine()) {
+				/* The 3 attributes separated by a comma */
 				String tileName = scanner.next();
 				int tileX = scanner.nextInt();
 				int tileY = scanner.nextInt();
@@ -112,6 +141,7 @@ public class Level implements IRenderable {
 					building.playerStartX = tileX;
 					building.playerStartY = tileY;
 				} else {
+					/* Get the referenced location (creating if needed) and add the tile to it */
 					Location location = building.locations[tileX][tileY];
 					if (null == location)
 						location = building.locations[tileX][tileY] = new Location();

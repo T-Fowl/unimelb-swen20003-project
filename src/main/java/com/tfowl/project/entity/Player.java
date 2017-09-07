@@ -7,6 +7,8 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 /**
+ * Represents a controllable entity.
+ * <p>
  * Created by Thomas on 6/09/2017.
  */
 public class Player extends Entity implements IRenderable {

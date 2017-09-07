@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.net.URL;
 
 /**
+ * Utility class used to loading resources. Generally delegates most operations to
+ * {@link org.newdawn.slick.util.ResourceLoader}.
+ * <p>
  * Created by Thomas on 5/09/2017.
  */
 public class ResourceLoader {
@@ -38,6 +41,7 @@ public class ResourceLoader {
 		return org.newdawn.slick.util.ResourceLoader.resourceExists(ref);
 	}
 
+	/* No instancing */
 	private ResourceLoader() {
 	}
 }

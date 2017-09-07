@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.logging.LogManager;
 
 /**
+ * Launching class for the {@link ShadowBlocksGame}.
+ * <p>
  * Created by Thomas on 1/09/2017.
  */
 public class Start {
@@ -18,6 +20,7 @@ public class Start {
 	public static void main(String[] args) {
 
 		try {
+			/* Configure the JUL logging system. */
 			LogManager.getLogManager().readConfiguration(
 					ResourceLoader.getResourceAsStream("logging.properties")
 			);
@@ -25,9 +28,11 @@ public class Start {
 			e.printStackTrace();
 		}
 
+		/* Tie in the Slick logging system with the JUL one */
 		org.newdawn.slick.util.Log.setLogSystem(new JulLoggingSystem());
 
 
+		/* Launch the game */
 		ShadowBlocksGame game = new ShadowBlocksGame();
 		try {
 			AppGameContainer container = new AppGameContainer(game);

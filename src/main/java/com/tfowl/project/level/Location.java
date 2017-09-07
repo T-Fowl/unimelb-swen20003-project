@@ -9,29 +9,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A location is a part of a level with some {@link Tile Tiles}. This class allows for multiple {@link Tile Tiles} to be
+ * at one position in the level.
+ * <p>
+ * Later on, this class will either be removed as the duplicate {@link Tile Tiles} will be comes entities or they are stored
+ * in the {@link Level} class.
+ * <p>
  * Created by Thomas on 6/09/2017.
  */
 public class Location implements IRenderable {
 
 	private List<Tile> tiles;
 
-	public Location() {
+	Location() {
 		tiles = new ArrayList<>();
 	}
 
-	public int getTileCount() {
+	int getTileCount() {
 		return tiles.size();
 	}
 
-	public void addTileAtTop(Tile tile) {
+	void addTileAtTop(Tile tile) {
 		addTile(tile, getTileCount());
 	}
 
-	public void addTile(Tile tile, int index) {
+	private void addTile(Tile tile, int index) {
 		tiles.add(index, tile);
 	}
 
-	protected List<Tile> getTiles() {
+	List<Tile> getTiles() {
 		return tiles;
 	}
 

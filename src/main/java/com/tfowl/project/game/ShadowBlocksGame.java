@@ -12,6 +12,8 @@ import org.newdawn.slick.SlickException;
 import java.io.IOException;
 
 /**
+ * The {@link org.newdawn.slick.Game} implementation for this project.
+ * <p>
  * Created by Thomas on 1/09/2017.
  */
 public class ShadowBlocksGame extends BasicGame {
@@ -24,10 +26,12 @@ public class ShadowBlocksGame extends BasicGame {
 		super(title);
 	}
 
+	/* The word in which the player, plays */
 	private World world = new World();
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
+		/* Initialise the world and then load a level */
 		world.init();
 		try {
 			world.loadLevel(Level.readFromStream(ResourceLoader.getResourceAsStream("levels/0.lvl")));
@@ -38,11 +42,13 @@ public class ShadowBlocksGame extends BasicGame {
 
 	@Override
 	public void update(GameContainer container, int delta) throws SlickException {
+		/* Update the world */
 		world.update(container.getInput(), delta);
 	}
 
 	@Override
 	public void render(GameContainer container, Graphics g) throws SlickException {
+		/* Draw the world. By default the current level will be drawn centered. */
 		world.draw(g, container);
 	}
 }
