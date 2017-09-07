@@ -5,10 +5,7 @@ import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Strings;
 import com.tfowl.project.util.ResourceLoader;
 import com.tfowl.project.world.World;
-import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 
 import java.io.IOException;
 
@@ -46,6 +43,10 @@ public class ShadowBlocksGame extends BasicGame {
 	public void update(GameContainer container, int delta) throws SlickException {
 		/* Update the world */
 		world.update(container.getInput(), delta);
+
+		/* Check for escape being pressed, exit the game */
+		if(container.getInput().isKeyPressed(Input.KEY_ESCAPE))
+			container.exit();
 	}
 
 	@Override
@@ -53,4 +54,5 @@ public class ShadowBlocksGame extends BasicGame {
 		/* Draw the world. By default the current level will be drawn centered. */
 		world.draw(g, container);
 	}
+
 }
