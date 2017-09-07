@@ -133,6 +133,9 @@ public class Level implements IRenderable {
 
 			while (scanner.hasNextLine()) {
 				/* The 3 attributes separated by a comma */
+				if (!scanner.hasNext()) {
+					break; // Trailing new-line
+				}
 				String tileName = scanner.next();
 				int tileX = scanner.nextInt();
 				int tileY = scanner.nextInt();
