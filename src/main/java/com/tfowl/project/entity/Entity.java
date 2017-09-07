@@ -82,12 +82,20 @@ public class Entity {
 
 	/**
 	 * Moves the entity by the specified amount in some direction.
+	 * <p>
+	 * This method can be chained, e.g.
+	 * <p>
+	 * <code>
+	 * entity.move(direction1, amount1).move(direction2, amount2)
+	 * </code>
 	 *
 	 * @param direction The direction to move.
 	 * @param units     Amount to move by.
+	 * @return This entity, for method chaining.
 	 */
-	public void move(Direction direction, int units) {
+	public Entity move(Direction direction, int units) {
 		moveX(direction.getX() * units);
 		moveY(direction.getY() * units);
+		return this;
 	}
 }
