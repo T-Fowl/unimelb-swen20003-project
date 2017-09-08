@@ -7,29 +7,36 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2" apply false
 }
 
+// For copying dependencies into the libs and natives folders (if using maven deps)
+apply from: 'exportdeps.gradle'
+
 group 'com.tfowl'
 version '1.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+/* Used when creating eclipse launch configurations */
 project.ext.mainClassName = 'com.tfowl.project.Start'
 
 repositories {
     mavenCentral()
-}
 
-
-configurations {
-    exported
+    flatDir {
+        dir libraries_directory
+    }
 }
 
 dependencies {
-    // group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
+    //Using a flatDir repository
+    compile name: 'slick'
+    compile name: 'lwjgl'
+    compile name: 'jinput'
+    //compile files("$libraries_directory/slick.jar")
+    //compile group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+//    testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    compile fileTree(dir: libraries_directory, include: ['*.jar'])
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,10 +51,9 @@ project.ext.studentid = project.ext.studentProperties.getProperty("studentid", "
 project.ext.studentusername = project.ext.studentProperties.getProperty("studentusername", "unknown_student_username")
 
 def submissionGroup = 'Project Submission'
-def submittedProjectName = "${project.name}-${studentusername}-${studentid}"
+def submittedProjectName = "${project.name}-$version-$studentusername-$studentid"
 def submittedProjectZip = "${submittedProjectName}.zip"
 def launchFileName = "RunProjectFor${studentusername}-${studentid}.launch"
-
 
 task generateEclipseLaunch(type: GenEclipseRunTask) {
     projectName submittedProjectName
@@ -66,50 +72,24 @@ task cleanEclipseLaunch(type: Delete) {
 
 task zipWholeProject(type: Zip, dependsOn: [tasks.eclipse, generateEclipseLaunch]) {
     archiveName = submittedProjectZip
+    from('src/main/java') {
+        into 'src/main/java'
+        filter(ReplaceTokens, tokens: [STUDENTID: studentid, STUDENTNAME: studentusername])
+    }
     from(project.projectDir) {
+        exclude('src/main/java')
+        exclude(archiveName)
         exclude('.gradle')
         exclude('.idea')
-        exclude('specification.pdf') //No need to include this
-        exclude('student.properties') //Stays on local machine
-        clean.targetFiles.each {
-            exclude it.name //If it is targeted by clean (i.e. is a build output) don't include
-        }
-        exclude(submittedProjectZip) //We don't want to include this zip itself
-        filter(ReplaceTokens, tokens: [STUDENTID: studentid, STUDENTNAME: studentusername])
+        exclude('specification.pdf')
+        exclude('student.properties')
+        exclude('build')
     }
     destinationDir project.projectDir
 }
 
 task cleanZippedProject(type: Delete, dependsOn: [cleanEclipse, cleanEclipseLaunch]) {
     delete submittedProjectZip
-}
-
-task extractJavaLibraries(type: Copy) {
-    description "Copies the dependencies of the project into the $libraries_directory folder"
-    from configurations.runtime
-    into libraries_directory
-}
-
-task cleanJavaLibraries(type: Delete) {
-    description "Deletes the dependencies in the $libraries_directory folder"
-    delete libraries_directory
-}
-
-task extractNativeLibraries(type: Copy) {
-    description "Copies the native libraries of the project dependencies into the $natives_directory folder."
-
-    from {
-        configurations.runtime.collect {
-            zipTree(it)
-        }
-    }
-    into natives_directory
-    include '*.dll', '*.so', '*.jnilib'
-}
-
-task cleanNativeLibraries(type: Delete) {
-    description "Deletes the native libraries from the $natives_directory folder"
-    delete natives_directory
 }
 
 cleanEclipse.doLast {
@@ -120,26 +100,50 @@ eclipseClasspath {
 }
 
 eclipse {
-    //pathVariables 'BUNDLED_LIBRARIES': file(libraries_directory)
+    //pathVariables 'libs': file(libraries_directory)
 
     classpath {
-        minusConfigurations += [configurations.testRuntime]
-        plusConfigurations += [configurations.compile]
-//        plusConfigurations += [configurations.exported]
+        downloadSources = false
+        downloadJavadoc = false
+
+        file {
+            whenMerged { classpath ->
+                classpath.entries
+                        .findAll { it.kind == 'lib' }
+                        .each {
+                    it.path = "$libraries_directory/$it.moduleVersion.name"
+                    if (it.moduleVersion.name == 'lwjgl') {
+                        it.nativeLibraryLocation = "$submittedProjectName/$natives_directory"
+                    }
+                }
+            }
+        }
     }
     jdt {}
     project {
         name = submittedProjectName
-        comment = "Project 1 for SWEN20003 by $studentusername ($studentid)"
+        comment = "Project $version for SWEN20003 by $studentusername ($studentid)"
     }
 }
 
 task exportSubmission(dependsOn: zipWholeProject) {
     description 'Exports this project as a zipped eclipse project for submission'
     group submissionGroup
+
+    doLast {
+        copy {
+            from submittedProjectZip
+            into project.rootDir
+            rename(submittedProjectZip, 'submission.zip')
+        }
+    }
+
+    finalizedBy cleanZippedProject
 }
 
 task cleanSubmission(type: Delete, dependsOn: cleanZippedProject) {
     description 'Cleans all files involved in submitting the project'
     group submissionGroup
+
+    delete 'submission.zip'
 }

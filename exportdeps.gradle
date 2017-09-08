@@ -1,0 +1,31 @@
+/* Used when the project used dependencies from maven */
+task extractJavaLibraries(type: Copy) {
+    description "Copies the dependencies of the project into the $libraries_directory folder"
+    from configurations.runtime
+    into libraries_directory
+}
+
+/* Used when the project used dependencies from maven */
+task cleanJavaLibraries(type: Delete) {
+    description "Deletes the dependencies in the $libraries_directory folder"
+    delete libraries_directory
+}
+
+/* Used when the project used dependencies from maven */
+task extractNativeLibraries(type: Copy) {
+    description "Copies the native libraries of the project dependencies into the $natives_directory folder."
+
+    from {
+        configurations.runtime.collect {
+            zipTree(it)
+        }
+    }
+    into natives_directory
+    include '*.dll', '*.so', '*.jnilib'
+}
+
+/* Used when the project used dependencies from maven */
+task cleanNativeLibraries(type: Delete) {
+    description "Deletes the native libraries from the $natives_directory folder"
+    delete natives_directory
+}
