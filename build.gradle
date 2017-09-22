@@ -58,12 +58,8 @@ def launchFileName = "RunProjectFor${studentusername}-${studentid}.launch"
 task generateEclipseLaunch(type: GenEclipseRunTask) {
     projectName submittedProjectName
     mainClass mainClassName
-    runDir "\${project_loc}"
     outputFile launchFileName
-
-    doLast {
-        delete "\${project_loc}"
-    }
+    runDir "\${workspace_loc:$submittedProjectName}"
 }
 
 task cleanEclipseLaunch(type: Delete) {
@@ -72,6 +68,19 @@ task cleanEclipseLaunch(type: Delete) {
 
 task zipWholeProject(type: Zip, dependsOn: [tasks.eclipse, generateEclipseLaunch]) {
     archiveName = submittedProjectZip
+
+    sourceSets.main.java.srcDirs.each {
+        println it.canonicalPath
+    }
+
+    sourceSets.main.resources.srcDirs.each {
+        println it
+    }
+
+    sourceSets.main.allSource.srcDirs.each {
+        println it
+    }
+
     from('src/main/java') {
         into 'src/main/java'
         filter(ReplaceTokens, tokens: [STUDENTID: studentid, STUDENTNAME: studentusername])
@@ -79,6 +88,7 @@ task zipWholeProject(type: Zip, dependsOn: [tasks.eclipse, generateEclipseLaunch
     from(project.projectDir) {
         exclude('src/main/java')
         exclude(archiveName)
+        exclude('submission.zip')
         exclude('.gradle')
         exclude('.idea')
         exclude('specification.pdf')
@@ -111,7 +121,7 @@ eclipse {
                 classpath.entries
                         .findAll { it.kind == 'lib' }
                         .each {
-                    it.path = "$libraries_directory/$it.moduleVersion.name"
+                    it.path = "$libraries_directory/${it.moduleVersion.name}.jar"
                     if (it.moduleVersion.name == 'lwjgl') {
                         it.nativeLibraryLocation = "$submittedProjectName/$natives_directory"
                     }
@@ -138,7 +148,7 @@ task exportSubmission(dependsOn: zipWholeProject) {
         }
     }
 
-    finalizedBy cleanZippedProject
+   // finalizedBy cleanZippedProject
 }
 
 task cleanSubmission(type: Delete, dependsOn: cleanZippedProject) {
