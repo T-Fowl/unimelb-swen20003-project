@@ -1,12 +1,13 @@
 package com.tfowl.project.level;
 
-import com.tfowl.project.entity.Player;
 import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.tile.Tile;
 import com.tfowl.project.tile.TileManager;
+import com.tfowl.project.unit.Player;
+import com.tfowl.project.unit.Unit;
 import com.tfowl.project.util.Direction;
 import org.newdawn.slick.SlickException;
 
@@ -17,7 +18,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
- * A level is responsible for holding reference to the location of all {@link Tile Tiles} and eventually {@link com.tfowl.project.entity.Entity Entities}.
+ * A level is responsible for holding reference to the location of all {@link Tile Tiles} and eventually {@link Unit Entities}.
  * Also has the starting location of the player.
  * <p>
  * Created by Thomas on 6/09/2017.

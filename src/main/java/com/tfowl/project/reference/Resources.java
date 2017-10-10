@@ -16,7 +16,7 @@ public class Resources {
 	public static final String LEVELS_DIRECTORY = RESOURCES_ROOT + "/levels";
 
 	/* sub-directories */
-	public static final String PLAYER_IMAGE_DIRECTORY_NAME = "player";
+	public static final String PLAYER_IMAGE_DIRECTORY_NAME = "units/player";
 	public static final String TILES_DIRECTORY_NAME = "tiles";
 
 	/* default extensions to add when an extension isn't provided */

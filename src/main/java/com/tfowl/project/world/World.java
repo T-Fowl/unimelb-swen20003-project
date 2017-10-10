@@ -1,8 +1,8 @@
 package com.tfowl.project.world;
 
-import com.tfowl.project.entity.Player;
 import com.tfowl.project.level.Level;
 import com.tfowl.project.reference.Graphical;
+import com.tfowl.project.unit.Player;
 import com.tfowl.project.util.Direction;
 import com.tfowl.project.util.InputUtil;
 import org.newdawn.slick.GameContainer;

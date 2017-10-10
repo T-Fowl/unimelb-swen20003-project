@@ -1,4 +1,4 @@
-package com.tfowl.project.entity;
+package com.tfowl.project.unit;
 
 import com.tfowl.project.util.Direction;
 
@@ -7,7 +7,7 @@ import com.tfowl.project.util.Direction;
  * <p>
  * Created by Thomas on 6/09/2017.
  */
-public class Entity {
+public class Unit {
 
 	/* name of the entity - analogous to an id */
 	private final String name;
@@ -16,11 +16,11 @@ public class Entity {
 	private int x;
 	private int y;
 
-	public Entity(String name) {
+	public Unit(String name) {
 		this(name, 0, 0);
 	}
 
-	public Entity(String name, int x, int y) {
+	public Unit(String name, int x, int y) {
 		this.name = name;
 		this.x = x;
 		this.y = y;
@@ -93,7 +93,7 @@ public class Entity {
 	 * @param units     Amount to move by.
 	 * @return This entity, for method chaining.
 	 */
-	public Entity move(Direction direction, int units) {
+	public Unit move(Direction direction, int units) {
 		moveX(direction.getX() * units);
 		moveY(direction.getY() * units);
 		return this;
