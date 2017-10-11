@@ -1,7 +1,9 @@
-package com.tfowl.project.tile;
+package com.tfowl.project.impl;
 
 import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.registry.ObjectRegistry;
+import com.tfowl.project.tile.ITileState;
+import com.tfowl.project.tile.Tile;
 import com.tfowl.project.util.Position;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;

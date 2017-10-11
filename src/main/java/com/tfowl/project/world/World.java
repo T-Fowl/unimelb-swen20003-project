@@ -1,20 +1,22 @@
 package com.tfowl.project.world;
 
 import com.tfowl.project.block.Block;
-import com.tfowl.project.block.BlockInstance;
+import com.tfowl.project.block.IBlockState;
 import com.tfowl.project.effect.Effect;
 import com.tfowl.project.effect.EffectInstance;
 import com.tfowl.project.graphics.IRenderable;
+import com.tfowl.project.impl.BlockInstance;
+import com.tfowl.project.impl.TileInstance;
+import com.tfowl.project.impl.UnitInstance;
 import com.tfowl.project.level.Level;
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.player.Player;
 import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.registry.ObjectRegistry;
+import com.tfowl.project.tile.ITileState;
 import com.tfowl.project.tile.Tile;
-import com.tfowl.project.tile.TileInstance;
 import com.tfowl.project.unit.Unit;
-import com.tfowl.project.unit.UnitInstance;
 import com.tfowl.project.util.Direction;
 import com.tfowl.project.util.InputUtil;
 import com.tfowl.project.util.Position;
@@ -120,13 +122,26 @@ public class World implements IRenderable {
 		return true;
 	}
 
-	public List<TileInstance> getTilesOfType(Tile tile) {
-		List<TileInstance> results = new ArrayList<>();
-		for (TileInstance instance : tiles) {
+	public List<Position> getPosititionsOfTiles(Tile tile) {
+		List<Position> positions = new ArrayList<>();
+		for (TileInstance instance : tiles)
 			if (instance.getTile().equals(tile))
-				results.add(instance);
-		}
-		return results;
+				positions.add(instance.getPosition());
+		return positions;
+	}
+
+	public ITileState getTileState(Position position) {
+		for (TileInstance instance : tiles)
+			if (instance.getPosition().equals(position))
+				return instance.getState();
+		return null;
+	}
+
+	public IBlockState getBlockState(Position position) {
+		for (BlockInstance instance : blocks)
+			if (instance.getPosition().equals(position))
+				return instance.getState();
+		return null;
 	}
 
 	private void moveBlock(BlockInstance instance, Position newPosition) {

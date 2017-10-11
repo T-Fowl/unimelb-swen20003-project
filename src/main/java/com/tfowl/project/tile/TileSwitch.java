@@ -5,8 +5,6 @@ import com.tfowl.project.states.properties.BooleanProperty;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
 
-import java.util.List;
-
 /**
  * Created by Thomas on 11.10.2017.
  */
@@ -27,9 +25,9 @@ public class TileSwitch extends Tile {
 	}
 
 	private void toggleDoors(World world, boolean open) {
-		List<TileInstance> doors = world.getTilesOfType(Tiles.DOOR);
-		for (TileInstance door : doors) {
-			door.getState().setValue(TileDoor.OPEN_PROPERTY, open);
+		for (Position doorPosition : world.getPosititionsOfTiles(Tiles.DOOR)) {
+			ITileState doorState = world.getTileState(doorPosition);
+			doorState.setValue(TileDoor.OPEN_PROPERTY, open);
 		}
 	}
 

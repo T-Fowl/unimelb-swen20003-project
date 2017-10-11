@@ -5,8 +5,6 @@ import com.tfowl.project.states.properties.BooleanProperty;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
 
-import java.util.List;
-
 /**
  * Created by Thomas on 11.10.2017.
  */
@@ -31,14 +29,10 @@ public class TileTarget extends Tile {
 		super.onBlockMovedOn(world, player, position, state);
 		state.setValue(COVERED_PROPERTY, true);
 
-		//Check if all others are covered
-		List<TileInstance> targets = world.getTilesOfType(this);
-
-		System.out.println("Targets: " + targets);
-
 		boolean allCovered = true;
-		for (TileInstance instance : targets) {
-			allCovered = instance.getState().getValue(COVERED_PROPERTY);
+		for (Position targetPosition : world.getPosititionsOfTiles(this)) {
+			ITileState targetState = world.getTileState(targetPosition);
+			allCovered = targetState.getValue(COVERED_PROPERTY);
 			if (!allCovered)
 				break;
 		}
