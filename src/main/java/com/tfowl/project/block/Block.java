@@ -1,5 +1,9 @@
 package com.tfowl.project.block;
 
+import com.tfowl.project.impl.ImplBlockState;
+import com.tfowl.project.util.Position;
+import com.tfowl.project.world.World;
+
 /**
  * Created by Thomas on 11.10.2017.
  */
@@ -50,5 +54,14 @@ public class Block {
 
 	public void setPushable(boolean pushable) {
 		isPushable = pushable;
+	}
+
+	public IBlockState getDefaultState() {
+		return new ImplBlockState(this);
+	}
+
+	public void onTick(World world, long delta,
+					   Position position, IBlockState state) {
+
 	}
 }

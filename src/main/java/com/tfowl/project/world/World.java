@@ -111,8 +111,11 @@ public class World implements IRenderable {
 
 	public boolean isTileWalkable(Position position) {
 		for (TileInstance tile : tiles) {
-			if (tile.getPosition().equals(position) && !tile.getTile().isWalkable())
+			if (tile.getPosition().equals(position) && !tile.getTile().isWalkable(
+					this, player, position, tile.getState()
+			)) {
 				return false;
+			}
 		}
 		return true;
 	}
@@ -132,9 +135,9 @@ public class World implements IRenderable {
 
 		for (TileInstance tile : tiles)
 			if (tile.getPosition().equals(newPosition))
-				tile.getTile().onBlockMovedOn(this, player);
+				tile.getTile().onBlockMovedOn(this, player, newPosition, tile.getState());
 			else if (tile.getPosition().equals(oldPosition))
-				tile.getTile().onBlockMovedOff(this, player);
+				tile.getTile().onBlockMovedOff(this, player, oldPosition, tile.getState());
 	}
 
 	public boolean isSpaceEmpty(Position position) {

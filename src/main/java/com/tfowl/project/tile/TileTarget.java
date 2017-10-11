@@ -1,6 +1,8 @@
 package com.tfowl.project.tile;
 
 import com.tfowl.project.player.Player;
+import com.tfowl.project.states.properties.BooleanProperty;
+import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
 
 import java.util.List;
@@ -10,29 +12,35 @@ import java.util.List;
  */
 public class TileTarget extends Tile {
 
+	public static final BooleanProperty COVERED_PROPERTY = BooleanProperty.create("covered");
+
 	public TileTarget() {
 		setName("target");
 		setWalkable(true);
 	}
 
 	@Override
-	public void onBlockMovedOn(World world, Player player) {
-		super.onBlockMovedOn(world, player);
-		//Check if all other targets have a block over them
-		//If yes, signal to the world that the level should end
+	public ITileState getDefaultState() {
+		ITileState state = super.getDefaultState();
+		state.setValue(COVERED_PROPERTY, false);
+		return state;
+	}
 
-		System.out.println("Block moved over");
+	@Override
+	public void onBlockMovedOn(World world, Player player, Position position, ITileState state) {
+		super.onBlockMovedOn(world, player, position, state);
+		state.setValue(COVERED_PROPERTY, true);
 
+		//Check if all others are covered
 		List<TileInstance> targets = world.getTilesOfType(this);
 
 		System.out.println("Targets: " + targets);
 
 		boolean allCovered = true;
 		for (TileInstance instance : targets) {
-			if (world.blockAt(instance.getPosition()) == null) {
-				allCovered = false;
+			allCovered = instance.getState().getValue(COVERED_PROPERTY);
+			if (!allCovered)
 				break;
-			}
 		}
 
 		if (allCovered) {
@@ -40,5 +48,11 @@ public class TileTarget extends Tile {
 		} else {
 
 		}
+	}
+
+	@Override
+	public void onBlockMovedOff(World world, Player player, Position position, ITileState state) {
+		super.onBlockMovedOff(world, player, position, state);
+		state.setValue(COVERED_PROPERTY, false);
 	}
 }

@@ -10,9 +10,11 @@ public class TileInstance implements IRenderable {
 
 	private Tile tile;
 	private Position position;
+	private ITileState state;
 
 	public TileInstance(Tile tile) {
 		this.tile = tile;
+		this.state = tile.getDefaultState();
 		this.position = new Position();
 	}
 
@@ -30,6 +32,14 @@ public class TileInstance implements IRenderable {
 
 	public void setPosition(Position position) {
 		this.position = position;
+	}
+
+	public ITileState getState() {
+		return state;
+	}
+
+	public void setState(ITileState state) {
+		this.state = state;
 	}
 
 	@Override
