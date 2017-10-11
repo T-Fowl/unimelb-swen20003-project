@@ -11,6 +11,8 @@ import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.registry.ObjectRegistry;
 import com.tfowl.project.tile.TileInstance;
 import com.tfowl.project.unit.UnitInstance;
+import com.tfowl.project.util.Direction;
+import com.tfowl.project.util.InputUtil;
 import com.tfowl.project.util.Position;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -84,6 +86,14 @@ public class World implements IRenderable {
 		}
 	}
 
+	private boolean tileWalkable(Position position) {
+		for (TileInstance tile : tiles) {
+			if (tile.getPosition().equals(position) && !tile.getTile().isWalkable())
+				return false;
+		}
+		return true;
+	}
+
 	@Override
 	public int getRenderedWidth() throws SlickException {
 		return Graphical.TILE_SIDE_LENGTH * level.getTileCountHorizontal();
@@ -118,34 +128,13 @@ public class World implements IRenderable {
 		//		(gc.getHeight() - level.getRenderedHeight()) / 2 + Graphical.TILE_SIDE_LENGTH * player.getY());
 	}
 
-	public void update(Input input) {
-		/* One move per update. This stops diagonal movement. */
-//		boolean hasPlayerMoved = false;
-//
-//		/* Go through the 4 cardinal directions and move the player if appropriate. Only one move per update. */
-//		if (InputUtil.isUp(input)) {
-//			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.UP)) {
-//				player.move(Direction.UP, Graphical.PLAYER_MOVEMENT_UNITS);
-//				hasPlayerMoved = true;
-//			}
-//		}
-//		if (InputUtil.isRight(input) && !hasPlayerMoved) {
-//			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.RIGHT)) {
-//				player.move(Direction.RIGHT, Graphical.PLAYER_MOVEMENT_UNITS);
-//				hasPlayerMoved = true;
-//			}
-//		}
-//		if (InputUtil.isDown(input) && !hasPlayerMoved) {
-//			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.DOWN)) {
-//				player.move(Direction.DOWN, Graphical.PLAYER_MOVEMENT_UNITS);
-//				hasPlayerMoved = true;
-//			}
-//		}
-//		if (InputUtil.isLeft(input) && !hasPlayerMoved) {
-//			if (level.canWalkInDirection(player.getX(), player.getY(), Direction.LEFT)) {
-//				player.move(Direction.LEFT, Graphical.PLAYER_MOVEMENT_UNITS);
-//				hasPlayerMoved = true; //Not needed but kept for future expansion of this method
-//			}
-//		}
+	public void update(Input input, long delta) {
+
+		Direction direction = InputUtil.getDirection(input);
+		if (direction != Direction.NONE) {
+			Position newPosition = player.getUnit().getPosition().displace(direction, Graphical.PLAYER_MOVEMENT_UNITS);
+			if (tileWalkable(newPosition))
+				player.getUnit().setPosition(newPosition);
+		}
 	}
 }

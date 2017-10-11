@@ -19,6 +19,14 @@ public class InputUtil {
 		return (LISTEN_ARROWS && in.isKeyPressed(arrowKeyCode)) || (LISTEN_WASD && in.isKeyPressed(wasdKeyCode));
 	}
 
+	public static Direction getDirection(Input in) {
+		if (isUp(in)) return Direction.UP;
+		if (isDown(in)) return Direction.DOWN;
+		if (isRight(in)) return Direction.RIGHT;
+		if (isLeft(in)) return Direction.LEFT;
+		return Direction.NONE;
+	}
+
 	/**
 	 * @return True if a up-movement key has been pressed (e.g. up-arrow or w)
 	 */

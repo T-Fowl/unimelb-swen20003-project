@@ -32,4 +32,16 @@ public class Position {
 	public void setY(float y) {
 		this.y = y;
 	}
+
+	public Position displace(Direction direction, float distance) {
+		return new Position(getX() + direction.getX() * distance,
+				getY() + direction.getY() * distance);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof Position)) return false;
+		Position other = (Position) o;
+		return Math.abs(other.x - x) < 1e-3 && Math.abs(other.y - y) < 1e-3;
+	}
 }
