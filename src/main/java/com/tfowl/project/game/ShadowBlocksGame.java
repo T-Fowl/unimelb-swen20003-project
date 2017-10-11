@@ -5,6 +5,7 @@ import com.tfowl.project.effect.Effects;
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Strings;
+import com.tfowl.project.registry.ObjectRegistry;
 import com.tfowl.project.tile.Tiles;
 import com.tfowl.project.unit.Units;
 import com.tfowl.project.util.ResourceLoader;
@@ -37,6 +38,7 @@ public class ShadowBlocksGame extends BasicGame {
 		Tiles.init();
 		Effects.init();
 		Units.init();
+		ObjectRegistry.registerAllImages();
 
 		/* Initialise the world and then load a level */
 		world.init();

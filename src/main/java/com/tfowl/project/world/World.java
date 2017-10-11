@@ -47,10 +47,8 @@ public class World implements IRenderable {
 	/**
 	 * Initialised the world. It is required that this method be called after the OpenGL context
 	 * has been created.
-	 *
-	 * @throws SlickException If the underlying Slick library throws an exception.
 	 */
-	public void init() throws SlickException {
+	public void init() {
 		player = new Player("Player 1");
 		tiles = new ArrayList<>();
 		blocks = new ArrayList<>();

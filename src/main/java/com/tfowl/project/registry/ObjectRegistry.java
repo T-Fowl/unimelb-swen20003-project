@@ -19,13 +19,24 @@ public class ObjectRegistry {
 	private static Map<String, Tile> registeredTiles = new HashMap<>();
 	private static Map<String, Unit> registeredUnits = new HashMap<>();
 
-	private static void loadSprite(String folder, String name) {
-		try {
-			Image image = new Image("images/" + folder + "/" + name + ".png");
-			images.put(name, image);
-		} catch (SlickException e) {
-			e.printStackTrace();
+	public static void registerAllImages() throws SlickException {
+		for (String name : registeredBlocks.keySet()) {
+			loadSprite("blocks", name);
 		}
+		for (String name : registeredEffects.keySet()) {
+			loadSprite("effects", name);
+		}
+		for (String name : registeredTiles.keySet()) {
+			loadSprite("tiles", name);
+		}
+		for (String name : registeredUnits.keySet()) {
+			loadSprite("units", name);
+		}
+	}
+
+	private static void loadSprite(String folder, String name) throws SlickException {
+		Image image = new Image("images/" + folder + "/" + name + ".png");
+		images.put(name, image);
 	}
 
 	public static Image getImage(String name) {
@@ -54,7 +65,6 @@ public class ObjectRegistry {
 
 	public static void register(Block block) {
 		registeredBlocks.put(block.getName(), block);
-		loadSprite("blocks", block.getName());
 	}
 
 	public static boolean isBlockRegistered(String name) {
@@ -67,7 +77,6 @@ public class ObjectRegistry {
 
 	public static void register(Effect effect) {
 		registeredEffects.put(effect.getName(), effect);
-		loadSprite("effects", effect.getName());
 	}
 
 	public static boolean isEffectRegistered(String name) {
@@ -80,7 +89,6 @@ public class ObjectRegistry {
 
 	public static void register(Tile tile) {
 		registeredTiles.put(tile.getName(), tile);
-		loadSprite("tiles", tile.getName());
 	}
 
 	public static boolean isTileRegistered(String name) {
@@ -93,7 +101,6 @@ public class ObjectRegistry {
 
 	public static void register(Unit unit) {
 		registeredUnits.put(unit.getName(), unit);
-		loadSprite("units", unit.getName());
 	}
 
 	public static boolean isUnitRegistered(String name) {
