@@ -1,5 +1,6 @@
-package com.tfowl.project.effect;
+package com.tfowl.project.impl;
 
+import com.tfowl.project.effect.Effect;
 import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.registry.ObjectRegistry;
 import com.tfowl.project.util.Position;
