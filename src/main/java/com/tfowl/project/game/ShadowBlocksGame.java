@@ -41,7 +41,7 @@ public class ShadowBlocksGame extends BasicGame {
 		/* Initialise the world and then load a level */
 		world.init();
 		try {
-			world.loadLevel(ResourceLoader.getLevelResource("4"));
+			world.loadLevel(ResourceLoader.getLevelResource("test"));
 		} catch (IOException e) {
 			logger.error("Loading level 0", e);
 			e.printStackTrace();
@@ -56,6 +56,9 @@ public class ShadowBlocksGame extends BasicGame {
 		/* Check for escape being pressed, exit the game */
 		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE))
 			container.exit();
+
+		if(container.getInput().isKeyPressed(Input.KEY_R))
+			world.restartLevel();
 	}
 
 	@Override

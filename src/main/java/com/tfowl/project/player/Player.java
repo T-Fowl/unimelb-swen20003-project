@@ -3,6 +3,7 @@ package com.tfowl.project.player;
 import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.registry.ObjectRegistry;
 import com.tfowl.project.unit.UnitInstance;
+import com.tfowl.project.util.Position;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
@@ -20,8 +21,12 @@ public class Player implements IRenderable {
 		return name;
 	}
 
-	public UnitInstance getUnit() {
-		return unit;
+	public Position getPosition() {
+		return unit.getPosition();
+	}
+
+	public void setPosition(Position position) {
+		unit.setPosition(position);
 	}
 
 	@Override

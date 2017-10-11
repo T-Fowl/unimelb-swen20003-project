@@ -63,7 +63,7 @@ public class World implements IRenderable {
 	 */
 	public void loadLevel(Level level) {
 		this.level = level;
-		player.getUnit().setPosition(new Position(level.getPlayerStartX(), level.getPlayerStartY()));
+		player.setPosition(new Position(level.getPlayerStartX(), level.getPlayerStartY()));
 
 		tiles.clear();
 		blocks.clear();
@@ -102,12 +102,43 @@ public class World implements IRenderable {
 		effects.add(instance);
 	}
 
+	public BlockInstance blockAt(Position position) {
+		for (BlockInstance block : blocks)
+			if (block.getPosition().equals(position))
+				return block;
+		return null;
+	}
+
 	public boolean isTileWalkable(Position position) {
 		for (TileInstance tile : tiles) {
 			if (tile.getPosition().equals(position) && !tile.getTile().isWalkable())
 				return false;
 		}
 		return true;
+	}
+
+	public List<TileInstance> getTilesOfType(Tile tile) {
+		List<TileInstance> results = new ArrayList<>();
+		for (TileInstance instance : tiles) {
+			if (instance.getTile().equals(tile))
+				results.add(instance);
+		}
+		return results;
+	}
+
+	private void moveBlock(BlockInstance instance, Position newPosition) {
+		Position oldPosition = instance.getPosition();
+		instance.setPosition(newPosition);
+
+		for (TileInstance tile : tiles)
+			if (tile.getPosition().equals(newPosition))
+				tile.getTile().onBlockMovedOn(this, player);
+			else if (tile.getPosition().equals(oldPosition))
+				tile.getTile().onBlockMovedOff(this, player);
+	}
+
+	public boolean isSpaceEmpty(Position position) {
+		return isTileWalkable(position) && null == blockAt(position);
 	}
 
 	@Override
@@ -138,17 +169,37 @@ public class World implements IRenderable {
 			effect.draw(g, (int) (effect.getPosition().getX() * 32 + gx), (int) (effect.getPosition().getY() * 32 + gy));
 		}
 
-		player.draw(g, (int) (player.getUnit().getPosition().getX() * 32 + gx), (int) (player.getUnit().getPosition().getY() * 32 + gy));
+		player.draw(g, (int) (player.getPosition().getX() * 32 + gx), (int) (player.getPosition().getY() * 32 + gy));
+	}
+
+	private void handlePlayerMovement(Direction dir) {
+		Position moveTo = player.getPosition().displace(dir, Graphical.PLAYER_MOVEMENT_UNITS);
+
+		//Check if we can actually walk there
+		if (isTileWalkable(moveTo)) {
+			//Check if we're going to push a block
+			BlockInstance block = blockAt(moveTo);
+			if (null == block) {
+				player.setPosition(moveTo);
+			} else if (block.getBlock().isPushable()) {
+				Position blockMoveTo = moveTo.displace(dir, 1);
+				if (isSpaceEmpty(blockMoveTo)) {
+					moveBlock(block, blockMoveTo);
+					player.setPosition(moveTo);
+				}
+			}
+		}
+	}
+
+	public void restartLevel() {
+		loadLevel(level);
 	}
 
 	public void update(Input input, long delta) {
 
 		Direction direction = InputUtil.getDirection(input);
 		if (direction != Direction.NONE) {
-			Position newPosition = player.getUnit().getPosition().displace(direction, Graphical.PLAYER_MOVEMENT_UNITS);
-			if (isTileWalkable(newPosition)) {
-				player.getUnit().setPosition(newPosition);
-			}
+			handlePlayerMovement(direction);
 		}
 
 		Iterator<EffectInstance> effectIterator = effects.iterator();
