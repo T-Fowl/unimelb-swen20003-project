@@ -16,7 +16,7 @@ public class Strings {
 	 * And a hundred percent reason to remember the name */
 	public static final String GAME_NAME = "Shadow Blocks";
 
-	public static final String DEFAULT_WINDOW_TITLE = GAME_NAME + " by " + STUDENT_NAME + "( " + STUDENT_ID + ")";
+	public static final String DEFAULT_WINDOW_TITLE = GAME_NAME + " by " + STUDENT_NAME + "(" + STUDENT_ID + ")";
 
 	/* No instancing */
 	private Strings() {
