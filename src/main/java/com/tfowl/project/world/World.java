@@ -1,5 +1,6 @@
 package com.tfowl.project.world;
 
+import com.tfowl.project.block.Block;
 import com.tfowl.project.block.BlockInstance;
 import com.tfowl.project.effect.EffectInstance;
 import com.tfowl.project.graphics.IRenderable;
@@ -9,7 +10,9 @@ import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.player.Player;
 import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.registry.ObjectRegistry;
+import com.tfowl.project.tile.Tile;
 import com.tfowl.project.tile.TileInstance;
+import com.tfowl.project.unit.Unit;
 import com.tfowl.project.unit.UnitInstance;
 import com.tfowl.project.util.Direction;
 import com.tfowl.project.util.InputUtil;
@@ -69,17 +72,19 @@ public class World implements IRenderable {
 			for (int y = 0; y < this.level.getLocations()[x].length; y++) {
 				if (this.level.getLocations()[x][y] != null) {
 					for (String object : this.level.getLocations()[x][y].getObjects()) {
-						if (ObjectRegistry.isBlockRegistered(object)) {
+						Object registered = ObjectRegistry.get(object);
+
+						if (registered instanceof Block) {
 							BlockInstance instance = new BlockInstance(ObjectRegistry.getBlock(object));
-							instance.setPosition(new Position(x, y));
+							instance.setPosition(Position.at(x, y));
 							blocks.add(instance);
-						} else if (ObjectRegistry.isTileRegistered(object)) {
+						} else if (registered instanceof Tile) {
 							TileInstance instance = new TileInstance(ObjectRegistry.getTile(object));
-							instance.setPosition(new Position(x, y));
+							instance.setPosition(Position.at(x, y));
 							tiles.add(instance);
-						} else if (ObjectRegistry.isUnitRegistered(object)) {
+						} else if (registered instanceof Unit) {
 							UnitInstance instance = new UnitInstance(ObjectRegistry.getUnit(object));
-							instance.setPosition(new Position(x, y));
+							instance.setPosition(Position.at(x, y));
 							units.add(instance);
 						} else {
 							LOGGER.warn("Level referenced unregistered object: " + object);

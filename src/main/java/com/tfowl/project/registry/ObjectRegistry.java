@@ -32,6 +32,26 @@ public class ObjectRegistry {
 		return images.get(name);
 	}
 
+	public static Object get(String name) {
+		if (registeredBlocks.containsKey(name)) return registeredBlocks.get(name);
+		if (registeredTiles.containsKey(name)) return registeredTiles.get(name);
+		if (registeredUnits.containsKey(name)) return registeredUnits.get(name);
+		if (registeredEffects.containsKey(name)) return registeredEffects.get(name);
+		return null;
+	}
+
+	public static Class<?> getType(String name) {
+		if (registeredBlocks.containsKey(name))
+			return Block.class;
+		if (registeredEffects.containsKey(name))
+			return Effect.class;
+		if (registeredTiles.containsKey(name))
+			return Tile.class;
+		if (registeredUnits.containsKey(name))
+			return Unit.class;
+		return null;
+	}
+
 	public static void register(Block block) {
 		registeredBlocks.put(block.getName(), block);
 		loadSprite("blocks", block.getName());
