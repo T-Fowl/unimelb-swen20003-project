@@ -1,7 +1,7 @@
 package com.tfowl.project.unit;
 
 import com.tfowl.project.player.Player;
-import com.tfowl.project.states.properties.DirectionProperty;
+import com.tfowl.project.states.properties.PropertyDirection;
 import com.tfowl.project.util.Direction;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
@@ -11,7 +11,7 @@ import com.tfowl.project.world.World;
  */
 public class UnitRogue extends Unit {
 
-	public static final DirectionProperty DIRECTION_PROPERTY = DirectionProperty.create("direction");
+	public static final PropertyDirection DIRECTION_PROPERTY = PropertyDirection.create("direction");
 
 	private static final float MOVE_PER_UPDATE = 1f;
 

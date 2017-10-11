@@ -1,7 +1,7 @@
 package com.tfowl.project.tile;
 
 import com.tfowl.project.player.Player;
-import com.tfowl.project.states.properties.BooleanProperty;
+import com.tfowl.project.states.properties.PropertyBoolean;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
 
@@ -10,7 +10,7 @@ import com.tfowl.project.world.World;
  */
 public class TileTarget extends Tile {
 
-	public static final BooleanProperty COVERED_PROPERTY = BooleanProperty.create("covered");
+	public static final PropertyBoolean COVERED_PROPERTY = PropertyBoolean.create("covered");
 
 	public TileTarget() {
 		setName("target");

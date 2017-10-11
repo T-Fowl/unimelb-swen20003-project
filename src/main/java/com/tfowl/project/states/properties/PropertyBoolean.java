@@ -1,10 +1,10 @@
 package com.tfowl.project.states.properties;
 
-public class BooleanProperty implements IProperty<Boolean> {
+public class PropertyBoolean implements IProperty<Boolean> {
 
 	private String name;
 
-	public BooleanProperty(String name) {
+	private PropertyBoolean(String name) {
 		this.name = name;
 	}
 
@@ -18,7 +18,7 @@ public class BooleanProperty implements IProperty<Boolean> {
 		return Boolean.class;
 	}
 
-	public static BooleanProperty create(String name) {
-		return new BooleanProperty(name);
+	public static PropertyBoolean create(String name) {
+		return new PropertyBoolean(name);
 	}
 }

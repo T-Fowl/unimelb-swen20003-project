@@ -1,7 +1,7 @@
 package com.tfowl.project.tile;
 
 import com.tfowl.project.player.Player;
-import com.tfowl.project.states.properties.BooleanProperty;
+import com.tfowl.project.states.properties.PropertyBoolean;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
 
@@ -10,7 +10,7 @@ import com.tfowl.project.world.World;
  */
 public class TileDoor extends Tile {
 
-	public static final BooleanProperty OPEN_PROPERTY = BooleanProperty.create("open");
+	public static final PropertyBoolean OPEN_PROPERTY = PropertyBoolean.create("open");
 
 	public TileDoor() {
 		setName("door");

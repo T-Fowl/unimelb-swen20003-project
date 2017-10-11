@@ -2,11 +2,11 @@ package com.tfowl.project.states.properties;
 
 import com.tfowl.project.util.Direction;
 
-public class DirectionProperty implements IProperty<Direction> {
+public class PropertyDirection implements IProperty<Direction> {
 
 	private String name;
 
-	public DirectionProperty(String name) {
+	private PropertyDirection(String name) {
 		this.name = name;
 	}
 
@@ -20,7 +20,7 @@ public class DirectionProperty implements IProperty<Direction> {
 		return Direction.class;
 	}
 
-	public static DirectionProperty create(String name) {
-		return new DirectionProperty(name);
+	public static PropertyDirection create(String name) {
+		return new PropertyDirection(name);
 	}
 }

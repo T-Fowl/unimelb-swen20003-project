@@ -1,7 +1,7 @@
 package com.tfowl.project.block;
 
-import com.tfowl.project.states.properties.BooleanProperty;
-import com.tfowl.project.states.properties.DirectionProperty;
+import com.tfowl.project.states.properties.PropertyBoolean;
+import com.tfowl.project.states.properties.PropertyDirection;
 import com.tfowl.project.util.Direction;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
@@ -11,8 +11,8 @@ import com.tfowl.project.world.World;
  */
 public class BlockIce extends Block {
 
-	public static final BooleanProperty SLIDING_PROPERTY = BooleanProperty.create("sliding");
-	public static final DirectionProperty SLIDING_DIRECTION_PROPERTY = DirectionProperty.create("sliding_direction");
+	public static final PropertyBoolean SLIDING_PROPERTY = PropertyBoolean.create("sliding");
+	public static final PropertyDirection SLIDING_DIRECTION_PROPERTY = PropertyDirection.create("sliding_direction");
 
 	private static final float SLIDING_SPEED = 4; //4 blocks per
 	private static final float SLIDING_PER = 1; //1 second

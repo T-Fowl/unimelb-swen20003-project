@@ -1,10 +1,10 @@
 package com.tfowl.project.states.properties;
 
-public class LongProperty implements IProperty<Long> {
+public class PropertyLong implements IProperty<Long> {
 
 	private String name;
 
-	public LongProperty(String name) {
+	private PropertyLong(String name) {
 		this.name = name;
 	}
 
@@ -18,7 +18,7 @@ public class LongProperty implements IProperty<Long> {
 		return Long.class;
 	}
 
-	public static LongProperty create(String name) {
-		return new LongProperty(name);
+	public static PropertyLong create(String name) {
+		return new PropertyLong(name);
 	}
 }

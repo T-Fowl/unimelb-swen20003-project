@@ -1,7 +1,7 @@
 package com.tfowl.project.unit;
 
-import com.tfowl.project.states.properties.DirectionProperty;
-import com.tfowl.project.states.properties.LongProperty;
+import com.tfowl.project.states.properties.PropertyDirection;
+import com.tfowl.project.states.properties.PropertyLong;
 import com.tfowl.project.util.Direction;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
@@ -11,8 +11,8 @@ import com.tfowl.project.world.World;
  */
 public class UnitSkeleton extends Unit {
 
-	public static final DirectionProperty DIRECTION_PROPERTY = DirectionProperty.create("direction");
-	public static final LongProperty COOLDOWN_PROPERTY = LongProperty.create("cooldown");
+	public static final PropertyDirection DIRECTION_PROPERTY = PropertyDirection.create("direction");
+	public static final PropertyLong COOLDOWN_PROPERTY = PropertyLong.create("cooldown");
 
 	private static final long COOLDOWN = 1000L;
 
