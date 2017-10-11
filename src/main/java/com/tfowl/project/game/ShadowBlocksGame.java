@@ -41,7 +41,7 @@ public class ShadowBlocksGame extends BasicGame {
 		/* Initialise the world and then load a level */
 		world.init();
 		try {
-			world.loadLevel(ResourceLoader.getLevelResource("5"));
+			world.loadLevel(ResourceLoader.getLevelResource("4"));
 		} catch (IOException e) {
 			logger.error("Loading level 0", e);
 			e.printStackTrace();
@@ -61,7 +61,7 @@ public class ShadowBlocksGame extends BasicGame {
 	@Override
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		/* Draw the world. By default the current level will be drawn centered. */
-		world.draw(g, container);
+		world.drawCentered(g, container.getWidth()  /2, container.getHeight() / 2);
 	}
 
 }
