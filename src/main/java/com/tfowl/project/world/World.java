@@ -148,6 +148,9 @@ public class World implements IRenderable {
 		Position oldPosition = instance.getPosition();
 		instance.setPosition(newPosition);
 
+		//TODO: Direction
+		instance.getBlock().onPush(this, player, Direction.NONE, oldPosition, newPosition, instance.getState());
+
 		for (TileInstance tile : tiles)
 			if (tile.getPosition().equals(newPosition))
 				tile.getTile().onBlockMovedOn(this, player, newPosition, tile.getState());
@@ -226,6 +229,14 @@ public class World implements IRenderable {
 			effect.incrementTime(delta);
 			if (effect.getTotalElapsedTime() >= effect.getEffect().getDuration())
 				effectIterator.remove();
+		}
+
+		for (BlockInstance blockInstance : blocks) {
+			blockInstance.getBlock().onTick(this, delta, blockInstance.getPosition(), blockInstance.getState());
+		}
+
+		for (UnitInstance unitInstance : units) {
+			unitInstance.getUnit().onTick(this, delta, unitInstance.getPosition(), unitInstance.getState());
 		}
 	}
 }

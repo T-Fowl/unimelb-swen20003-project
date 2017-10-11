@@ -44,6 +44,11 @@ public class Position {
 		return Math.abs(other.x - x) < EQUALITY_EPS && Math.abs(other.y - y) < EQUALITY_EPS;
 	}
 
+	@Override
+	public String toString() {
+		return "(" + x + "," + y + ")";
+	}
+
 	public static Position at(float x, float y) {
 		return new Position(x, y);
 	}
