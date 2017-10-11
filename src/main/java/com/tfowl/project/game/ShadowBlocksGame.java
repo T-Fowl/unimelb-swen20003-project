@@ -1,8 +1,12 @@
 package com.tfowl.project.game;
 
+import com.tfowl.project.block.Blocks;
+import com.tfowl.project.effect.Effects;
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Strings;
+import com.tfowl.project.tile.Tiles;
+import com.tfowl.project.unit.Units;
 import com.tfowl.project.util.ResourceLoader;
 import com.tfowl.project.world.World;
 import org.newdawn.slick.*;
@@ -29,10 +33,15 @@ public class ShadowBlocksGame extends BasicGame {
 	public void init(GameContainer container) throws SlickException {
 		logger.info("Initializing game");
 
+		Blocks.init();
+		Tiles.init();
+		Effects.init();
+		Units.init();
+
 		/* Initialise the world and then load a level */
 		world.init();
 		try {
-			world.loadLevel(ResourceLoader.getLevelResource("0"));
+			world.loadLevel(ResourceLoader.getLevelResource("5"));
 		} catch (IOException e) {
 			logger.error("Loading level 0", e);
 			e.printStackTrace();
@@ -45,7 +54,7 @@ public class ShadowBlocksGame extends BasicGame {
 		world.update(container.getInput());
 
 		/* Check for escape being pressed, exit the game */
-		if(container.getInput().isKeyPressed(Input.KEY_ESCAPE))
+		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE))
 			container.exit();
 	}
 

@@ -1,15 +1,7 @@
 package com.tfowl.project.level;
 
-import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
-import com.tfowl.project.reference.Graphical;
-import com.tfowl.project.tile.Tile;
-import com.tfowl.project.tile.TileManager;
-import com.tfowl.project.unit.Player;
-import com.tfowl.project.unit.Unit;
-import com.tfowl.project.util.Direction;
-import org.newdawn.slick.SlickException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,12 +10,12 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
- * A level is responsible for holding reference to the location of all {@link Tile Tiles} and eventually {@link Unit Entities}.
- * Also has the starting location of the player.
+ * A level is a description of the placement of objects in a given level of the game.
+ * It holds the position of all objects as well as the starting position of the player
  * <p>
  * Created by Thomas on 6/09/2017.
  */
-public class Level implements IRenderable {
+public class Level {
 
 	private static final Logger logger = LoggerFactory.getLogger(Level.class);
 
@@ -34,7 +26,7 @@ public class Level implements IRenderable {
 	/* All of the locations in the level */
 	private final Location[][] locations;
 
-	/* Player starting coordinates */
+	/* UnitPlayer starting coordinates */
 	private int playerStartX;
 	private int playerStartY;
 
@@ -74,48 +66,8 @@ public class Level implements IRenderable {
 		this.playerStartY = playerStartY;
 	}
 
-	/**
-	 * Determines if a player at position (x,y) can walk in direction dir.
-	 *
-	 * @param x The x coordinate of the player.
-	 * @param y The y coordinate of the player.
-	 * @return True if the player can walk on this location, false otherwise.
-	 */
-	public boolean canWalkInDirection(int x, int y, Direction dir) {
-		x += dir.getX();
-		y += dir.getY();
-		if (null == locations[x][y])
-			return false;
-		Location location = locations[x][y];
-		if (0 == location.getTileCount())
-			return false;
-		for (Tile tile : location.getTiles()) {
-			if (Tile.isTileBlocking(tile))
-				return false;
-		}
-		return true;
-	}
-
-	@Override
-	public int getRenderedWidth() throws SlickException {
-		return Graphical.TILE_SIDE_LENGTH * tileCountHorizontal;
-	}
-
-	@Override
-	public int getRenderedHeight() throws SlickException {
-		return Graphical.TILE_SIDE_LENGTH * tileCountVertical;
-	}
-
-	@Override
-	public void draw(org.newdawn.slick.Graphics g, int gx, int gy) throws SlickException {
-		/* Iterate through all locations and draw them */
-		for (int x = 0; x < tileCountHorizontal; x++) {
-			for (int y = 0; y < tileCountVertical; y++) {
-				/* Some locations will be null as they are empty space */
-				if (null != locations[x][y])
-					locations[x][y].draw(g, gx + x * Graphical.TILE_SIDE_LENGTH, gy + y * Graphical.TILE_SIDE_LENGTH);
-			}
-		}
+	public Location[][] getLocations() {
+		return locations;
 	}
 
 	/**
@@ -144,19 +96,19 @@ public class Level implements IRenderable {
 				if (!scanner.hasNext()) {
 					break; // Trailing new-line
 				}
-				String tileName = scanner.next();
-				int tileX = scanner.nextInt();
-				int tileY = scanner.nextInt();
+				String objectName = scanner.next();
+				int objectX = scanner.nextInt();
+				int objectY = scanner.nextInt();
 
-				if (tileName.equalsIgnoreCase(Player.PLAYER_NAME)) {
-					building.playerStartX = tileX;
-					building.playerStartY = tileY;
+				if (objectName.equalsIgnoreCase("player")) { //TODO
+					building.setPlayerStartX(objectX);
+					building.setPlayerStartY(objectY);
 				} else {
-					/* Get the referenced location (creating if needed) and add the tile to it */
-					Location location = building.locations[tileX][tileY];
+					/* Get the referenced location (creating if needed) and add the object to it */
+					Location location = building.locations[objectX][objectY];
 					if (null == location)
-						location = building.locations[tileX][tileY] = new Location();
-					TileManager.getTileFromName(tileName).ifPresent(location::addTileAtTop);
+						location = building.locations[objectX][objectY] = new Location();
+					location.addObjectAtTop(objectName);
 				}
 			}
 			return building;
