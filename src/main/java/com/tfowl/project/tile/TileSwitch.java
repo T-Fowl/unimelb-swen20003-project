@@ -25,7 +25,7 @@ public class TileSwitch extends Tile {
 	}
 
 	private void toggleDoors(World world, boolean open) {
-		for (Position doorPosition : world.getPosititionsOfTiles(Tiles.DOOR)) {
+		for (Position doorPosition : world.getPositionsOfTiles(Tiles.DOOR)) {
 			ITileState doorState = world.getTileState(doorPosition);
 			doorState.setValue(TileDoor.OPEN_PROPERTY, open);
 		}

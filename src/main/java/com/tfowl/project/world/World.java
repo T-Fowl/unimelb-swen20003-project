@@ -102,14 +102,14 @@ public class World implements IRenderable {
 		effects.add(instance);
 	}
 
-	public BlockInstance blockAt(Position position) {
+	private BlockInstance blockAt(Position position) {
 		for (BlockInstance block : blocks)
 			if (block.getPosition().equals(position))
 				return block;
 		return null;
 	}
 
-	public boolean isTileWalkable(Position position) {
+	private boolean isTileWalkable(Position position) {
 		for (TileInstance tile : tiles) {
 			if (tile.getPosition().equals(position) && !tile.getTile().isWalkable(
 					this, player, position, tile.getState()
@@ -120,7 +120,7 @@ public class World implements IRenderable {
 		return true;
 	}
 
-	public List<Position> getPosititionsOfTiles(Tile tile) {
+	public List<Position> getPositionsOfTiles(Tile tile) {
 		List<Position> positions = new ArrayList<>();
 		for (TileInstance instance : tiles)
 			if (instance.getTile().equals(tile))

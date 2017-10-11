@@ -30,7 +30,7 @@ public class TileTarget extends Tile {
 		state.setValue(COVERED_PROPERTY, true);
 
 		boolean allCovered = true;
-		for (Position targetPosition : world.getPosititionsOfTiles(this)) {
+		for (Position targetPosition : world.getPositionsOfTiles(this)) {
 			ITileState targetState = world.getTileState(targetPosition);
 			allCovered = targetState.getValue(COVERED_PROPERTY);
 			if (!allCovered)
