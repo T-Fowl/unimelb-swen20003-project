@@ -18,9 +18,8 @@ public interface IRenderable {
 	 * Defaults to {@link Graphical#TILE_SIDE_LENGTH}.
 	 *
 	 * @return The rendered width of this {@link IRenderable}
-	 * @throws SlickException If the underlying slick library throws an exception.
 	 */
-	public default int getRenderedWidth() throws SlickException {
+	public default int getRenderedWidth() {
 		return Graphical.TILE_SIDE_LENGTH;
 	}
 
@@ -29,9 +28,8 @@ public interface IRenderable {
 	 * Defaults to {@link Graphical#TILE_SIDE_LENGTH}.
 	 *
 	 * @return The rendered height of this {@link IRenderable}
-	 * @throws SlickException If the underlying slick library throws an exception.
 	 */
-	public default int getRenderedHeight() throws SlickException {
+	public default int getRenderedHeight() {
 		return Graphical.TILE_SIDE_LENGTH;
 	}
 

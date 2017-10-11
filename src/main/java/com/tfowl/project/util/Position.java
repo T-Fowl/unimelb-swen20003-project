@@ -5,6 +5,8 @@ package com.tfowl.project.util;
  */
 public class Position {
 
+	private static final float EQUALITY_EPS = 1e-3f;
+
 	private float x;
 	private float y;
 
@@ -21,16 +23,8 @@ public class Position {
 		return x;
 	}
 
-	public void setX(float x) {
-		this.x = x;
-	}
-
 	public float getY() {
 		return y;
-	}
-
-	public void setY(float y) {
-		this.y = y;
 	}
 
 	public Position displace(Direction direction, float distance) {
@@ -42,6 +36,10 @@ public class Position {
 	public boolean equals(Object o) {
 		if (!(o instanceof Position)) return false;
 		Position other = (Position) o;
-		return Math.abs(other.x - x) < 1e-3 && Math.abs(other.y - y) < 1e-3;
+		return Math.abs(other.x - x) < EQUALITY_EPS && Math.abs(other.y - y) < EQUALITY_EPS;
+	}
+
+	public static Position at(float x, float y) {
+		return new Position(x, y);
 	}
 }

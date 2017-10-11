@@ -10,10 +10,10 @@ public class Block {
 	//Resource loading
 	private String name;
 
-	//Specify the sliding nature of this block
+	private boolean isPushable = true;
+
 	private boolean isSlidingBlock = false;
-	//Tiles / second
-	private float   slidingSpeed   = 0;
+	private float   slidingSpeed   = 0; //Tiles / sec
 
 	// @formatter:on
 
@@ -42,5 +42,13 @@ public class Block {
 
 	public void setSlidingSpeed(float slidingSpeed) {
 		this.slidingSpeed = slidingSpeed;
+	}
+
+	public boolean isPushable() {
+		return isPushable;
+	}
+
+	public void setPushable(boolean pushable) {
+		isPushable = pushable;
 	}
 }

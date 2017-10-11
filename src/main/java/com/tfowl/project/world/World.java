@@ -45,6 +45,10 @@ public class World implements IRenderable {
 	 */
 	public void init() throws SlickException {
 		player = new Player("Player 1");
+		tiles = new ArrayList<>();
+		blocks = new ArrayList<>();
+		effects = new ArrayList<>();
+		units = new ArrayList<>();
 	}
 
 	/**
@@ -56,10 +60,10 @@ public class World implements IRenderable {
 		this.level = level;
 		player.getUnit().setPosition(new Position(level.getPlayerStartX(), level.getPlayerStartY()));
 
-		tiles = new ArrayList<>();
-		blocks = new ArrayList<>();
-		effects = new ArrayList<>();
-		units = new ArrayList<>();
+		tiles.clear();
+		blocks.clear();
+		effects.clear();
+		units.clear();
 
 		for (int x = 0; x < this.level.getLocations().length; x++) {
 			for (int y = 0; y < this.level.getLocations()[x].length; y++) {
@@ -86,7 +90,7 @@ public class World implements IRenderable {
 		}
 	}
 
-	private boolean tileWalkable(Position position) {
+	public boolean isTileWalkable(Position position) {
 		for (TileInstance tile : tiles) {
 			if (tile.getPosition().equals(position) && !tile.getTile().isWalkable())
 				return false;
@@ -95,18 +99,17 @@ public class World implements IRenderable {
 	}
 
 	@Override
-	public int getRenderedWidth() throws SlickException {
+	public int getRenderedWidth() {
 		return Graphical.TILE_SIDE_LENGTH * level.getTileCountHorizontal();
 	}
 
 	@Override
-	public int getRenderedHeight() throws SlickException {
+	public int getRenderedHeight() {
 		return Graphical.TILE_SIDE_LENGTH * level.getTileCountVertical();
 	}
 
 	@Override
 	public void draw(Graphics g, int gx, int gy) throws SlickException {
-
 		for (TileInstance tile : tiles) {
 			tile.draw(g, (int) (tile.getPosition().getX() * 32 + gx), (int) (tile.getPosition().getY() * 32 + gy));
 		}
@@ -120,12 +123,6 @@ public class World implements IRenderable {
 		}
 
 		player.draw(g, (int) (player.getUnit().getPosition().getX() * 32 + gx), (int) (player.getUnit().getPosition().getY() * 32 + gy));
-
-		/* Draw the level centered, then the player at the correct location */
-		//level.drawCentered(g, gc.getWidth() / 2, gc.getHeight() / 2);
-		//player.draw(g,
-		//		(gc.getWidth() - level.getRenderedWidth()) / 2 + Graphical.TILE_SIDE_LENGTH * player.getX(),
-		//		(gc.getHeight() - level.getRenderedHeight()) / 2 + Graphical.TILE_SIDE_LENGTH * player.getY());
 	}
 
 	public void update(Input input, long delta) {
@@ -133,7 +130,7 @@ public class World implements IRenderable {
 		Direction direction = InputUtil.getDirection(input);
 		if (direction != Direction.NONE) {
 			Position newPosition = player.getUnit().getPosition().displace(direction, Graphical.PLAYER_MOVEMENT_UNITS);
-			if (tileWalkable(newPosition))
+			if (isTileWalkable(newPosition))
 				player.getUnit().setPosition(newPosition);
 		}
 	}
