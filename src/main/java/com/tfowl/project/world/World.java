@@ -16,6 +16,7 @@ import com.tfowl.project.reference.Graphical;
 import com.tfowl.project.registry.ObjectRegistry;
 import com.tfowl.project.tile.ITileState;
 import com.tfowl.project.tile.Tile;
+import com.tfowl.project.unit.IUnitState;
 import com.tfowl.project.unit.Unit;
 import com.tfowl.project.util.Direction;
 import com.tfowl.project.util.InputUtil;
@@ -128,6 +129,15 @@ public class World implements IRenderable {
 		return positions;
 	}
 
+	public List<Position> getPositionsOfBlocks(Block block) {
+		List<Position> positions = new ArrayList<>();
+		for (BlockInstance instance : blocks) {
+			if (instance.getBlock().equals(block))
+				positions.add(instance.getPosition());
+		}
+		return positions;
+	}
+
 	public ITileState getTileState(Position position) {
 		for (TileInstance instance : tiles)
 			if (instance.getPosition().equals(position))
@@ -137,6 +147,13 @@ public class World implements IRenderable {
 
 	public IBlockState getBlockState(Position position) {
 		for (BlockInstance instance : blocks)
+			if (instance.getPosition().equals(position))
+				return instance.getState();
+		return null;
+	}
+
+	public IUnitState getUnitState(Position position) {
+		for (UnitInstance instance : units)
 			if (instance.getPosition().equals(position))
 				return instance.getState();
 		return null;
@@ -221,12 +238,12 @@ public class World implements IRenderable {
 			handlePlayerMovement(direction);
 		}
 
-		Iterator<EffectInstance> effectIterator = effects.iterator();
-		while (effectIterator.hasNext()) {
-			EffectInstance effect = effectIterator.next();
-			effect.incrementTime(delta);
-			if (effect.getTotalElapsedTime() >= effect.getEffect().getDuration())
-				effectIterator.remove();
+
+		for (Iterator<EffectInstance> iterator = effects.iterator(); iterator.hasNext(); ) {
+			EffectInstance effectInstance = iterator.next();
+			effectInstance.incrementTime(delta);
+			if (effectInstance.getTotalElapsedTime() >= effectInstance.getEffect().getDuration())
+				iterator.remove();
 		}
 
 		for (BlockInstance blockInstance : blocks) {
