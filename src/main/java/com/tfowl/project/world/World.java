@@ -2,6 +2,7 @@ package com.tfowl.project.world;
 
 import com.tfowl.project.block.Block;
 import com.tfowl.project.block.BlockInstance;
+import com.tfowl.project.effect.Effect;
 import com.tfowl.project.effect.EffectInstance;
 import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.level.Level;
@@ -22,6 +23,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -95,6 +97,11 @@ public class World implements IRenderable {
 		}
 	}
 
+	public void createEffectAt(Effect effect, Position position) {
+		EffectInstance instance = new EffectInstance(effect, position);
+		effects.add(instance);
+	}
+
 	public boolean isTileWalkable(Position position) {
 		for (TileInstance tile : tiles) {
 			if (tile.getPosition().equals(position) && !tile.getTile().isWalkable())
@@ -124,7 +131,11 @@ public class World implements IRenderable {
 		}
 
 		for (UnitInstance unit : units) {
-			unit.draw(g, (int) (unit.getPosition().getY() * 32 + gx), (int) (unit.getPosition().getY() * 32 + gy));
+			unit.draw(g, (int) (unit.getPosition().getX() * 32 + gx), (int) (unit.getPosition().getY() * 32 + gy));
+		}
+
+		for (EffectInstance effect : effects) {
+			effect.draw(g, (int) (effect.getPosition().getX() * 32 + gx), (int) (effect.getPosition().getY() * 32 + gy));
 		}
 
 		player.draw(g, (int) (player.getUnit().getPosition().getX() * 32 + gx), (int) (player.getUnit().getPosition().getY() * 32 + gy));
@@ -135,8 +146,17 @@ public class World implements IRenderable {
 		Direction direction = InputUtil.getDirection(input);
 		if (direction != Direction.NONE) {
 			Position newPosition = player.getUnit().getPosition().displace(direction, Graphical.PLAYER_MOVEMENT_UNITS);
-			if (isTileWalkable(newPosition))
+			if (isTileWalkable(newPosition)) {
 				player.getUnit().setPosition(newPosition);
+			}
+		}
+
+		Iterator<EffectInstance> effectIterator = effects.iterator();
+		while (effectIterator.hasNext()) {
+			EffectInstance effect = effectIterator.next();
+			effect.incrementTime(delta);
+			if (effect.getTotalElapsedTime() >= effect.getEffect().getDuration())
+				effectIterator.remove();
 		}
 	}
 }
