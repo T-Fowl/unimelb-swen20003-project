@@ -83,7 +83,7 @@ public class ObjectRegistry {
 		return registeredEffects.containsKey(name);
 	}
 
-	public static Effect getRegisteredEffect(String name) {
+	public static Effect getEffect(String name) {
 		return registeredEffects.get(name);
 	}
 

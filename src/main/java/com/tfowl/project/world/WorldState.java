@@ -32,4 +32,12 @@ public class WorldState {
 	public void withBlockState(BlockInstance instance, Position position, IBlockState state) {
 		blockStates.put(instance, new AbstractMap.SimpleEntry<>(position, state));
 	}
+
+	public void restoreState(BlockInstance instance) {
+		if (blockStates.containsKey(instance)) {
+			Map.Entry<Position, IBlockState> pointInTime = blockStates.get(instance);
+			instance.setPosition(pointInTime.getKey());
+			instance.setState(pointInTime.getValue());
+		}
+	}
 }

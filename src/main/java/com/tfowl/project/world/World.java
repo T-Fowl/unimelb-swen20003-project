@@ -25,7 +25,10 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
 
 /**
  * World class
@@ -42,13 +45,13 @@ public class World implements IRenderable {
 	private WorldLevelProvider levelProvider;
 
 	private Player player;
-	private int playerMoveCount = 0;
 
 	private List<TileInstance> tiles;
 	private List<BlockInstance> blocks;
 	private List<EffectInstance> effects;
 	private List<UnitInstance> units;
 
+	private int playerMoveCount = 0;
 	private Stack<WorldState> history;
 
 	private int updateFlags = 0;
@@ -96,11 +99,7 @@ public class World implements IRenderable {
 		player.setPosition(state.getPlayerPosition());
 
 		for (BlockInstance instance : blocks) {
-			if (state.getBlockStates().containsKey(instance)) {
-				Map.Entry<Position, IBlockState> blockDescription = state.getBlockStates().get(instance);
-				instance.setPosition(blockDescription.getKey());
-				instance.setState(blockDescription.getValue());
-			}
+			state.restoreState(instance);
 		}
 	}
 
@@ -147,6 +146,9 @@ public class World implements IRenderable {
 							UnitInstance instance = new UnitInstance(ObjectRegistry.getUnit(object));
 							instance.setPosition(Position.at(x, y));
 							units.add(instance);
+						} else if (registered instanceof Effect) {
+							EffectInstance instance = new EffectInstance(ObjectRegistry.getEffect(object), Position.at(x, y));
+							effects.add(instance);
 						} else {
 							logger.warn("Level referenced unregistered object: " + object);
 						}
