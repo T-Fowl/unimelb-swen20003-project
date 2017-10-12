@@ -32,7 +32,10 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * World class
+ * World class.
+ * A world is responsible to holding all the current instances of game objects and their state in the world. It also
+ * holds a reference to the current player and maintains a history for undoing moves.
+ *
  * Created by Thomas on 6/09/2017.
  */
 public class World implements IRenderable {

@@ -30,13 +30,19 @@ public class Start {
 			);
 		} catch (IOException e) {
 			/* The logger of this class is not initialised yet, fall back to System.err
-			* If this does happen, all loggers will not be configured correctly. */
+			 * If this does happen, all loggers will not be configured correctly. */
 			System.err.println("Error configuring the logging system: " + e.getLocalizedMessage());
 		}
 		logger = LoggerFactory.getLogger(Start.class);
 	}
 
 
+	/*
+	 * Entry method for this application.
+	 *
+	 * I understand that my design for the objects in a world (e.g. Block & Tile) is a bit non-intuitive, however
+	 * I have explained my reasoning in the project README
+	 * */
 	public static void main(String[] args) {
 		logger.info("Starting application.");
 
