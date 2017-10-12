@@ -157,7 +157,7 @@ public class World implements IRenderable {
 	}
 
 	public void moveBlock(Position position, IBlockState state, Direction direction) {
-		Position destination = position.displace(direction, 1); //TODO
+		Position destination = position.displace(direction);
 		BlockInstance instance = blockAt(position);
 		if (instance != null) {
 			instance.setPosition(destination);
@@ -174,7 +174,7 @@ public class World implements IRenderable {
 	}
 
 	public boolean canUnitMove(Position position, IUnitState state, Direction direction) {
-		Position destination = position.displace(direction, 1); //TODO
+		Position destination = position.displace(direction);
 		if (!isTileWalkable(destination))
 			return false;
 		BlockInstance blockAt = blockAt(destination);
@@ -188,11 +188,11 @@ public class World implements IRenderable {
 	}
 
 	public void moveUnit(Position position, IUnitState state, Direction direction) {
-		Position destination = position.displace(direction, 1); //TODO
+		Position destination = position.displace(direction);
 		BlockInstance blockAt = blockAt(destination);
 
 		if (null != blockAt) {
-			Position blockDestination = blockAt.getPosition().displace(direction, 1); //TODO
+			Position blockDestination = blockAt.getPosition().displace(direction);
 			blockAt.setPosition(blockDestination);
 			blockAt.getBlock().onPush(this, player, direction, destination, blockDestination, blockAt.getState());
 		}
@@ -344,7 +344,7 @@ public class World implements IRenderable {
 			if (null == block) {
 				movePlayer(moveTo, dir);
 			} else if (block.getBlock().isPushable()) {
-				Position blockMoveTo = moveTo.displace(dir, 1);
+				Position blockMoveTo = moveTo.displace(dir);
 				if (canBlockMove(moveTo, block.getState(), dir)) {
 					playerMoveBlock(block, blockMoveTo, dir);
 					movePlayer(moveTo, dir);

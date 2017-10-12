@@ -31,7 +31,7 @@ public class BlockTnt extends Block {
 
 	@Override
 	public boolean canDoPush(World world, Direction directionOfPush, Position position, IBlockState state) {
-		Position destination = position.displace(directionOfPush, 1); //TODO
+		Position destination = position.displace(directionOfPush);
 
 		ITileState crackedWallState = world.getTileState(destination, Tiles.CRACKED_WALL);
 		if (null != crackedWallState) {

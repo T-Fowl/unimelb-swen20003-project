@@ -23,8 +23,6 @@ public class BlockIce extends Block {
 	public BlockIce() {
 		super();
 		setName("ice");
-		setSlidingBlock(true);
-		setSlidingSpeed(SLIDING_SPEED);
 	}
 
 	@Override
@@ -58,7 +56,7 @@ public class BlockIce extends Block {
 				state.setValue(COOLDOWN_PROPERTY, cooldown - 250);
 
 				Direction direction = state.getValue(SLIDING_DIRECTION_PROPERTY);
-				Position destination = position.displace(direction, 1); //TODO
+				Position destination = position.displace(direction);
 
 				if (world.canBlockMove(position, state, direction)) {
 					world.moveBlock(position, state, direction);

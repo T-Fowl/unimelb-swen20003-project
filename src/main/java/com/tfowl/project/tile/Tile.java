@@ -21,8 +21,9 @@ public class Tile {
 		return name;
 	}
 
-	public void setName(String name) {
+	public Tile setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	public boolean isWalkable() {
@@ -33,8 +34,9 @@ public class Tile {
 		return isWalkable();
 	}
 
-	public void setWalkable(boolean walkable) {
+	public Tile setWalkable(boolean walkable) {
 		isWalkable = walkable;
+		return this;
 	}
 
 	public ITileState getDefaultState() {

@@ -12,17 +12,8 @@ import com.tfowl.project.world.World;
  */
 public class Block {
 
-	// @formatter:off
-
-	//Resource loading
 	private String name;
-
 	private boolean isPushable = true;
-
-	private boolean isSlidingBlock = false;
-	private float   slidingSpeed   = 0; //Tiles / sec
-
-	// @formatter:on
 
 	public Block() {
 	}
@@ -31,32 +22,18 @@ public class Block {
 		return name;
 	}
 
-	public void setName(String name) {
+	public Block setName(String name) {
 		this.name = name;
-	}
-
-	public boolean isSlidingBlock() {
-		return isSlidingBlock;
-	}
-
-	public void setSlidingBlock(boolean slidingBlock) {
-		isSlidingBlock = slidingBlock;
-	}
-
-	public float getSlidingSpeed() {
-		return slidingSpeed;
-	}
-
-	public void setSlidingSpeed(float slidingSpeed) {
-		this.slidingSpeed = slidingSpeed;
+		return this;
 	}
 
 	public boolean isPushable() {
 		return isPushable;
 	}
 
-	public void setPushable(boolean pushable) {
+	public Block setPushable(boolean pushable) {
 		isPushable = pushable;
+		return this;
 	}
 
 	public IBlockState getDefaultState() {
@@ -83,6 +60,6 @@ public class Block {
 	public boolean canDoPush(World world,
 							 Direction directionOfPush,
 							 Position position, IBlockState state) {
-		return world.isSpaceEmpty(position.displace(directionOfPush, 1)); //TODO
+		return world.isSpaceEmpty(position.displace(directionOfPush));
 	}
 }

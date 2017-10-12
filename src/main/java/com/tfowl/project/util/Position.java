@@ -5,6 +5,8 @@ package com.tfowl.project.util;
  */
 public class Position {
 
+	public static final float DEFAULT_DISPLACEMENT = 1.f;
+
 	//Slightly less than half so a block part way over 2 tiles counts as being on both
 	private static final float EQUALITY_EPS = 0.4f;
 
@@ -30,6 +32,10 @@ public class Position {
 
 	public Position difference(Position from) {
 		return new Position(x - from.x, y - from.y);
+	}
+
+	public Position displace(Direction direction) {
+		return displace(direction, DEFAULT_DISPLACEMENT);
 	}
 
 	public Position displace(Direction direction, float distance) {
