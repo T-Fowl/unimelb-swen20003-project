@@ -43,7 +43,7 @@ public class ShadowBlocksGame extends BasicGame {
 		/* Initialise the world and then load a level */
 		world.init();
 		try {
-			world.loadLevel(ResourceLoader.getLevelResource("test"));
+			world.loadLevel(ResourceLoader.getLevelResource("4"));
 		} catch (IOException e) {
 			logger.error("Loading level 0", e);
 			e.printStackTrace();

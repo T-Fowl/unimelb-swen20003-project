@@ -29,15 +29,15 @@ public class UnitRogue extends Unit {
 	}
 
 	@Override
-	public void onPlayerMove(World world, Player player, Direction direction, float distance, Position position, IUnitState state) {
-		super.onPlayerMove(world, player, direction, distance, position, state);
+	public void onPlayerMove(World world, Player player, Direction moveDirection, float moveDistance, Position unitPosition, IUnitState unitState) {
+		super.onPlayerMove(world, player, moveDirection, moveDistance, unitPosition, unitState);
 
-		Direction move = state.getValue(DIRECTION_PROPERTY);
+		Direction move = unitState.getValue(DIRECTION_PROPERTY);
 
-		if (world.canUnitMove(position, state, move)) {
-			world.moveUnit(position, state, move);
+		if (world.canUnitMove(unitPosition, unitState, move)) {
+			world.moveUnit(unitPosition, unitState, move);
 		} else {
-			state.setValue(DIRECTION_PROPERTY, move = Direction.reverse(move));
+			unitState.setValue(DIRECTION_PROPERTY, move = Direction.reverse(move));
 
 			//TODO: Should rogue move or wait until the player moves again?
 //			if (world.canUnitMove(position, state, move)) {

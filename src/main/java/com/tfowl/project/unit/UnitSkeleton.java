@@ -30,8 +30,8 @@ public class UnitSkeleton extends Unit {
 	}
 
 	@Override
-	public void onTick(World world, long delta, Position position, IUnitState state) {
-		super.onTick(world, delta, position, state);
+	public void onTick(World world, long delta, Position unitPosition, IUnitState unitState) {
+		super.onTick(world, delta, unitPosition, unitState);
 
 
 		/*
@@ -39,18 +39,18 @@ public class UnitSkeleton extends Unit {
 		callback with the World and handle it in there
 		 */
 
-		long cooldown = state.getValue(COOLDOWN_PROPERTY) + delta;
-		state.setValue(COOLDOWN_PROPERTY, cooldown);
+		long cooldown = unitState.getValue(COOLDOWN_PROPERTY) + delta;
+		unitState.setValue(COOLDOWN_PROPERTY, cooldown);
 
 		if (cooldown >= COOLDOWN) {
-			state.setValue(COOLDOWN_PROPERTY, cooldown = cooldown - COOLDOWN);
+			unitState.setValue(COOLDOWN_PROPERTY, cooldown = cooldown - COOLDOWN);
 
-			Direction direction = state.getValue(DIRECTION_PROPERTY);
+			Direction direction = unitState.getValue(DIRECTION_PROPERTY);
 
-			if (world.canUnitMove(position, state, direction)) {
-				world.moveUnit(position, state, direction);
+			if (world.canUnitMove(unitPosition, unitState, direction)) {
+				world.moveUnit(unitPosition, unitState, direction);
 			} else {
-				state.setValue(DIRECTION_PROPERTY, direction = Direction.reverse(direction));
+				unitState.setValue(DIRECTION_PROPERTY, direction = Direction.reverse(direction));
 
 				//TODO: Should skeleton move or wait another cycle before moving the reverse direction
 //				if (world.canUnitMove(position, state, direction)) {
