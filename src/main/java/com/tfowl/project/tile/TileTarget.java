@@ -37,9 +37,9 @@ public class TileTarget extends Tile {
 		}
 
 		if (allCovered) {
-			System.out.println("All are covered!");
+			System.out.println(allCovered);
+			world.nextLevel();
 		} else {
-
 		}
 	}
 

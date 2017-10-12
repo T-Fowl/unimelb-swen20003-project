@@ -30,13 +30,17 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * World class
  * Created by Thomas on 6/09/2017.
  */
 public class World implements IRenderable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(World.class);
 
-	private Level level;
+	private List<Level> levels;
+	private int currentLevelIndex = 0;
+	private Level currentLevel;
+	private boolean shouldLoadNewLevel = false;
 
 	private Player player;
 	private int playerMoveCount = 0;
@@ -56,15 +60,35 @@ public class World implements IRenderable {
 		blocks = new ArrayList<>();
 		effects = new ArrayList<>();
 		units = new ArrayList<>();
+		levels = new ArrayList<>();
+	}
+
+	public void addLevel(int index, Level level) {
+		levels.add(index, level);
+	}
+
+	public void nextLevel() {
+		currentLevelIndex++;
+		shouldLoadNewLevel = true;
+	}
+
+	public void loadFirstLevel() {
+		loadLevel(0);
+	}
+
+	private void loadLevel(int index) {
+		if (index < levels.size() && index >= 0) {
+			loadLevel(levels.get(index));
+		}
 	}
 
 	/**
-	 * Loads the level and sets it as the current one.
+	 * Loads the currentLevel and sets it as the current one.
 	 *
-	 * @param level The level to load.
+	 * @param level The currentLevel to load.
 	 */
 	public void loadLevel(Level level) {
-		this.level = level;
+		this.currentLevel = level;
 		player.setPosition(new Position(level.getPlayerStartX(), level.getPlayerStartY()));
 
 		playerMoveCount = 0;
@@ -73,10 +97,10 @@ public class World implements IRenderable {
 		effects.clear();
 		units.clear();
 
-		for (int x = 0; x < this.level.getLocations().length; x++) {
-			for (int y = 0; y < this.level.getLocations()[x].length; y++) {
-				if (this.level.getLocations()[x][y] != null) {
-					for (String object : this.level.getLocations()[x][y].getObjects()) {
+		for (int x = 0; x < this.currentLevel.getLocations().length; x++) {
+			for (int y = 0; y < this.currentLevel.getLocations()[x].length; y++) {
+				if (this.currentLevel.getLocations()[x][y] != null) {
+					for (String object : this.currentLevel.getLocations()[x][y].getObjects()) {
 						Object registered = ObjectRegistry.get(object);
 
 						if (registered instanceof Block) {
@@ -223,10 +247,11 @@ public class World implements IRenderable {
 		instance.getBlock().onPush(this, player, dir, oldPosition, newPosition, instance.getState());
 
 		for (TileInstance tile : tiles)
+			if (tile.getPosition().equals(oldPosition))
+				tile.getTile().onBlockMovedOff(this, oldPosition, tile.getState());
+		for (TileInstance tile : tiles)
 			if (tile.getPosition().equals(newPosition))
 				tile.getTile().onBlockMovedOn(this, newPosition, tile.getState());
-			else if (tile.getPosition().equals(oldPosition))
-				tile.getTile().onBlockMovedOff(this, oldPosition, tile.getState());
 	}
 
 	public boolean isSpaceEmpty(Position position) {
@@ -235,12 +260,12 @@ public class World implements IRenderable {
 
 	@Override
 	public int getRenderedWidth() {
-		return Graphical.TILE_SIDE_LENGTH * level.getTileCountHorizontal();
+		return Graphical.TILE_SIDE_LENGTH * currentLevel.getTileCountHorizontal();
 	}
 
 	@Override
 	public int getRenderedHeight() {
-		return Graphical.TILE_SIDE_LENGTH * level.getTileCountVertical();
+		return Graphical.TILE_SIDE_LENGTH * currentLevel.getTileCountVertical();
 	}
 
 	@Override
@@ -303,7 +328,7 @@ public class World implements IRenderable {
 	}
 
 	public void restartLevel() {
-		loadLevel(level);
+		loadLevel(currentLevel);
 	}
 
 	public void undo() {
@@ -312,6 +337,12 @@ public class World implements IRenderable {
 	}
 
 	public void update(Input input, long delta) {
+
+		if (shouldLoadNewLevel) {
+			loadLevel(currentLevelIndex);
+			shouldLoadNewLevel = false;
+			return;
+		}
 
 		Direction direction = InputUtil.getDirection(input);
 		if (direction != Direction.NONE) {

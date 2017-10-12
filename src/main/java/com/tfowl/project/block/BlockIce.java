@@ -43,8 +43,6 @@ public class BlockIce extends Block {
 		state.setValue(SLIDING_PROPERTY, true);
 		state.setValue(SLIDING_DIRECTION_PROPERTY, directionPushed);
 		state.setValue(COOLDOWN_PROPERTY, 0L);
-
-		System.out.println("Ice pushed: Sliding in direction: " + directionPushed);
 	}
 
 	@Override
