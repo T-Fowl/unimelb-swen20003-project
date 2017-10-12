@@ -20,10 +20,8 @@ public class UnitMage extends Unit {
 
 		//TODO: Check that this works. Seems buggy
 		Position difference = unitPosition.difference(player.getPosition());
-		int signX = difference.getX() < 0 ? -1 : 1;
-		int signY = difference.getY() < 0 ? -1 : 1;
-		Direction directionX = signX < 0 ? Direction.RIGHT : Direction.LEFT;
-		Direction directionY = signY > 0 ? Direction.UP : Direction.DOWN;
+		Direction directionX = player.getPosition().getX() >= unitPosition.getX() ? Direction.RIGHT : Direction.LEFT;
+		Direction directionY = player.getPosition().getY() >= unitPosition.getY() ? Direction.DOWN : Direction.UP;
 
 		if (Math.abs(difference.getX()) > Math.abs(difference.getY())
 				&& world.canUnitMove(unitPosition, unitState, directionX)) {
