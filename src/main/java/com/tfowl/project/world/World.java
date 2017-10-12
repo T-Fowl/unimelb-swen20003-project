@@ -147,6 +147,13 @@ public class World implements IRenderable {
 		return null;
 	}
 
+	public ITileState getTileState(Position position, Tile type) {
+		for (TileInstance instance : tiles)
+			if (instance.getPosition().equals(position) && instance.getTile().equals(type))
+				return instance.getState();
+		return null;
+	}
+
 	public IBlockState getBlockState(Position position) {
 		for (BlockInstance instance : blocks)
 			if (instance.getPosition().equals(position))
@@ -157,6 +164,13 @@ public class World implements IRenderable {
 	public IUnitState getUnitState(Position position) {
 		for (UnitInstance instance : units)
 			if (instance.getPosition().equals(position))
+				return instance.getState();
+		return null;
+	}
+
+	public IUnitState getUnitState(Position position, Unit type) {
+		for (UnitInstance instance : units)
+			if (instance.getPosition().equals(position) && instance.getUnit().equals(type))
 				return instance.getState();
 		return null;
 	}
