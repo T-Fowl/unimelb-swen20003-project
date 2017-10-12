@@ -7,5 +7,6 @@ public class UnitPlayer extends Unit {
 
 	public UnitPlayer() {
 		setName("player");
+		setCanPushBlocks(true);
 	}
 }

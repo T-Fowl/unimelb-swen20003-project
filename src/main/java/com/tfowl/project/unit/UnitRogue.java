@@ -18,6 +18,7 @@ public class UnitRogue extends Unit {
 
 	public UnitRogue() {
 		setName("rogue");
+		setCanPushBlocks(true);
 	}
 
 	@Override

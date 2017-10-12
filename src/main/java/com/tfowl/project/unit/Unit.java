@@ -14,6 +14,7 @@ import com.tfowl.project.world.World;
 public class Unit {
 
 	private String name;
+	private boolean canPushBlocks = false;
 
 	public String getName() {
 		return name;
@@ -21,6 +22,14 @@ public class Unit {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean canPushBlocks() {
+		return canPushBlocks;
+	}
+
+	public void setCanPushBlocks(boolean canPushBlocks) {
+		this.canPushBlocks = canPushBlocks;
 	}
 
 	public IUnitState getDefaultState() {

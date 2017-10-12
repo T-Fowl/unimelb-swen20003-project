@@ -3,34 +3,17 @@ package com.tfowl.project.player;
 import com.tfowl.project.graphics.IRenderable;
 import com.tfowl.project.impl.UnitInstance;
 import com.tfowl.project.registry.ObjectRegistry;
-import com.tfowl.project.util.Position;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.SlickException;
 
-public class Player implements IRenderable {
+public class Player extends UnitInstance implements IRenderable {
 
-	private String name;
-	private UnitInstance unit;
+	private String playerName;
 
 	public Player(String name) {
-		this.name = name;
-		this.unit = new UnitInstance(ObjectRegistry.getUnit("player")); //TODO
+		super(ObjectRegistry.getUnit("player"));
+		this.playerName = name;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public Position getPosition() {
-		return unit.getPosition();
-	}
-
-	public void setPosition(Position position) {
-		unit.setPosition(position);
-	}
-
-	@Override
-	public void draw(Graphics g, int gx, int gy) throws SlickException {
-		unit.draw(g, gx, gy);
+	public String getPlayerName() {
+		return playerName;
 	}
 }
