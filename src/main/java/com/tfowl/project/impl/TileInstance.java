@@ -8,6 +8,10 @@ import com.tfowl.project.util.Position;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+/**
+ * Instance of a block in the {@link com.tfowl.project.world.World}. A {@link Tile} instance is
+ * uniquely identified by its {@link ITileState} and {@link Position}
+ */
 public class TileInstance implements IRenderable {
 
 	private Position position;
@@ -39,7 +43,8 @@ public class TileInstance implements IRenderable {
 	}
 
 	@Override
-	public void draw(Graphics g, int gx, int gy) throws SlickException {
+	public void draw(Graphics g, float gx, float gy) throws SlickException {
+		/* Lookup the tiles image and draw */
 		ObjectRegistry.getImage(state.getTile().getName()).draw(gx, gy);
 	}
 }

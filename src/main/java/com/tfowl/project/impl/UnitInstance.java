@@ -8,6 +8,10 @@ import com.tfowl.project.util.Position;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+/**
+ * Instance of a block in the {@link com.tfowl.project.world.World}. A {@link Unit} instance is
+ * uniquely identified by its {@link IUnitState} and {@link Position}
+ */
 public class UnitInstance implements IRenderable {
 
 	private IUnitState state;
@@ -39,7 +43,8 @@ public class UnitInstance implements IRenderable {
 	}
 
 	@Override
-	public void draw(Graphics g, int gx, int gy) throws SlickException {
+	public void draw(Graphics g, float gx, float gy) throws SlickException {
+		//lookup the units image and draw
 		ObjectRegistry.getImage(state.getUnit().getName()).draw(gx, gy);
 	}
 }

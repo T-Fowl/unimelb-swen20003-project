@@ -41,7 +41,7 @@ public interface IRenderable {
 	 * @param gy Origin y.
 	 * @throws SlickException If the underlying slick library throws an exception.
 	 */
-	public void draw(Graphics g, int gx, int gy) throws SlickException;
+	public void draw(Graphics g, float gx, float gy) throws SlickException;
 
 	/**
 	 * Draw this {@link IRenderable} with its center at (gx, gy). Default implementation is to
@@ -53,7 +53,7 @@ public interface IRenderable {
 	 * @param gy Center y.
 	 * @throws SlickException If the underlying slick library throws an exception.
 	 */
-	public default void drawCentered(Graphics g, int gx, int gy) throws SlickException {
+	public default void drawCentered(Graphics g, float gx, float gy) throws SlickException {
 		draw(g, gx - getRenderedWidth() / 2, gy - getRenderedHeight() / 2);
 	}
 }

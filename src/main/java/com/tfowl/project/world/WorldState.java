@@ -11,10 +11,19 @@ import java.util.Map;
 public class WorldState {
 
 	private Position playerPosition;
+	private int playerMoveCount;
 	private Map<BlockInstance, Map.Entry<Position, IBlockState>> blockStates;
 
 	public WorldState() {
 		blockStates = new HashMap<>();
+	}
+
+	public int getPlayerMoveCount() {
+		return playerMoveCount;
+	}
+
+	public void setPlayerMoveCount(int playerMoveCount) {
+		this.playerMoveCount = playerMoveCount;
 	}
 
 	public Position getPlayerPosition() {

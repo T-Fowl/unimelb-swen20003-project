@@ -2,6 +2,7 @@ package com.tfowl.project.level;
 
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
+import com.tfowl.project.util.Position;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,17 +27,15 @@ public class Level {
 	/* All of the locations in the level */
 	private final Location[][] locations;
 
-	/* UnitPlayer starting coordinates */
-	private int playerStartX;
-	private int playerStartY;
+	/* Player starting coordinates */
+	private Position playerStartPosition;
 
 	private Level(int tileCountHorizontal, int tileCountVertical) {
 		this(tileCountHorizontal, tileCountVertical, 0, 0);
 	}
 
 	private Level(int tileCountHorizontal, int tileCountVertical, int playerStartX, int playerStartY) {
-		this.playerStartX = playerStartX;
-		this.playerStartY = playerStartY;
+		this.playerStartPosition = new Position(playerStartX, playerStartY);
 		this.tileCountHorizontal = tileCountHorizontal;
 		this.tileCountVertical = tileCountVertical;
 		this.locations = new Location[tileCountHorizontal][tileCountVertical];
@@ -50,20 +49,12 @@ public class Level {
 		return tileCountVertical;
 	}
 
-	public int getPlayerStartX() {
-		return playerStartX;
+	public Position getPlayerStartPosition() {
+		return playerStartPosition;
 	}
 
-	public void setPlayerStartX(int playerStartX) {
-		this.playerStartX = playerStartX;
-	}
-
-	public int getPlayerStartY() {
-		return playerStartY;
-	}
-
-	public void setPlayerStartY(int playerStartY) {
-		this.playerStartY = playerStartY;
+	public void setPlayerStartPosition(Position position) {
+		this.playerStartPosition = position;
 	}
 
 	public Location[][] getLocations() {
@@ -101,8 +92,7 @@ public class Level {
 				int objectY = scanner.nextInt();
 
 				if (objectName.equalsIgnoreCase("player")) { //TODO
-					building.setPlayerStartX(objectX);
-					building.setPlayerStartY(objectY);
+					building.setPlayerStartPosition(Position.at(objectX, objectY));
 				} else {
 					/* Get the referenced location (creating if needed) and add the object to it */
 					Location location = building.locations[objectX][objectY];

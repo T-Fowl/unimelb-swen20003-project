@@ -13,6 +13,7 @@ import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.player.Player;
 import com.tfowl.project.reference.Graphical;
+import com.tfowl.project.reference.Strings;
 import com.tfowl.project.registry.ObjectRegistry;
 import com.tfowl.project.tile.ITileState;
 import com.tfowl.project.tile.Tile;
@@ -36,25 +37,32 @@ import java.util.Stack;
  */
 public class World implements IRenderable {
 
+	private static final Logger logger = LoggerFactory.getLogger(World.class);
+
+	/* Flags used for performing certain tasks at the next update cycle */
 	private static final int UPDATE_FLAG_NEW_LEVEL = 0x01;
 	private static final int UPDATE_FLAG_LEVEL_FAILED = 0x02;
 	private static final int UPDATE_FLAG_UNDO = 0x04;
 
-	private static final Logger logger = LoggerFactory.getLogger(World.class);
+	/* Flags for the next update */
+	private int updateFlags = 0;
 
+	/* Provides all of the loaded levels */
 	private WorldLevelProvider levelProvider;
 
+	/* Controlled unit */
 	private Player player;
 
+	/* The geometry of the world */
 	private List<TileInstance> tiles;
 	private List<BlockInstance> blocks;
 	private List<EffectInstance> effects;
 	private List<UnitInstance> units;
 
+	/* Current move count and past history */
 	private int playerMoveCount = 0;
 	private Stack<WorldState> history;
 
-	private int updateFlags = 0;
 
 	/**
 	 * Initialised the world. It is required that this method be called after the OpenGL context
@@ -70,42 +78,75 @@ public class World implements IRenderable {
 		history = new Stack<>();
 	}
 
+	/**
+	 * Get the level provider of this world.
+	 * @return The level provider of this world.
+	 */
 	public WorldLevelProvider getLevelProvider() {
 		return levelProvider;
 	}
 
+	/**
+	 * Specify that the world should move onto the next level.
+	 */
 	public void nextLevel() {
 		updateFlags |= UPDATE_FLAG_NEW_LEVEL;
 	}
 
+	/**
+	 * Specify that the level has been failed and should be restarted
+	 */
 	public void levelFailed() {
 		updateFlags |= UPDATE_FLAG_LEVEL_FAILED;
 	}
 
+	/**
+	 * Specify that an undo should be performed
+	 */
 	public void undo() {
 		updateFlags |= UPDATE_FLAG_UNDO;
 	}
 
+	/**
+	 * Specify that the current level should be restarted
+	 */
 	public void restartLevel() {
 		levelFailed(); //Same thing
 	}
 
+	/**
+	 * Load the first registered level
+	 */
 	public void loadFirstLevel() {
 		//TODO
 		loadLevel(levelProvider.nextLevel());
 	}
 
+	/**
+	 * Restores the state captures in the given state object.
+	 * This will not restore blocks that have been destroyed.
+	 *
+	 * @param state State in time to restore.
+	 */
 	private void restoreState(WorldState state) {
 		player.setPosition(state.getPlayerPosition());
+		playerMoveCount = state.getPlayerMoveCount();
 
 		for (BlockInstance instance : blocks) {
 			state.restoreState(instance);
 		}
 	}
 
+	/**
+	 * Captures all of the current block states and positions along with the player position and
+	 * move count.
+	 *
+	 * @return A representation of this point in time.
+	 */
 	private WorldState captureCurrentState() {
 		WorldState state = new WorldState();
 		state.setPlayerPosition(player.getPosition());
+		state.setPlayerMoveCount(playerMoveCount);
 
 		for (BlockInstance instance : blocks) {
 			state.withBlockState(instance, instance.getPosition(), (IBlockState) instance.getState().deepCopy());
@@ -115,18 +156,19 @@ public class World implements IRenderable {
 	}
 
 	/**
-	 * Loads the currentLevel and sets it as the current one.
+	 * Loads all of the data from the passed level
 	 *
-	 * @param level The currentLevel to load.
+	 * @param level The level to load.
 	 */
 	private void loadLevel(Level level) {
-		player.setPosition(new Position(level.getPlayerStartX(), level.getPlayerStartY()));
-
+		player.setPosition(level.getPlayerStartPosition());
 		playerMoveCount = 0;
+
 		tiles.clear();
 		blocks.clear();
 		effects.clear();
 		units.clear();
+		history.clear();
 
 		for (int x = 0; x < level.getLocations().length; x++) {
 			for (int y = 0; y < level.getLocations()[x].length; y++) {
@@ -158,36 +200,169 @@ public class World implements IRenderable {
 		}
 	}
 
+	/* Creating and Destroying Objects */
+
+	/**
+	 * Create an effect at the given position.
+	 *
+	 * @param effect   Type of effect to create.
+	 * @param position Position of the effect.
+	 */
 	public void createEffectAt(Effect effect, Position position) {
 		EffectInstance instance = new EffectInstance(effect, position);
 		effects.add(instance);
 	}
 
-	private BlockInstance blockAt(Position position) {
+	/**
+	 * Destroys any effects at the given position.
+	 *
+	 * @param position Position to destroy effects at.
+	 * @param effect   Effect type to destroy. As there could be multiple.
+	 */
+	public void destroyEffectAt(Position position, Effect effect) {
+		effects.removeIf(instance -> instance.getPosition().equals(position) && instance.getEffect().equals(effect));
+	}
+
+	/**
+	 * Creates a unit at the given position.
+	 *
+	 * @param unit     Type of unit to create.
+	 * @param position Position to create the unit at.
+	 */
+	public void createUnitAt(Unit unit, Position position) {
+		UnitInstance instance = new UnitInstance(unit);
+		instance.setPosition(position);
+		units.add(instance);
+	}
+
+	/**
+	 * Destoyes all units at the given position.
+	 *
+	 * @param position Position to destroy at.
+	 * @param type     Types of units to destroy. As there could be multiple.
+	 */
+	public void destroyUnitAt(Position position, Unit type) {
+		units.removeIf(instance -> instance.getUnit().equals(type) && instance.getPosition().equals(position));
+	}
+
+	/**
+	 * Creates a tile at the given position.
+	 *
+	 * @param tile     Type of tile to create.
+	 * @param position Position to create the tile at.
+	 */
+	public void createTileAt(Tile tile, Position position) {
+		TileInstance instance = new TileInstance(tile);
+		instance.setPosition(position);
+		tiles.add(instance);
+	}
+
+	/**
+	 * Destroyes all tiles at the given position.
+	 *
+	 * @param position Position to destroy the tiles at.
+	 * @param type     Type of tile to destroy. As there could be multiple.
+	 */
+	public void destroyTileAt(Position position, Tile type) {
+		tiles.removeIf(instance -> instance.getTile().equals(type) && instance.getPosition().equals(position));
+	}
+
+	/**
+	 * Creates a block at the given position.
+	 *
+	 * @param block    Type of block to create.
+	 * @param position Position to create at.
+	 */
+	public void createBlockAt(Block block, Position position) {
+		if (blockInstanceAt(position) == null) {
+			BlockInstance instance = new BlockInstance(block);
+			instance.setPosition(position);
+			blocks.add(instance);
+		}
+	}
+
+	/**
+	 * Destoyes all blocks at the given position.
+	 *
+	 * @param position Position of the blocks to destroy.
+	 */
+	public void destroyBlockAt(Position position) {
+		blocks.removeIf(instance -> instance.getPosition().equals(position));
+	}
+
+
+	/* Internal Looking up Objects */
+
+	/**
+	 * Internal method. Gets the {@link BlockInstance} at the given position.
+	 *
+	 * @param position Position of the {@link Block} represented by this {@link BlockInstance}
+	 * @return The {@link BlockInstance} at this position.
+	 */
+	private BlockInstance blockInstanceAt(Position position) {
 		for (BlockInstance block : blocks)
 			if (block.getPosition().equals(position))
 				return block;
 		return null;
 	}
 
-	private boolean isTileWalkable(Position position) {
+	/**
+	 * Internal method. Gets the {@link TileInstance} at the given position.
+	 *
+	 * @param position Position of the {@link Tile} represented by this {@link TileInstance}
+	 * @param type     Type of {@link Tile} to look for, as there could be multiple.l
+	 * @return The {@link TileInstance} at this position. First one of the type that matches.
+	 */
+	private TileInstance tileInstanceAt(Position position, Tile type) {
 		for (TileInstance tile : tiles) {
-			if (tile.getPosition().equals(position) && !tile.getTile().isTileWalkable(
-					this, position, tile.getState()
-			)) {
+			if (tile.getTile().equals(type))
+				return tile;
+		}
+		return null;
+	}
+
+	/**
+	 * Tests if the {@link Tile} at the given position is walkable.
+	 * Note that this method only checks that the {@link Tile}s themselves are walkable, not if any
+	 * blocks are on that tile.
+	 *
+	 * @param position Position to check.
+	 * @return true if all of the {@link Tile}s at the given position are walkable.
+	 */
+	public boolean isTileWalkable(Position position) {
+		for (TileInstance instance : tiles) {
+			if (instance.getPosition().equals(position) && !instance.getTile().isTileWalkable(
+					this, position, instance.getState())) {
 				return false;
 			}
 		}
 		return true;
 	}
 
+	/**
+	 * Checks if the {@link Block} at the given position can be moved in the given direction.
+	 *
+	 * @param position  Position of the {@link Block}.
+	 * @param state     State of the {@link Block}.
+	 * @param direction Direction to move in.
+	 * @return true if the block can be moved in that direction. false otherwise.
+	 */
 	public boolean canBlockMove(Position position, IBlockState state, Direction direction) {
-		return state.getBlock().canDoPush(this, direction, position, state);
+		return state.getBlock().canBePushed(this, position, state, direction);
 	}
 
+	/**
+	 * Moves the {@link Block} at the given position in the given direction. Alerting all {@link Tile}s that the
+	 * {@link Block} has either landed on them or moved off them. This method does no checks. Make sure to check with
+	 * {@link World#canBlockMove(Position, IBlockState, Direction)} first.
+	 *
+	 * @param position  Position of the {@link Block}
+	 * @param direction Direction to move in.
+	 * @see World#canBlockMove(Position, IBlockState, Direction)
+	 */
 	public void moveBlock(Position position, Direction direction) {
 		Position destination = position.displace(direction);
-		BlockInstance instance = blockAt(position);
+		BlockInstance instance = blockInstanceAt(position);
 		if (instance != null) {
 			instance.setPosition(destination);
 
@@ -202,11 +377,19 @@ public class World implements IRenderable {
 		}
 	}
 
+	/**
+	 * Checks if the {@link Unit} at the given position can move in the given direction.
+	 *
+	 * @param position  Position of the {@link Unit} to check.
+	 * @param state     State of the {@link Unit}
+	 * @param direction Direction to check for valid movement in.
+	 * @return true if the unit can perform the move. false otherwise.
+	 */
 	public boolean canUnitMove(Position position, IUnitState state, Direction direction) {
 		Position destination = position.displace(direction);
 		if (!isTileWalkable(destination))
 			return false;
-		BlockInstance blockAt = blockAt(destination);
+		BlockInstance blockAt = blockInstanceAt(destination);
 		if (null == blockAt)
 			return true;
 		if (!state.getUnit().canPushBlocks())
@@ -216,9 +399,18 @@ public class World implements IRenderable {
 		return true;
 	}
 
+	/**
+	 * Moves the {@link Unit} at the given position in the given direction. Pushing any {@link Block}s in its way.
+	 * This method does no checks, make sure to check {@link World#canUnitMove(Position, IUnitState, Direction)} first.
+	 *
+	 * @param position  Position of the {@link Unit} to move.
+	 * @param state     State of the {@link Unit}.
+	 * @param direction Direction to move in
+	 * @see World#canUnitMove(Position, IUnitState, Direction)
+	 */
 	public void moveUnit(Position position, IUnitState state, Direction direction) {
 		Position destination = position.displace(direction);
-		BlockInstance blockAt = blockAt(destination);
+		BlockInstance blockAt = blockInstanceAt(destination);
 
 		if (null != blockAt) {
 			Position blockDestination = blockAt.getPosition().displace(direction);
@@ -235,6 +427,12 @@ public class World implements IRenderable {
 		}
 	}
 
+	/**
+	 * Gets a list of all positions in which a {@link Tile} of the given type is placed.
+	 *
+	 * @param tile Type of {@link Tile} to look for.
+	 * @return A list of all positions with the specific Tile.
+	 */
 	public List<Position> getPositionsOfTiles(Tile tile) {
 		List<Position> positions = new ArrayList<>();
 		for (TileInstance instance : tiles)
@@ -243,6 +441,12 @@ public class World implements IRenderable {
 		return positions;
 	}
 
+	/**
+	 * Gets a list of all positions in which a {@link Block} of the given type is placed.
+	 *
+	 * @param block Type of {@link Block} to look for.
+	 * @return A list of all positions with the specific Block.
+	 */
 	public List<Position> getPositionsOfBlocks(Block block) {
 		List<Position> positions = new ArrayList<>();
 		for (BlockInstance instance : blocks) {
@@ -252,6 +456,12 @@ public class World implements IRenderable {
 		return positions;
 	}
 
+	/**
+	 * Get the state of a {@link Tile} at the given position.
+	 *
+	 * @param position Position to look for {@link Tile}s.
+	 * @return The first {@link ITileState} coupled with a {@link Tile} at the given position. Or null if none are found.
+	 */
 	public ITileState getTileState(Position position) {
 		for (TileInstance instance : tiles)
 			if (instance.getPosition().equals(position))
@@ -259,6 +469,13 @@ public class World implements IRenderable {
 		return null;
 	}
 
+	/**
+	 * Get the state of a {@link Tile} at the given position.
+	 *
+	 * @param position Position to look for {@link Tile}s.
+	 * @param type     Type of {@link Tile}. In case there are multiple at the same location.
+	 * @return The first {@link ITileState} coupled with a {@link Tile} at the given position. Or null if none are found.
+	 */
 	public ITileState getTileState(Position position, Tile type) {
 		for (TileInstance instance : tiles)
 			if (instance.getPosition().equals(position) && instance.getTile().equals(type))
@@ -266,6 +483,12 @@ public class World implements IRenderable {
 		return null;
 	}
 
+	/**
+	 * Get the state of a {@link Block} at the given position.
+	 *
+	 * @param position Position to look for {@link Block}s.
+	 * @return The first {@link IBlockState} coupled with a {@link Block} at the given position. Or null if none are found.
+	 */
 	public IBlockState getBlockState(Position position) {
 		for (BlockInstance instance : blocks)
 			if (instance.getPosition().equals(position))
@@ -273,6 +496,12 @@ public class World implements IRenderable {
 		return null;
 	}
 
+	/**
+	 * Get the state of a {@link Unit} at the given position.
+	 *
+	 * @param position Position to look for {@link Unit}s.
+	 * @return The first {@link IUnitState} coupled with a {@link Unit} at the given position. Or null if none are found.
+	 */
 	public IUnitState getUnitState(Position position) {
 		for (UnitInstance instance : units)
 			if (instance.getPosition().equals(position))
@@ -280,6 +509,13 @@ public class World implements IRenderable {
 		return null;
 	}
 
+	/**
+	 * Get the state of a {@link Unit} at the given position with the given type.
+	 *
+	 * @param position Position to look for {@link Unit}s.
+	 * @param type     Type of {@link Unit}. In case there are multiple at the same location.
+	 * @return The first {@link IUnitState} coupled with a {@link Unit} at the given position. Or null if none are found.
+	 */
 	public IUnitState getUnitState(Position position, Unit type) {
 		for (UnitInstance instance : units)
 			if (instance.getPosition().equals(position) && instance.getUnit().equals(type))
@@ -301,8 +537,14 @@ public class World implements IRenderable {
 				tile.getTile().onBlockMovedOver(this, tile.getPosition(), tile.getState(), oldPosition, instance.getState());
 	}
 
-	public boolean isSpaceEmpty(Position position) {
-		return isTileWalkable(position) && null == blockAt(position);
+	/**
+	 * Determines if the given position is a walkable {@link Tile} and has no {@link Block}s in it.
+	 *
+	 * @param position Position to test for.
+	 * @return true if the tile is walkable and there is no {@link Block} there. false otherwise.
+	 */
+	public boolean isPositionWalkableAndBlockEmpty(Position position) {
+		return isTileWalkable(position) && null == blockInstanceAt(position);
 	}
 
 	@Override
@@ -316,69 +558,94 @@ public class World implements IRenderable {
 	}
 
 	@Override
-	public void draw(Graphics g, int gx, int gy) throws SlickException {
+	public void draw(Graphics g, float gx, float gy) throws SlickException {
+
+		/* Draw all Tiles at their place in the world */
 		for (TileInstance tile : tiles) {
 			if (tile.getTile().shouldRenderTile(this, tile.getPosition(), tile.getState()))
-				tile.draw(g, (int) (tile.getPosition().getX() * 32 + gx), (int) (tile.getPosition().getY() * 32 + gy));
+				tile.draw(g,
+						tile.getPosition().getX() * Graphical.TILE_SIDE_LENGTH + gx,
+						tile.getPosition().getY() * Graphical.TILE_SIDE_LENGTH + gy);
 		}
 
+		/* Draw all Blocks at their place in the world, on top of Tiles. */
 		for (BlockInstance block : blocks) {
-			block.draw(g, (int) (block.getPosition().getX() * 32 + gx), (int) (block.getPosition().getY() * 32 + gy));
+			block.draw(g,
+					block.getPosition().getX() * Graphical.TILE_SIDE_LENGTH + gx,
+					block.getPosition().getY() * Graphical.TILE_SIDE_LENGTH + gy);
 		}
 
+		/* Draw all Units at their place in the world, on top of Tiles and Blocks */
 		for (UnitInstance unit : units) {
-			unit.draw(g, (int) (unit.getPosition().getX() * 32 + gx), (int) (unit.getPosition().getY() * 32 + gy));
+			unit.draw(g,
+					unit.getPosition().getX() * Graphical.TILE_SIDE_LENGTH + gx,
+					unit.getPosition().getY() * Graphical.TILE_SIDE_LENGTH + gy);
 		}
 
+		/* Draw all Effects at their place in the world, on top of everything else */
 		for (EffectInstance effect : effects) {
-			effect.drawCentered(g, (int) (effect.getPosition().getX() * 32 + gx + 16), (int) (effect.getPosition().getY() * 32 + gy + 16));
+			effect.drawCentered(g,
+					/* Effects should be centered at the center of a Tile */
+					effect.getPosition().getX() * Graphical.TILE_SIDE_LENGTH + gx + Graphical.TILE_SIDE_LENGTH / 2.f,
+					effect.getPosition().getY() * Graphical.TILE_SIDE_LENGTH + gy + Graphical.TILE_SIDE_LENGTH / 2.f);
 		}
 
-		player.draw(g, (int) (player.getPosition().getX() * 32 + gx), (int) (player.getPosition().getY() * 32 + gy));
+		/* Finally, draw the player */
+		player.draw(g,
+				player.getPosition().getX() * Graphical.TILE_SIDE_LENGTH + gx,
+				player.getPosition().getY() * Graphical.TILE_SIDE_LENGTH + gy);
 
-		g.drawString(String.format("Moves: %d", playerMoveCount), 0, 0);
+		g.drawString(String.format(Strings.DISPLAY_MOVES_STRING, playerMoveCount),
+				Graphical.DISPLAY_MOVES_X, Graphical.DISPLAY_MOVES_Y);
 	}
 
-	private void movePlayer(Position position, Direction dir) {
-		player.setPosition(position);
+	/**
+	 * Performs and broadcasts the player movement. Also checks for collisions with other {@link Unit}s and
+	 * performs any on-touch actions.
+	 *
+	 * @param destination Destination to move to.
+	 * @param direction   Direction the player moved.
+	 */
+	private void doMovePlayer(Position destination, Direction direction) {
+		player.setPosition(destination);
 
-		//Check for units touching the player
+		/* Check for units touching the player */
 		for (UnitInstance instance : units) {
-			if (instance.getPosition().equals(position))
-				instance.getUnit().onPlayerTouch(this, player, position, instance.getState());
+			if (instance.getPosition().equals(destination))
+				instance.getUnit().onPlayerTouch(this, player, instance.getPosition(), instance.getState());
 		}
 
-		//Alert all units that the player has moved
+		/* Alert all units that the player has moved */
 		for (UnitInstance instance : units) {
-			instance.getUnit().onPlayerMove(this, player, dir, 1, instance.getPosition(), instance.getState());
+			instance.getUnit().onPlayerMove(this, player, direction, 1, instance.getPosition(), instance.getState());
 		}
 	}
 
-	public void destroyTile(Position position, Tile type) {
-		tiles.removeIf(instance -> instance.getTile().equals(type) && instance.getPosition().equals(position));
-	}
+	/**
+	 * Checks if it is possible for a player to make a move in the given direction, if so performs that move.
+	 *
+	 * @param direction Direction to move in
+	 */
+	private void handlePlayerMovement(Direction direction) {
+		Position destination = player.getPosition().displace(direction);
 
-	public void destroyBlock(Position position) {
-		blocks.removeIf(instance -> instance.getPosition().equals(position));
-	}
-
-	private void handlePlayerMovement(Direction dir) {
-		Position moveTo = player.getPosition().displace(dir, Graphical.PLAYER_MOVEMENT_UNITS);
-
-		//Check if we can actually walk there
-		if (isTileWalkable(moveTo)) {
-			//Check if we're going to push a block
-			BlockInstance block = blockAt(moveTo);
+		/* Check if we can actually walk there */
+		if (isTileWalkable(destination)) {
+			/* Check if we're going to push a block */
+			BlockInstance block = blockInstanceAt(destination);
 			if (null == block) {
-				movePlayer(moveTo, dir);
+				doMovePlayer(destination, direction);
 			} else if (block.getBlock().isPushable()) {
-				Position blockMoveTo = moveTo.displace(dir);
-				if (canBlockMove(moveTo, block.getState(), dir)) {
-					playerMoveBlock(block, blockMoveTo, dir);
-					movePlayer(moveTo, dir);
+				Position blockMoveTo = block.getPosition().displace(direction);
+				if (canBlockMove(destination, block.getState(), direction)) {
+					playerMoveBlock(block, blockMoveTo, direction);
+					doMovePlayer(destination, direction);
 				}
 			}
 		}
+
+
+		playerMoveCount++;
 	}
 
 	public void update(Input input, long delta) {
@@ -400,19 +667,20 @@ public class World implements IRenderable {
 			if (history.size() > 0) {
 				WorldState state = history.pop();
 				restoreState(state);
-				playerMoveCount--;
 				return;
 			}
 		}
 
-		Direction direction = InputUtil.getDirection(input);
-		if (direction != Direction.NONE) {
+		Direction playerMoveDirection = InputUtil.getDirection(input);
+		if (playerMoveDirection != Direction.NONE) {
+			/* Player is making a move, capture this point in time */
 			history.push(captureCurrentState());
-			handlePlayerMovement(direction);
-			playerMoveCount++;
+			/* Handle the player movement */
+			handlePlayerMovement(playerMoveDirection);
 		}
 
 
+		/* Remove all effects that have outlasted their configured duration */
 		for (Iterator<EffectInstance> iterator = effects.iterator(); iterator.hasNext(); ) {
 			EffectInstance effectInstance = iterator.next();
 			effectInstance.incrementTime(delta);
@@ -420,6 +688,7 @@ public class World implements IRenderable {
 				iterator.remove();
 		}
 
+		/* Alert all Blocks and Units that world tick has occurred */
 		for (BlockInstance blockInstance : blocks) {
 			blockInstance.getBlock().onWorldTick(this, delta, blockInstance.getPosition(), blockInstance.getState());
 		}

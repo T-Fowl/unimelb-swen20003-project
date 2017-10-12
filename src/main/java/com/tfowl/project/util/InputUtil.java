@@ -19,6 +19,14 @@ public class InputUtil {
 		return (LISTEN_ARROWS && in.isKeyPressed(arrowKeyCode)) || (LISTEN_WASD && in.isKeyPressed(wasdKeyCode));
 	}
 
+	/**
+	 * @param in Input keys
+	 * @return A {@link Direction} representation of the current pressed keys configuration.
+	 * @see InputUtil#isUp(Input)
+	 * @see InputUtil#isDown(Input)
+	 * @see InputUtil#isRight(Input)
+	 * @see InputUtil#isLeft(Input)
+	 */
 	public static Direction getDirection(Input in) {
 		if (isUp(in)) return Direction.UP;
 		if (isDown(in)) return Direction.DOWN;

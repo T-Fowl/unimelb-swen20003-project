@@ -2,6 +2,9 @@ package com.tfowl.project.states.properties;
 
 import com.tfowl.project.util.Direction;
 
+/**
+ * Convenience implementation of a {@link IProperty} for {@link Direction}s.
+ */
 public class PropertyDirection implements IProperty<Direction> {
 
 	private String name;

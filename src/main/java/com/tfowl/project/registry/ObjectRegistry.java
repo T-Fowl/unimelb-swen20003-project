@@ -2,6 +2,7 @@ package com.tfowl.project.registry;
 
 import com.tfowl.project.block.Block;
 import com.tfowl.project.effect.Effect;
+import com.tfowl.project.reference.Resources;
 import com.tfowl.project.tile.Tile;
 import com.tfowl.project.unit.Unit;
 import org.newdawn.slick.Image;
@@ -10,6 +11,11 @@ import org.newdawn.slick.SlickException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Central point for registering all Blocks, Effects, Tiles, Units and Images
+ * <p>
+ * Can be queried later on for access
+ */
 public class ObjectRegistry {
 
 	private static Map<String, Image> images = new HashMap<>();
@@ -19,6 +25,11 @@ public class ObjectRegistry {
 	private static Map<String, Tile> registeredTiles = new HashMap<>();
 	private static Map<String, Unit> registeredUnits = new HashMap<>();
 
+	/**
+	 * Goes through all registered items and loads their image(s)
+	 *
+	 * @throws SlickException If the underlying Slick library throws an exception
+	 */
 	public static void registerAllImages() throws SlickException {
 		for (String name : registeredBlocks.keySet()) {
 			loadSprite("blocks", name);
@@ -34,15 +45,26 @@ public class ObjectRegistry {
 		}
 	}
 
+	/**/
 	private static void loadSprite(String folder, String name) throws SlickException {
-		Image image = new Image("images/" + folder + "/" + name + ".png");
+		Image image = new Image(Resources.IMAGES_DIRECTORY + "/" + folder + "/" + name + "." + Resources.DEFAULT_IMAGE_EXTENSION);
 		images.put(name, image);
 	}
 
+	/**
+	 * Get an image for the given item name
+	 *
+	 * @param name Name of the item to lookup the image for
+	 * @return The image for the given items name
+	 */
 	public static Image getImage(String name) {
 		return images.get(name);
 	}
 
+	/**
+	 * @param name Name to lookup
+	 * @return Any kind of item that has the given name
+	 */
 	public static Object get(String name) {
 		if (registeredBlocks.containsKey(name)) return registeredBlocks.get(name);
 		if (registeredTiles.containsKey(name)) return registeredTiles.get(name);
@@ -51,17 +73,7 @@ public class ObjectRegistry {
 		return null;
 	}
 
-	public static Class<?> getType(String name) {
-		if (registeredBlocks.containsKey(name))
-			return Block.class;
-		if (registeredEffects.containsKey(name))
-			return Effect.class;
-		if (registeredTiles.containsKey(name))
-			return Tile.class;
-		if (registeredUnits.containsKey(name))
-			return Unit.class;
-		return null;
-	}
+	/* All methods below just register, check and retrieve items of different kinds */
 
 	public static void register(Block block) {
 		registeredBlocks.put(block.getName(), block);

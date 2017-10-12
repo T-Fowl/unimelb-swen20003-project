@@ -7,6 +7,9 @@ import com.tfowl.project.states.properties.IProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implementation of a {@link IBlockState}
+ */
 public class ImplBlockState implements IBlockState {
 
 	private Block object;

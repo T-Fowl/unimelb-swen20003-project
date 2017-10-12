@@ -7,6 +7,9 @@ import com.tfowl.project.unit.Unit;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implementation of an {@link IUnitState}
+ */
 public class ImplUnitState implements IUnitState {
 
 	private Unit object;

@@ -40,10 +40,10 @@ public class ShadowBlocksGame extends BasicGame {
 		Units.init();
 		ObjectRegistry.registerAllImages();
 
-		/* Initialise the world and then load a level */
+		/* Initialise the world and then load the levels */
 		world.init();
 		try {
-			world.getLevelProvider().addLevel(0, ResourceLoader.getLevelResource("test"));
+			world.getLevelProvider().addLevel(0, ResourceLoader.getLevelResource("0"));
 			world.getLevelProvider().addLevel(1, ResourceLoader.getLevelResource("1"));
 			world.getLevelProvider().addLevel(2, ResourceLoader.getLevelResource("2"));
 			world.getLevelProvider().addLevel(3, ResourceLoader.getLevelResource("3"));
@@ -68,8 +68,8 @@ public class ShadowBlocksGame extends BasicGame {
 			world.restartLevel();
 		else if (container.getInput().isKeyPressed(Input.KEY_Z))
 			world.undo();
-		else if (container.getInput().isKeyPressed(Input.KEY_F))
-			world.nextLevel();
+//		else if (container.getInput().isKeyPressed(Input.KEY_F))
+//			world.nextLevel();
 	}
 
 	@Override

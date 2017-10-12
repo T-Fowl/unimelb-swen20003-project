@@ -1,5 +1,8 @@
 package com.tfowl.project.states.properties;
 
+/**
+ * Convenience implementation of a {@link IProperty} for booleans.
+ */
 public class PropertyBoolean implements IProperty<Boolean> {
 
 	private String name;

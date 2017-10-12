@@ -1,25 +1,32 @@
 package com.tfowl.project.tile;
 
 import com.tfowl.project.block.IBlockState;
+import com.tfowl.project.reference.Resources;
 import com.tfowl.project.states.properties.PropertyBoolean;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
 
 /**
+ * Tile in the world that must be covered by a block to progress onto the next level.
+ * <p>
  * Created by Thomas on 11.10.2017.
  */
 public class TileTarget extends Tile {
 
+	/**
+	 * Boolean Property of the covered state of this tile
+	 */
 	public static final PropertyBoolean COVERED_PROPERTY = PropertyBoolean.create("covered");
 
 	public TileTarget() {
-		setName("target");
+		setName(Resources.Tiles.TARGET_NAME);
 		setWalkable(true);
 	}
 
 	@Override
 	public ITileState getDefaultState() {
 		ITileState state = super.getDefaultState();
+		/* Default to not covered */
 		state.setValue(COVERED_PROPERTY, false);
 		return state;
 	}
@@ -29,6 +36,9 @@ public class TileTarget extends Tile {
 		super.onBlockMovedOver(world, position, state, blockFromPosition, blockState);
 		state.setValue(COVERED_PROPERTY, true);
 
+		/* Go through all other targets in the world, if they are all covered,
+		 * then tell the world that we should move onto the next level */
+
 		boolean allCovered = true;
 		for (Position targetPosition : world.getPositionsOfTiles(this)) {
 			ITileState targetState = world.getTileState(targetPosition, this);
@@ -36,10 +46,7 @@ public class TileTarget extends Tile {
 		}
 
 		if (allCovered) {
-			System.out.println("All covered");
 			world.nextLevel();
-		} else {
-			System.out.println("Not all covered");
 		}
 	}
 

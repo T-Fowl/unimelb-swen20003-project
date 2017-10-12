@@ -33,6 +33,10 @@ public enum Direction {
 		return j;
 	}
 
+	/**
+	 * @param direction Direction to find the reverse of
+	 * @return The reverse of the given direction, or {@link Direction#NONE} if NONE is passed.
+	 */
 	public static Direction reverse(Direction direction) {
 		switch (direction) {
 			case LEFT:

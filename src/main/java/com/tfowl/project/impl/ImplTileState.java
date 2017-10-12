@@ -7,6 +7,9 @@ import com.tfowl.project.tile.Tile;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implementation of an {@link ITileState}
+ */
 public class ImplTileState implements ITileState {
 
 	private Tile object;

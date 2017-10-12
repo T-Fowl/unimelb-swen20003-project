@@ -1,5 +1,8 @@
 package com.tfowl.project.states.properties;
 
+/**
+ * Convenience implementation of a {@link IProperty} for longs.
+ */
 public class PropertyLong implements IProperty<Long> {
 
 	private String name;

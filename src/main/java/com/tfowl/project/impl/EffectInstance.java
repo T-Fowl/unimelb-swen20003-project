@@ -7,6 +7,10 @@ import com.tfowl.project.util.Position;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
+/**
+ * Instance of a block in the {@link com.tfowl.project.world.World}. A {@link Effect} instance is
+ * uniquely identified by its {@link Position} and type.
+ */
 public class EffectInstance implements IRenderable {
 
 	private Effect effect;
@@ -43,9 +47,11 @@ public class EffectInstance implements IRenderable {
 	}
 
 	@Override
-	public void draw(Graphics g, int gx, int gy) throws SlickException {
+	public void draw(Graphics g, float gx, float gy) throws SlickException {
 		ObjectRegistry.getImage(effect.getName()).draw(gx, gy);
 	}
+
+	/* We override the size queries as the only effect current in effect has a non-standard size  */
 
 	@Override
 	public int getRenderedWidth() {
