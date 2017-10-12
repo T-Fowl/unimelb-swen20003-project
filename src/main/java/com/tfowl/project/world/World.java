@@ -124,12 +124,7 @@ public class World implements IRenderable {
 	}
 
 	public boolean canBlockMove(Position position, IBlockState state, Direction direction) {
-		Position destination = position.displace(direction, 1); //TODO
-
-		if (!isTileWalkable(destination))
-			return false;
-		BlockInstance blockAt = blockAt(destination);
-		return blockAt == null;
+		return state.getBlock().canDoPush(this, direction, position, state);
 	}
 
 	public void moveBlock(Position position, IBlockState state, Direction direction) {
@@ -229,9 +224,9 @@ public class World implements IRenderable {
 
 		for (TileInstance tile : tiles)
 			if (tile.getPosition().equals(newPosition))
-				tile.getTile().onBlockMovedOn(this, player, newPosition, tile.getState());
+				tile.getTile().onBlockMovedOn(this, newPosition, tile.getState());
 			else if (tile.getPosition().equals(oldPosition))
-				tile.getTile().onBlockMovedOff(this, player, oldPosition, tile.getState());
+				tile.getTile().onBlockMovedOff(this, oldPosition, tile.getState());
 	}
 
 	public boolean isSpaceEmpty(Position position) {
@@ -263,7 +258,7 @@ public class World implements IRenderable {
 		}
 
 		for (EffectInstance effect : effects) {
-			effect.draw(g, (int) (effect.getPosition().getX() * 32 + gx), (int) (effect.getPosition().getY() * 32 + gy));
+			effect.drawCentered(g, (int) (effect.getPosition().getX() * 32 + gx + 16), (int) (effect.getPosition().getY() * 32 + gy + 16));
 		}
 
 		player.draw(g, (int) (player.getPosition().getX() * 32 + gx), (int) (player.getPosition().getY() * 32 + gy));
@@ -280,6 +275,14 @@ public class World implements IRenderable {
 		}
 	}
 
+	public void destroyTile(Position position, Tile type) {
+		tiles.removeIf(instance -> instance.getTile().equals(type) && instance.getPosition().equals(position));
+	}
+
+	public void destroyBlock(Position position) {
+		blocks.removeIf(instance -> instance.getPosition().equals(position));
+	}
+
 	private void handlePlayerMovement(Direction dir) {
 		Position moveTo = player.getPosition().displace(dir, Graphical.PLAYER_MOVEMENT_UNITS);
 
@@ -291,7 +294,7 @@ public class World implements IRenderable {
 				movePlayer(moveTo, dir);
 			} else if (block.getBlock().isPushable()) {
 				Position blockMoveTo = moveTo.displace(dir, 1);
-				if (isSpaceEmpty(blockMoveTo)) {
+				if (canBlockMove(moveTo, block.getState(), dir)) {
 					playerMoveBlock(block, blockMoveTo, dir);
 					movePlayer(moveTo, dir);
 				}

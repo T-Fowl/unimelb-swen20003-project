@@ -2,6 +2,7 @@ package com.tfowl.project.block;
 
 import com.tfowl.project.impl.ImplBlockState;
 import com.tfowl.project.player.Player;
+import com.tfowl.project.unit.IUnitState;
 import com.tfowl.project.util.Direction;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
@@ -67,9 +68,21 @@ public class Block {
 
 	}
 
-	public void onPush(World world, Player player, Direction direction,
-					   Position oldPosition, Position newPosition,
-					   IBlockState state) {
+	public void onPush(World world,
+					   IUnitState pushingUnitState, Direction directionPushed, Position oldPosition,
+					   Position position, IBlockState state) {
 
+	}
+
+	public void onPush(World world,
+					   Player pushingPlayer, Direction directionPushed, Position oldPosition,
+					   Position position, IBlockState state) {
+
+	}
+
+	public boolean canDoPush(World world,
+							 Direction directionOfPush,
+							 Position position, IBlockState state) {
+		return world.isSpaceEmpty(position.displace(directionOfPush, 1)); //TODO
 	}
 }

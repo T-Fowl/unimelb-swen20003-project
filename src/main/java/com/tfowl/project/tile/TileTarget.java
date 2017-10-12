@@ -1,6 +1,5 @@
 package com.tfowl.project.tile;
 
-import com.tfowl.project.player.Player;
 import com.tfowl.project.states.properties.PropertyBoolean;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
@@ -25,8 +24,8 @@ public class TileTarget extends Tile {
 	}
 
 	@Override
-	public void onBlockMovedOn(World world, Player player, Position position, ITileState state) {
-		super.onBlockMovedOn(world, player, position, state);
+	public void onBlockMovedOn(World world, Position position, ITileState state) {
+		super.onBlockMovedOn(world, position, state);
 		state.setValue(COVERED_PROPERTY, true);
 
 		boolean allCovered = true;
@@ -45,8 +44,8 @@ public class TileTarget extends Tile {
 	}
 
 	@Override
-	public void onBlockMovedOff(World world, Player player, Position position, ITileState state) {
-		super.onBlockMovedOff(world, player, position, state);
+	public void onBlockMovedOff(World world, Position position, ITileState state) {
+		super.onBlockMovedOff(world, position, state);
 		state.setValue(COVERED_PROPERTY, false);
 	}
 }

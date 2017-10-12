@@ -41,14 +41,12 @@ public class Tile {
 		return new ImplTileState(this);
 	}
 
-	public void onBlockMovedOff(World world, Player player,
-								Position position,
-								ITileState state) {
+	public void onBlockMovedOff(World world,
+								Position position, ITileState state) {
 
 	}
 
-	public void onBlockMovedOn(World world, Player player,
-							   Position position,
-							   ITileState state) {
+	public void onBlockMovedOn(World world,
+							   Position position, ITileState state) {
 	}
 }

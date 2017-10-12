@@ -46,4 +46,14 @@ public class EffectInstance implements IRenderable {
 	public void draw(Graphics g, int gx, int gy) throws SlickException {
 		ObjectRegistry.getImage(effect.getName()).draw(gx, gy);
 	}
+
+	@Override
+	public int getRenderedWidth() {
+		return ObjectRegistry.getImage(effect.getName()).getWidth();
+	}
+
+	@Override
+	public int getRenderedHeight() {
+		return ObjectRegistry.getImage(effect.getName()).getHeight();
+	}
 }

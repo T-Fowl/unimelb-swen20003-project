@@ -37,14 +37,14 @@ public class BlockIce extends Block {
 	}
 
 	@Override
-	public void onPush(World world, Player player, Direction direction, Position oldPosition, Position newPosition, IBlockState state) {
-		super.onPush(world, player, direction, oldPosition, newPosition, state);
+	public void onPush(World world, Player pushingPlayer, Direction directionPushed, Position oldPosition, Position position, IBlockState state) {
+		super.onPush(world, pushingPlayer, directionPushed, oldPosition, position, state);
 
 		state.setValue(SLIDING_PROPERTY, true);
-		state.setValue(SLIDING_DIRECTION_PROPERTY, direction);
+		state.setValue(SLIDING_DIRECTION_PROPERTY, directionPushed);
 		state.setValue(COOLDOWN_PROPERTY, 0L);
 
-		System.out.println("Ice pushed: Sliding in direction: " + direction);
+		System.out.println("Ice pushed: Sliding in direction: " + directionPushed);
 	}
 
 	@Override
