@@ -50,6 +50,14 @@ project.ext.studentProperties.load(new FileInputStream("student.properties"))
 project.ext.studentid = project.ext.studentProperties.getProperty("studentid", "unknown_student_id")
 project.ext.studentusername = project.ext.studentProperties.getProperty("studentusername", "unknown_student_username")
 
+project.ext.serverKeyPath = project.ext.studentProperties.getProperty("serverKeyPath")
+project.ext.serverJavadocLocation = project.ext.studentProperties.getProperty("serverJavadocLocation")
+
+task uploadDocs(type: Exec, dependsOn: javadoc) {
+    workingDir "$buildDir/docs"
+    commandLine 'pscp', '-i', serverKeyPath, '-r', 'javadoc', serverJavadocLocation
+}
+
 def submissionGroup = 'Project Submission'
 def submittedProjectName = "${project.name}-$version-$studentusername-$studentid"
 def submittedProjectZip = "${submittedProjectName}.zip"
@@ -148,7 +156,7 @@ task exportSubmission(dependsOn: zipWholeProject) {
         }
     }
 
-   // finalizedBy cleanZippedProject
+    // finalizedBy cleanZippedProject
 }
 
 task cleanSubmission(type: Delete, dependsOn: cleanZippedProject) {
