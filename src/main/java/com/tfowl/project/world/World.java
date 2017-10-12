@@ -39,6 +39,7 @@ public class World implements IRenderable {
 	private Level level;
 
 	private Player player;
+	private int playerMoveCount = 0;
 
 	private List<TileInstance> tiles;
 	private List<BlockInstance> blocks;
@@ -66,6 +67,7 @@ public class World implements IRenderable {
 		this.level = level;
 		player.setPosition(new Position(level.getPlayerStartX(), level.getPlayerStartY()));
 
+		playerMoveCount = 0;
 		tiles.clear();
 		blocks.clear();
 		effects.clear();
@@ -206,6 +208,8 @@ public class World implements IRenderable {
 		}
 
 		player.draw(g, (int) (player.getPosition().getX() * 32 + gx), (int) (player.getPosition().getY() * 32 + gy));
+
+		g.drawString(String.format("Moves: %d", playerMoveCount), 0, 0);
 	}
 
 	private void handlePlayerMovement(Direction dir) {
@@ -217,11 +221,13 @@ public class World implements IRenderable {
 			BlockInstance block = blockAt(moveTo);
 			if (null == block) {
 				player.setPosition(moveTo);
+				playerMoveCount++;
 			} else if (block.getBlock().isPushable()) {
 				Position blockMoveTo = moveTo.displace(dir, 1);
 				if (isSpaceEmpty(blockMoveTo)) {
 					moveBlock(block, blockMoveTo);
 					player.setPosition(moveTo);
+					playerMoveCount++;
 				}
 			}
 		}
@@ -229,6 +235,11 @@ public class World implements IRenderable {
 
 	public void restartLevel() {
 		loadLevel(level);
+	}
+
+	public void undo() {
+		//TODO
+		System.out.println("Not implemented");
 	}
 
 	public void update(Input input, long delta) {

@@ -58,15 +58,16 @@ public class ShadowBlocksGame extends BasicGame {
 		/* Check for escape being pressed, exit the game */
 		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE))
 			container.exit();
-
-		if(container.getInput().isKeyPressed(Input.KEY_R))
+		else if (container.getInput().isKeyPressed(Input.KEY_R))
 			world.restartLevel();
+		else if (container.getInput().isKeyPressed(Input.KEY_Z))
+			world.undo();
 	}
 
 	@Override
 	public void render(GameContainer container, Graphics g) throws SlickException {
 		/* Draw the world. By default the current level will be drawn centered. */
-		world.drawCentered(g, container.getWidth()  /2, container.getHeight() / 2);
+		world.drawCentered(g, container.getWidth() / 2, container.getHeight() / 2);
 	}
 
 }
