@@ -45,4 +45,10 @@ public class UnitRogue extends Unit {
 //			}
 		}
 	}
+
+	@Override
+	public void onPlayerTouch(World world, Player player, Position location, IUnitState state) {
+		super.onPlayerTouch(world, player, location, state);
+		world.levelFailed();
+	}
 }

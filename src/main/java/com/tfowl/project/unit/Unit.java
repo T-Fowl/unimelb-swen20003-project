@@ -46,4 +46,10 @@ public class Unit {
 					   Position unitPosition, IUnitState unitState) {
 
 	}
+
+	public void onPlayerTouch(World world, Player player,
+							  Position location,
+							  IUnitState state) {
+
+	}
 }

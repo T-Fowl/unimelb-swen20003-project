@@ -41,6 +41,7 @@ public class World implements IRenderable {
 	private int currentLevelIndex = 0;
 	private Level currentLevel;
 	private boolean shouldLoadNewLevel = false;
+	private boolean levelIsFailed = false;
 
 	private Player player;
 	private int playerMoveCount = 0;
@@ -80,6 +81,10 @@ public class World implements IRenderable {
 		if (index < levels.size() && index >= 0) {
 			loadLevel(levels.get(index));
 		}
+	}
+
+	public void levelFailed() {
+		levelIsFailed = true;
 	}
 
 	/**
@@ -174,6 +179,7 @@ public class World implements IRenderable {
 	public void moveUnit(Position position, IUnitState state, Direction direction) {
 		Position destination = position.displace(direction, 1); //TODO
 		BlockInstance blockAt = blockAt(destination);
+
 		if (null != blockAt) {
 			Position blockDestination = blockAt.getPosition().displace(direction, 1); //TODO
 			blockAt.setPosition(blockDestination);
@@ -183,8 +189,9 @@ public class World implements IRenderable {
 		for (UnitInstance instance : units) {
 			if (instance.getPosition().equals(position) && instance.getState().equals(state)) {
 				instance.setPosition(destination);
-				break;
 			}
+			if (instance.getPosition().equals(player.getPosition()))
+				instance.getUnit().onPlayerTouch(this, player, instance.getPosition(), instance.getState());
 		}
 	}
 
@@ -295,6 +302,13 @@ public class World implements IRenderable {
 		player.setPosition(position);
 		playerMoveCount++;
 
+		//Check for units touching the player
+		for (UnitInstance instance : units) {
+			if (instance.getPosition().equals(position))
+				instance.getUnit().onPlayerTouch(this, player, position, instance.getState());
+		}
+
+		//Alert all units that the player has moved
 		for (UnitInstance instance : units) {
 			instance.getUnit().onPlayerMove(this, player, dir, 1, instance.getPosition(), instance.getState());
 		}
@@ -337,6 +351,11 @@ public class World implements IRenderable {
 	}
 
 	public void update(Input input, long delta) {
+
+		if (levelIsFailed) {
+			levelIsFailed = false;
+			restartLevel();
+		}
 
 		if (shouldLoadNewLevel) {
 			loadLevel(currentLevelIndex);

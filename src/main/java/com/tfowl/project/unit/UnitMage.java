@@ -30,4 +30,10 @@ public class UnitMage extends Unit {
 			world.moveUnit(unitPosition, unitState, directionY);
 		}
 	}
+
+	@Override
+	public void onPlayerTouch(World world, Player player, Position location, IUnitState state) {
+		super.onPlayerTouch(world, player, location, state);
+		world.levelFailed();
+	}
 }

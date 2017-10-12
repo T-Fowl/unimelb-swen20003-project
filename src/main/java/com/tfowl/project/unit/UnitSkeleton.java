@@ -1,5 +1,6 @@
 package com.tfowl.project.unit;
 
+import com.tfowl.project.player.Player;
 import com.tfowl.project.states.properties.PropertyDirection;
 import com.tfowl.project.states.properties.PropertyLong;
 import com.tfowl.project.util.Direction;
@@ -58,5 +59,11 @@ public class UnitSkeleton extends Unit {
 //				}
 			}
 		}
+	}
+
+	@Override
+	public void onPlayerTouch(World world, Player player, Position location, IUnitState state) {
+		super.onPlayerTouch(world, player, location, state);
+		world.levelFailed();
 	}
 }
