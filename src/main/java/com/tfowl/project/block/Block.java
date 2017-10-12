@@ -40,7 +40,13 @@ public class Block {
 		return new ImplBlockState(this);
 	}
 
-	public void onTick(World world, long delta,
+
+	public void onWorldTick(World world, long delta,
+							Position position, IBlockState state) {
+
+	}
+
+	public void onPush(World world, Direction directionPushed, Position oldPosition,
 					   Position position, IBlockState state) {
 
 	}
@@ -48,13 +54,13 @@ public class Block {
 	public void onPush(World world,
 					   IUnitState pushingUnitState, Direction directionPushed, Position oldPosition,
 					   Position position, IBlockState state) {
-
+		onPush(world, directionPushed, oldPosition, position, state);
 	}
 
 	public void onPush(World world,
 					   Player pushingPlayer, Direction directionPushed, Position oldPosition,
 					   Position position, IBlockState state) {
-
+		onPush(world, directionPushed, oldPosition, position, state);
 	}
 
 	public boolean canDoPush(World world,

@@ -1,5 +1,6 @@
 package com.tfowl.project.tile;
 
+import com.tfowl.project.block.IBlockState;
 import com.tfowl.project.init.Tiles;
 import com.tfowl.project.states.properties.PropertyBoolean;
 import com.tfowl.project.util.Position;
@@ -32,15 +33,15 @@ public class TileSwitch extends Tile {
 	}
 
 	@Override
-	public void onBlockMovedOff(World world, Position position, ITileState state) {
-		super.onBlockMovedOff(world, position, state);
+	public void onBlockMovedOff(World world, Position position, ITileState state, Position blockToPosition, IBlockState blockState) {
+		super.onBlockMovedOff(world, position, state, blockToPosition, blockState);
 		state.setValue(ACTIVATED_PROPERTY, false);
 		toggleDoors(world, false);
 	}
 
 	@Override
-	public void onBlockMovedOn(World world, Position position, ITileState state) {
-		super.onBlockMovedOn(world, position, state);
+	public void onBlockMovedOver(World world, Position position, ITileState state, Position blockFromPosition, IBlockState blockState) {
+		super.onBlockMovedOver(world, position, state, blockFromPosition, blockState);
 		state.setValue(ACTIVATED_PROPERTY, true);
 		toggleDoors(world, true);
 	}

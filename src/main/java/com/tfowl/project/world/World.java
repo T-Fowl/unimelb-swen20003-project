@@ -143,8 +143,8 @@ public class World implements IRenderable {
 
 	private boolean isTileWalkable(Position position) {
 		for (TileInstance tile : tiles) {
-			if (tile.getPosition().equals(position) && !tile.getTile().isWalkable(
-					this, player, position, tile.getState()
+			if (tile.getPosition().equals(position) && !tile.getTile().isTileWalkable(
+					this, position, tile.getState()
 			)) {
 				return false;
 			}
@@ -156,7 +156,7 @@ public class World implements IRenderable {
 		return state.getBlock().canDoPush(this, direction, position, state);
 	}
 
-	public void moveBlock(Position position, IBlockState state, Direction direction) {
+	public void moveBlock(Position position, Direction direction) {
 		Position destination = position.displace(direction);
 		BlockInstance instance = blockAt(position);
 		if (instance != null) {
@@ -164,11 +164,11 @@ public class World implements IRenderable {
 
 			for (TileInstance tile : tiles) {
 				if (tile.getPosition().equals(position))
-					tile.getTile().onBlockMovedOff(this, tile.getPosition(), tile.getState());
+					tile.getTile().onBlockMovedOff(this, tile.getPosition(), tile.getState(), instance.getPosition(), instance.getState());
 			}
 			for (TileInstance tile : tiles) {
 				if (tile.getPosition().equals(destination))
-					tile.getTile().onBlockMovedOn(this, tile.getPosition(), tile.getState());
+					tile.getTile().onBlockMovedOver(this, tile.getPosition(), tile.getState(), position, instance.getState());
 			}
 		}
 	}
@@ -266,10 +266,10 @@ public class World implements IRenderable {
 
 		for (TileInstance tile : tiles)
 			if (tile.getPosition().equals(oldPosition))
-				tile.getTile().onBlockMovedOff(this, oldPosition, tile.getState());
+				tile.getTile().onBlockMovedOff(this, tile.getPosition(), tile.getState(), instance.getPosition(), instance.getState());
 		for (TileInstance tile : tiles)
 			if (tile.getPosition().equals(newPosition))
-				tile.getTile().onBlockMovedOn(this, newPosition, tile.getState());
+				tile.getTile().onBlockMovedOver(this, tile.getPosition(), tile.getState(), oldPosition, instance.getState());
 	}
 
 	public boolean isSpaceEmpty(Position position) {
@@ -289,7 +289,7 @@ public class World implements IRenderable {
 	@Override
 	public void draw(Graphics g, int gx, int gy) throws SlickException {
 		for (TileInstance tile : tiles) {
-			if (tile.getTile().shouldRender(this, tile.getPosition(), tile.getState()))
+			if (tile.getTile().shouldRenderTile(this, tile.getPosition(), tile.getState()))
 				tile.draw(g, (int) (tile.getPosition().getX() * 32 + gx), (int) (tile.getPosition().getY() * 32 + gy));
 		}
 
@@ -389,11 +389,11 @@ public class World implements IRenderable {
 		}
 
 		for (BlockInstance blockInstance : blocks) {
-			blockInstance.getBlock().onTick(this, delta, blockInstance.getPosition(), blockInstance.getState());
+			blockInstance.getBlock().onWorldTick(this, delta, blockInstance.getPosition(), blockInstance.getState());
 		}
 
 		for (UnitInstance unitInstance : units) {
-			unitInstance.getUnit().onTick(this, delta, unitInstance.getPosition(), unitInstance.getState());
+			unitInstance.getUnit().onWorldTick(this, delta, unitInstance.getPosition(), unitInstance.getState());
 		}
 	}
 }

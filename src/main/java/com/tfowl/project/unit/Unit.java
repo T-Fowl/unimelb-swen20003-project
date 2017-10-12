@@ -39,17 +39,14 @@ public class Unit {
 	public void onPlayerMove(World world, Player player,
 							 Direction moveDirection, float moveDistance,
 							 Position unitPosition, IUnitState unitState) {
-
 	}
 
-	public void onTick(World world, long delta,
-					   Position unitPosition, IUnitState unitState) {
-
+	public void onWorldTick(World world, long delta,
+							Position unitPosition, IUnitState unitState) {
 	}
 
 	public void onPlayerTouch(World world, Player player,
 							  Position location,
 							  IUnitState state) {
-
 	}
 }

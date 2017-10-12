@@ -1,8 +1,8 @@
 package com.tfowl.project.tile;
 
 
+import com.tfowl.project.block.IBlockState;
 import com.tfowl.project.impl.ImplTileState;
-import com.tfowl.project.player.Player;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
 
@@ -30,10 +30,6 @@ public class Tile {
 		return isWalkable;
 	}
 
-	public boolean isWalkable(World world, Player player, Position position, ITileState state) {
-		return isWalkable();
-	}
-
 	public Tile setWalkable(boolean walkable) {
 		isWalkable = walkable;
 		return this;
@@ -43,16 +39,22 @@ public class Tile {
 		return new ImplTileState(this);
 	}
 
+	public boolean isTileWalkable(World world, Position position, ITileState state) {
+		return isWalkable();
+	}
+
 	public void onBlockMovedOff(World world,
-								Position position, ITileState state) {
+								Position position, ITileState state,
+								Position blockToPosition, IBlockState blockState) {
 
 	}
 
-	public void onBlockMovedOn(World world,
-							   Position position, ITileState state) {
+	public void onBlockMovedOver(World world,
+								 Position position, ITileState state,
+								 Position blockFromPosition, IBlockState blockState) {
 	}
 
-	public boolean shouldRender(World world, Position position, ITileState state) {
+	public boolean shouldRenderTile(World world, Position position, ITileState state) {
 		return true;
 	}
 }

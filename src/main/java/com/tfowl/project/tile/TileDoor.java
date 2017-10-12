@@ -1,6 +1,5 @@
 package com.tfowl.project.tile;
 
-import com.tfowl.project.player.Player;
 import com.tfowl.project.states.properties.PropertyBoolean;
 import com.tfowl.project.util.Position;
 import com.tfowl.project.world.World;
@@ -25,12 +24,12 @@ public class TileDoor extends Tile {
 	}
 
 	@Override
-	public boolean isWalkable(World world, Player player, Position position, ITileState state) {
+	public boolean isTileWalkable(World world, Position position, ITileState state) {
 		return state.getValue(OPEN_PROPERTY);
 	}
 
 	@Override
-	public boolean shouldRender(World world, Position position, ITileState state) {
+	public boolean shouldRenderTile(World world, Position position, ITileState state) {
 		return !state.getValue(OPEN_PROPERTY);
 	}
 }

@@ -31,8 +31,8 @@ public class UnitSkeleton extends Unit {
 	}
 
 	@Override
-	public void onTick(World world, long delta, Position unitPosition, IUnitState unitState) {
-		super.onTick(world, delta, unitPosition, unitState);
+	public void onWorldTick(World world, long delta, Position unitPosition, IUnitState unitState) {
+		super.onWorldTick(world, delta, unitPosition, unitState);
 
 
 		/*

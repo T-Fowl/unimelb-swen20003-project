@@ -1,6 +1,5 @@
 package com.tfowl.project.block;
 
-import com.tfowl.project.player.Player;
 import com.tfowl.project.states.properties.PropertyBoolean;
 import com.tfowl.project.states.properties.PropertyDirection;
 import com.tfowl.project.states.properties.PropertyLong;
@@ -34,18 +33,22 @@ public class BlockIce extends Block {
 		return state;
 	}
 
-	@Override
-	public void onPush(World world, Player pushingPlayer, Direction directionPushed, Position oldPosition, Position position, IBlockState state) {
-		super.onPush(world, pushingPlayer, directionPushed, oldPosition, position, state);
-
+	private void setInMotion(Direction direction, IBlockState state) {
 		state.setValue(SLIDING_PROPERTY, true);
-		state.setValue(SLIDING_DIRECTION_PROPERTY, directionPushed);
+		state.setValue(SLIDING_DIRECTION_PROPERTY, direction);
 		state.setValue(COOLDOWN_PROPERTY, 0L);
 	}
 
 	@Override
-	public void onTick(World world, long delta, Position position, IBlockState state) {
-		super.onTick(world, delta, position, state);
+	public void onPush(World world, Direction directionPushed, Position oldPosition, Position position, IBlockState state) {
+		super.onPush(world, directionPushed, oldPosition, position, state);
+
+		setInMotion(directionPushed, state);
+	}
+
+	@Override
+	public void onWorldTick(World world, long delta, Position position, IBlockState state) {
+		super.onWorldTick(world, delta, position, state);
 
 		if (state.getValue(SLIDING_PROPERTY)) {
 
@@ -59,7 +62,7 @@ public class BlockIce extends Block {
 				Position destination = position.displace(direction);
 
 				if (world.canBlockMove(position, state, direction)) {
-					world.moveBlock(position, state, direction);
+					world.moveBlock(position, direction);
 				} else {
 					state.setValue(SLIDING_PROPERTY, false);
 					state.setValue(SLIDING_DIRECTION_PROPERTY, Direction.NONE);

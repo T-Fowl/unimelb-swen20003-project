@@ -2,7 +2,6 @@ package com.tfowl.project.block;
 
 import com.tfowl.project.init.Effects;
 import com.tfowl.project.init.Tiles;
-import com.tfowl.project.player.Player;
 import com.tfowl.project.tile.ITileState;
 import com.tfowl.project.util.Direction;
 import com.tfowl.project.util.Position;
@@ -18,8 +17,8 @@ public class BlockTnt extends Block {
 	}
 
 	@Override
-	public void onPush(World world, Player pushingPlayer, Direction directionPushed, Position oldPosition, Position position, IBlockState state) {
-		super.onPush(world, pushingPlayer, directionPushed, oldPosition, position, state);
+	public void onPush(World world, Direction directionPushed, Position oldPosition, Position position, IBlockState state) {
+		super.onPush(world, directionPushed, oldPosition, position, state);
 
 		ITileState crackedWallState = world.getTileState(position, Tiles.CRACKED_WALL);
 		if (null != crackedWallState) {
