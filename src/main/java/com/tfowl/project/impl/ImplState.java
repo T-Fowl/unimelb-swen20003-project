@@ -6,14 +6,18 @@ import com.tfowl.project.states.properties.IProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ImplState<O> implements IState {
+public class ImplState<O, S extends IState<S>> implements IState<S> {
 
-	private O block;
+	private O object;
 	private Map<IProperty, Object> properties;
 
-	public ImplState(O block) {
-		this.block = block;
-		this.properties = new HashMap<>();
+	public ImplState(O object) {
+		this(object, new HashMap<>());
+	}
+
+	private ImplState(O object, Map<IProperty, Object> properties) {
+		this.object = object;
+		this.properties = properties;
 	}
 
 	public <T> ImplState withProperty(IProperty<T> property, T defaultValue) {
@@ -22,7 +26,7 @@ public class ImplState<O> implements IState {
 	}
 
 	public O getObject() {
-		return block;
+		return object;
 	}
 
 	@Override
@@ -34,5 +38,12 @@ public class ImplState<O> implements IState {
 	@Override
 	public <T> void setValue(IProperty<T> property, T value) {
 		properties.put(property, value);
+	}
+
+	@Override
+	public IState<S> deepCopy() {
+		Map<IProperty, Object> copyProperties = new HashMap<>(properties.size());
+		copyProperties.putAll(properties);
+		return new ImplState<O, S>(object, copyProperties);
 	}
 }
