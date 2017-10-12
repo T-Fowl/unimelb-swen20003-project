@@ -1,13 +1,13 @@
 package com.tfowl.project.game;
 
-import com.tfowl.project.block.Blocks;
-import com.tfowl.project.effect.Effects;
+import com.tfowl.project.init.Blocks;
+import com.tfowl.project.init.Effects;
+import com.tfowl.project.init.Tiles;
+import com.tfowl.project.init.Units;
 import com.tfowl.project.logging.Logger;
 import com.tfowl.project.logging.LoggerFactory;
 import com.tfowl.project.reference.Strings;
 import com.tfowl.project.registry.ObjectRegistry;
-import com.tfowl.project.tile.Tiles;
-import com.tfowl.project.unit.Units;
 import com.tfowl.project.util.ResourceLoader;
 import com.tfowl.project.world.World;
 import org.newdawn.slick.*;

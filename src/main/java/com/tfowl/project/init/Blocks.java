@@ -1,5 +1,9 @@
-package com.tfowl.project.block;
+package com.tfowl.project.init;
 
+import com.tfowl.project.block.Block;
+import com.tfowl.project.block.BlockIce;
+import com.tfowl.project.block.BlockStone;
+import com.tfowl.project.block.BlockTnt;
 import com.tfowl.project.registry.ObjectRegistry;
 
 public class Blocks {

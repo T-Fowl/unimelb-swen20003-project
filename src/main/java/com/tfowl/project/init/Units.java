@@ -1,6 +1,7 @@
-package com.tfowl.project.unit;
+package com.tfowl.project.init;
 
 import com.tfowl.project.registry.ObjectRegistry;
+import com.tfowl.project.unit.*;
 
 public class Units {
 

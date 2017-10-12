@@ -1,6 +1,7 @@
-package com.tfowl.project.tile;
+package com.tfowl.project.init;
 
 import com.tfowl.project.registry.ObjectRegistry;
+import com.tfowl.project.tile.*;
 
 public class Tiles {
 

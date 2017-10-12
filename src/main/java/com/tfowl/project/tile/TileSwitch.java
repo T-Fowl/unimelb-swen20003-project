@@ -1,5 +1,6 @@
 package com.tfowl.project.tile;
 
+import com.tfowl.project.init.Tiles;
 import com.tfowl.project.player.Player;
 import com.tfowl.project.states.properties.PropertyBoolean;
 import com.tfowl.project.util.Position;
