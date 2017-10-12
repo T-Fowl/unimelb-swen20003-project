@@ -25,9 +25,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * World class
@@ -51,6 +49,9 @@ public class World implements IRenderable {
 	private List<EffectInstance> effects;
 	private List<UnitInstance> units;
 
+	private Stack<WorldState> history;
+	private boolean shouldUndo = false;
+
 	/**
 	 * Initialised the world. It is required that this method be called after the OpenGL context
 	 * has been created.
@@ -62,6 +63,7 @@ public class World implements IRenderable {
 		effects = new ArrayList<>();
 		units = new ArrayList<>();
 		levels = new ArrayList<>();
+		history = new Stack<>();
 	}
 
 	public void addLevel(int index, Level level) {
@@ -85,6 +87,29 @@ public class World implements IRenderable {
 
 	public void levelFailed() {
 		levelIsFailed = true;
+	}
+
+	private void restoreState(WorldState state) {
+		player.setPosition(state.getPlayerPosition());
+
+		for (BlockInstance instance : blocks) {
+			if (state.getBlockStates().containsKey(instance)) {
+				Map.Entry<Position, IBlockState> blockDescription = state.getBlockStates().get(instance);
+				instance.setPosition(blockDescription.getKey());
+				instance.setState(blockDescription.getValue());
+			}
+		}
+	}
+
+	private WorldState captureCurrentState() {
+		WorldState state = new WorldState();
+		state.setPlayerPosition(player.getPosition());
+
+		for (BlockInstance instance : blocks) {
+			state.withBlockState(instance, instance.getPosition(), (IBlockState) instance.getState().deepCopy());
+		}
+
+		return state;
 	}
 
 	/**
@@ -312,7 +337,6 @@ public class World implements IRenderable {
 
 	private void movePlayer(Position position, Direction dir) {
 		player.setPosition(position);
-		playerMoveCount++;
 
 		//Check for units touching the player
 		for (UnitInstance instance : units) {
@@ -358,8 +382,7 @@ public class World implements IRenderable {
 	}
 
 	public void undo() {
-		//TODO
-		System.out.println("Not implemented");
+		this.shouldUndo = true;
 	}
 
 	public void update(Input input, long delta) {
@@ -367,6 +390,7 @@ public class World implements IRenderable {
 		if (levelIsFailed) {
 			levelIsFailed = false;
 			restartLevel();
+			return;
 		}
 
 		if (shouldLoadNewLevel) {
@@ -375,9 +399,21 @@ public class World implements IRenderable {
 			return;
 		}
 
+		if (shouldUndo) {
+			shouldUndo = false;
+			if (history.size() > 0) {
+				WorldState state = history.pop();
+				restoreState(state);
+				playerMoveCount--;
+				return;
+			}
+		}
+
 		Direction direction = InputUtil.getDirection(input);
 		if (direction != Direction.NONE) {
+			history.push(captureCurrentState());
 			handlePlayerMovement(direction);
+			playerMoveCount++;
 		}
 
 
