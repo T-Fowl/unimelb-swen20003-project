@@ -33,13 +33,15 @@ import java.util.*;
  */
 public class World implements IRenderable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(World.class);
+	private static final int UPDATE_FLAG_NEW_LEVEL = 0x01;
+	private static final int UPDATE_FLAG_LEVEL_FAILED = 0x02;
+	private static final int UPDATE_FLAG_UNDO = 0x04;
+
+	private static final Logger logger = LoggerFactory.getLogger(World.class);
 
 	private List<Level> levels;
 	private int currentLevelIndex = 0;
 	private Level currentLevel;
-	private boolean shouldLoadNewLevel = false;
-	private boolean levelIsFailed = false;
 
 	private Player player;
 	private int playerMoveCount = 0;
@@ -50,7 +52,8 @@ public class World implements IRenderable {
 	private List<UnitInstance> units;
 
 	private Stack<WorldState> history;
-	private boolean shouldUndo = false;
+
+	private int updateFlags = 0;
 
 	/**
 	 * Initialised the world. It is required that this method be called after the OpenGL context
@@ -72,7 +75,7 @@ public class World implements IRenderable {
 
 	public void nextLevel() {
 		currentLevelIndex++;
-		shouldLoadNewLevel = true;
+		updateFlags |= UPDATE_FLAG_NEW_LEVEL;
 	}
 
 	public void loadFirstLevel() {
@@ -86,7 +89,7 @@ public class World implements IRenderable {
 	}
 
 	public void levelFailed() {
-		levelIsFailed = true;
+		updateFlags |= UPDATE_FLAG_LEVEL_FAILED;
 	}
 
 	private void restoreState(WorldState state) {
@@ -146,7 +149,7 @@ public class World implements IRenderable {
 							instance.setPosition(Position.at(x, y));
 							units.add(instance);
 						} else {
-							LOGGER.warn("Level referenced unregistered object: " + object);
+							logger.warn("Level referenced unregistered object: " + object);
 						}
 					}
 				}
@@ -382,25 +385,25 @@ public class World implements IRenderable {
 	}
 
 	public void undo() {
-		this.shouldUndo = true;
+		updateFlags |= UPDATE_FLAG_UNDO;
 	}
 
 	public void update(Input input, long delta) {
 
-		if (levelIsFailed) {
-			levelIsFailed = false;
+		if ((updateFlags & UPDATE_FLAG_LEVEL_FAILED) != 0) {
 			restartLevel();
+			updateFlags &= ~UPDATE_FLAG_LEVEL_FAILED;
 			return;
 		}
 
-		if (shouldLoadNewLevel) {
+		if ((updateFlags & UPDATE_FLAG_NEW_LEVEL) != 0) {
 			loadLevel(currentLevelIndex);
-			shouldLoadNewLevel = false;
+			updateFlags &= ~UPDATE_FLAG_NEW_LEVEL;
 			return;
 		}
 
-		if (shouldUndo) {
-			shouldUndo = false;
+		if ((updateFlags & UPDATE_FLAG_UNDO) != 0) {
+			updateFlags &= ~UPDATE_FLAG_UNDO;
 			if (history.size() > 0) {
 				WorldState state = history.pop();
 				restoreState(state);
