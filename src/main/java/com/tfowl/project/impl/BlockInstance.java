@@ -10,22 +10,16 @@ import org.newdawn.slick.SlickException;
 
 public class BlockInstance implements IRenderable {
 
-	private Block block;
 	private IBlockState state;
 	private Position position;
 
 	public BlockInstance(Block block) {
-		this.block = block;
 		this.state = block.getDefaultState();
 		this.position = new Position();
 	}
 
 	public Block getBlock() {
-		return block;
-	}
-
-	public void setBlock(Block block) {
-		this.block = block;
+		return getState().getBlock();
 	}
 
 	public Position getPosition() {
@@ -46,6 +40,6 @@ public class BlockInstance implements IRenderable {
 
 	@Override
 	public void draw(Graphics g, int gx, int gy) throws SlickException {
-		ObjectRegistry.getImage(block.getName()).draw(gx, gy);
+		ObjectRegistry.getImage(state.getBlock().getName()).draw(gx, gy);
 	}
 }

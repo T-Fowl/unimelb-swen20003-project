@@ -10,22 +10,16 @@ import org.newdawn.slick.SlickException;
 
 public class TileInstance implements IRenderable {
 
-	private Tile tile;
 	private Position position;
 	private ITileState state;
 
 	public TileInstance(Tile tile) {
-		this.tile = tile;
 		this.state = tile.getDefaultState();
 		this.position = new Position();
 	}
 
 	public Tile getTile() {
-		return tile;
-	}
-
-	public void setTile(Tile tile) {
-		this.tile = tile;
+		return getState().getTile();
 	}
 
 	public Position getPosition() {
@@ -46,6 +40,6 @@ public class TileInstance implements IRenderable {
 
 	@Override
 	public void draw(Graphics g, int gx, int gy) throws SlickException {
-		ObjectRegistry.getImage(tile.getName()).draw(gx, gy);
+		ObjectRegistry.getImage(state.getTile().getName()).draw(gx, gy);
 	}
 }

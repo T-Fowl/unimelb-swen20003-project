@@ -10,22 +10,16 @@ import org.newdawn.slick.SlickException;
 
 public class UnitInstance implements IRenderable {
 
-	private Unit unit;
 	private IUnitState state;
 	private Position position;
 
 	public UnitInstance(Unit unit) {
-		this.unit = unit;
 		this.state = unit.getDefaultState();
 		this.position = new Position();
 	}
 
 	public Unit getUnit() {
-		return unit;
-	}
-
-	public void setUnit(Unit unit) {
-		this.unit = unit;
+		return getState().getUnit();
 	}
 
 	public Position getPosition() {
@@ -46,6 +40,6 @@ public class UnitInstance implements IRenderable {
 
 	@Override
 	public void draw(Graphics g, int gx, int gy) throws SlickException {
-		ObjectRegistry.getImage(unit.getName()).draw(gx, gy);
+		ObjectRegistry.getImage(state.getUnit().getName()).draw(gx, gy);
 	}
 }
