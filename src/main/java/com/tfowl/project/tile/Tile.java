@@ -49,4 +49,8 @@ public class Tile {
 	public void onBlockMovedOn(World world,
 							   Position position, ITileState state) {
 	}
+
+	public boolean shouldRender(World world, Position position, ITileState state) {
+		return true;
+	}
 }

@@ -19,7 +19,7 @@ public class UnitSkeleton extends Unit {
 
 	public UnitSkeleton() {
 		setName("skeleton");
-		setCanPushBlocks(true);
+		setCanPushBlocks(false);
 	}
 
 	@Override

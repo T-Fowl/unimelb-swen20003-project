@@ -31,15 +31,14 @@ public class TileTarget extends Tile {
 		boolean allCovered = true;
 		for (Position targetPosition : world.getPositionsOfTiles(this)) {
 			ITileState targetState = world.getTileState(targetPosition, this);
-			allCovered = targetState.getValue(COVERED_PROPERTY);
-			if (!allCovered)
-				break;
+			allCovered &= targetState.getValue(COVERED_PROPERTY);
 		}
 
 		if (allCovered) {
-			System.out.println(allCovered);
+			System.out.println("All covered");
 			world.nextLevel();
 		} else {
+			System.out.println("Not all covered");
 		}
 	}
 

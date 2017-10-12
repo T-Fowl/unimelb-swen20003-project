@@ -159,7 +159,18 @@ public class World implements IRenderable {
 	public void moveBlock(Position position, IBlockState state, Direction direction) {
 		Position destination = position.displace(direction, 1); //TODO
 		BlockInstance instance = blockAt(position);
-		instance.setPosition(destination);
+		if (instance != null) {
+			instance.setPosition(destination);
+
+			for (TileInstance tile : tiles) {
+				if (tile.getPosition().equals(position))
+					tile.getTile().onBlockMovedOff(this, tile.getPosition(), tile.getState());
+			}
+			for (TileInstance tile : tiles) {
+				if (tile.getPosition().equals(destination))
+					tile.getTile().onBlockMovedOn(this, tile.getPosition(), tile.getState());
+			}
+		}
 	}
 
 	public boolean canUnitMove(Position position, IUnitState state, Direction direction) {
@@ -278,7 +289,8 @@ public class World implements IRenderable {
 	@Override
 	public void draw(Graphics g, int gx, int gy) throws SlickException {
 		for (TileInstance tile : tiles) {
-			tile.draw(g, (int) (tile.getPosition().getX() * 32 + gx), (int) (tile.getPosition().getY() * 32 + gy));
+			if (tile.getTile().shouldRender(this, tile.getPosition(), tile.getState()))
+				tile.draw(g, (int) (tile.getPosition().getX() * 32 + gx), (int) (tile.getPosition().getY() * 32 + gy));
 		}
 
 		for (BlockInstance block : blocks) {

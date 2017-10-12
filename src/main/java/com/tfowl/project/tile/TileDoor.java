@@ -28,4 +28,9 @@ public class TileDoor extends Tile {
 	public boolean isWalkable(World world, Player player, Position position, ITileState state) {
 		return state.getValue(OPEN_PROPERTY);
 	}
+
+	@Override
+	public boolean shouldRender(World world, Position position, ITileState state) {
+		return !state.getValue(OPEN_PROPERTY);
+	}
 }
