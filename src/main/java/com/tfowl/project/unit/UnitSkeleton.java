@@ -18,6 +18,7 @@ public class UnitSkeleton extends Unit {
 
 	public UnitSkeleton() {
 		setName("skeleton");
+		setCanPushBlocks(true);
 	}
 
 	@Override
@@ -32,17 +33,30 @@ public class UnitSkeleton extends Unit {
 	public void onTick(World world, long delta, Position position, IUnitState state) {
 		super.onTick(world, delta, position, state);
 
+
 		/*
-		TODO: Perhaps instead of testing the state every tick, we can register a 1-second
+		Perhaps instead of testing the state every tick, we can register a 1-second
 		callback with the World and handle it in there
 		 */
 
 		long cooldown = state.getValue(COOLDOWN_PROPERTY) + delta;
+		state.setValue(COOLDOWN_PROPERTY, cooldown);
 
 		if (cooldown >= COOLDOWN) {
 			state.setValue(COOLDOWN_PROPERTY, cooldown = cooldown - COOLDOWN);
 
-			//TODO: Move the skeleton
+			Direction direction = state.getValue(DIRECTION_PROPERTY);
+
+			if (world.canUnitMove(position, state, direction)) {
+				world.moveUnit(position, state, direction);
+			} else {
+				state.setValue(DIRECTION_PROPERTY, direction = Direction.reverse(direction));
+
+				//TODO: Should skeleton move or wait another cycle before moving the reverse direction
+//				if (world.canUnitMove(position, state, direction)) {
+//					world.moveUnit(position, state, direction);
+//				}
+			}
 		}
 	}
 }

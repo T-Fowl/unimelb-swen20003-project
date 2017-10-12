@@ -123,6 +123,52 @@ public class World implements IRenderable {
 		return true;
 	}
 
+	public boolean canBlockMove(Position position, IBlockState state, Direction direction) {
+		Position destination = position.displace(direction, 1); //TODO
+
+		if (!isTileWalkable(destination))
+			return false;
+		BlockInstance blockAt = blockAt(destination);
+		return blockAt == null;
+	}
+
+	public void moveBlock(Position position, IBlockState state, Direction direction) {
+		Position destination = position.displace(direction, 1); //TODO
+		BlockInstance instance = blockAt(position);
+		instance.setPosition(destination);
+	}
+
+	public boolean canUnitMove(Position position, IUnitState state, Direction direction) {
+		Position destination = position.displace(direction, 1); //TODO
+		if (!isTileWalkable(destination))
+			return false;
+		BlockInstance blockAt = blockAt(destination);
+		if (null == blockAt)
+			return true;
+		if (!state.getUnit().canPushBlocks())
+			return false;
+		if (!canBlockMove(blockAt.getPosition(), blockAt.getState(), direction))
+			return false;
+		return true;
+	}
+
+	public void moveUnit(Position position, IUnitState state, Direction direction) {
+		Position destination = position.displace(direction, 1); //TODO
+		BlockInstance blockAt = blockAt(destination);
+		if (null != blockAt) {
+			Position blockDestination = blockAt.getPosition().displace(direction, 1); //TODO
+			blockAt.setPosition(blockDestination);
+			blockAt.getBlock().onPush(this, player, direction, destination, blockDestination, blockAt.getState());
+		}
+
+		for (UnitInstance instance : units) {
+			if (instance.getPosition().equals(position) && instance.getState().equals(state)) {
+				instance.setPosition(destination);
+				break;
+			}
+		}
+	}
+
 	public List<Position> getPositionsOfTiles(Tile tile) {
 		List<Position> positions = new ArrayList<>();
 		for (TileInstance instance : tiles)
@@ -175,12 +221,11 @@ public class World implements IRenderable {
 		return null;
 	}
 
-	private void moveBlock(BlockInstance instance, Position newPosition) {
+	private void playerMoveBlock(BlockInstance instance, Position newPosition, Direction dir) {
 		Position oldPosition = instance.getPosition();
 		instance.setPosition(newPosition);
 
-		//TODO: Direction
-		instance.getBlock().onPush(this, player, Direction.NONE, oldPosition, newPosition, instance.getState());
+		instance.getBlock().onPush(this, player, dir, oldPosition, newPosition, instance.getState());
 
 		for (TileInstance tile : tiles)
 			if (tile.getPosition().equals(newPosition))
@@ -226,6 +271,15 @@ public class World implements IRenderable {
 		g.drawString(String.format("Moves: %d", playerMoveCount), 0, 0);
 	}
 
+	private void movePlayer(Position position, Direction dir) {
+		player.setPosition(position);
+		playerMoveCount++;
+
+		for (UnitInstance instance : units) {
+			instance.getUnit().onPlayerMove(this, player, dir, 1, instance.getPosition(), instance.getState());
+		}
+	}
+
 	private void handlePlayerMovement(Direction dir) {
 		Position moveTo = player.getPosition().displace(dir, Graphical.PLAYER_MOVEMENT_UNITS);
 
@@ -234,14 +288,12 @@ public class World implements IRenderable {
 			//Check if we're going to push a block
 			BlockInstance block = blockAt(moveTo);
 			if (null == block) {
-				player.setPosition(moveTo);
-				playerMoveCount++;
+				movePlayer(moveTo, dir);
 			} else if (block.getBlock().isPushable()) {
 				Position blockMoveTo = moveTo.displace(dir, 1);
 				if (isSpaceEmpty(blockMoveTo)) {
-					moveBlock(block, blockMoveTo);
-					player.setPosition(moveTo);
-					playerMoveCount++;
+					playerMoveBlock(block, blockMoveTo, dir);
+					movePlayer(moveTo, dir);
 				}
 			}
 		}

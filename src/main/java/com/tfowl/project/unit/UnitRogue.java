@@ -33,6 +33,16 @@ public class UnitRogue extends Unit {
 		super.onPlayerMove(world, player, direction, distance, position, state);
 
 		Direction move = state.getValue(DIRECTION_PROPERTY);
-		Position newPosition = position.displace(move, MOVE_PER_UPDATE);
+
+		if (world.canUnitMove(position, state, move)) {
+			world.moveUnit(position, state, move);
+		} else {
+			state.setValue(DIRECTION_PROPERTY, move = Direction.reverse(move));
+
+			//TODO: Should rogue move or wait until the player moves again?
+//			if (world.canUnitMove(position, state, move)) {
+//
+//			}
+		}
 	}
 }
