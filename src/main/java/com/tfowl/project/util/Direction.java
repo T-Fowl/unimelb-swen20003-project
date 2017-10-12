@@ -11,23 +11,44 @@ public enum Direction {
 	LEFT(-1, 0),
 	RIGHT(1, 0),
 	UP(0, -1), //y is inverted
-	DOWN(0, 1); //y is inverted
+	DOWN(0, 1), //y is inverted
+	NONE(0, 0);
 
 	/* Unit vector quantities */
-	private int i, j;
+	private float i;
+	private float j;
 
-	Direction(int i, int j) {
+	Direction(float i, float j) {
 		this.i = i;
 		this.j = j;
 	}
 
 	/* Get the unit direction moved in the x axis */
-	public int getX() {
+	public float getX() {
 		return i;
 	}
 
 	/* Get the unit direction moved in the y axis */
-	public int getY() {
+	public float getY() {
 		return j;
+	}
+
+	/**
+	 * @param direction Direction to find the reverse of
+	 * @return The reverse of the given direction, or {@link Direction#NONE} if NONE is passed.
+	 */
+	public static Direction reverse(Direction direction) {
+		switch (direction) {
+			case LEFT:
+				return RIGHT;
+			case RIGHT:
+				return LEFT;
+			case UP:
+				return DOWN;
+			case DOWN:
+				return UP;
+			default:
+				return NONE;
+		}
 	}
 }

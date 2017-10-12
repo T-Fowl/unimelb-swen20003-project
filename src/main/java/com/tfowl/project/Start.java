@@ -49,7 +49,7 @@ public class Start {
 		try {
 			AppGameContainer container = new AppGameContainer(game);
 			container.setShowFPS(true);
-			container.setVSync(true);
+//			container.setVSync(true);
 			container.setDisplayMode(Graphical.DEFAULT_SCREEN_WIDTH, Graphical.DEFAULT_SCREEN_HEIGHT, Graphical.DEFAULT_FULLSCREEN_FLAG);
 			logger.info("Game container start.");
 			container.start();

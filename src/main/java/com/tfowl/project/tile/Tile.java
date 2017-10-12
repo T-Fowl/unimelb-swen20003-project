@@ -1,55 +1,99 @@
 package com.tfowl.project.tile;
 
 
-import com.tfowl.project.graphics.IRenderable;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
+import com.tfowl.project.block.IBlockState;
+import com.tfowl.project.impl.ImplTileState;
+import com.tfowl.project.util.Position;
+import com.tfowl.project.world.World;
 
 /**
- * Represents a renderable, square-area of the world.
+ * Represents the definition of a Tile in the game.
  * <p>
  * Created by Thomas on 6/09/2017.
  */
-public class Tile implements IRenderable {
+public class Tile {
 
-	/* The names of all tiles that block the player
-	*  Later on I would like to load this from a config file
-	*  But this is good enough for now */
-	private static final String[] NON_WALKABLE_TILES = {
-			"wall"
-	};
+	private String name;
+	private boolean isWalkable;
 
-	/* The name / id of the tile */
-	private final String name;
-
-	/* Image to draw for this Tile */
-	private final Image sprite;
-
-	public Tile(String name, Image sprite) {
-		this.name = name;
-		this.sprite = sprite;
+	public Tile() {
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	@Override
-	public void draw(Graphics g, int x, int y) throws SlickException {
-		g.drawImage(sprite, x, y);
+	public Tile setName(String name) {
+		this.name = name;
+		return this;
+	}
+
+	public boolean isWalkable() {
+		return isWalkable;
+	}
+
+	public Tile setWalkable(boolean walkable) {
+		isWalkable = walkable;
+		return this;
 	}
 
 	/**
-	 * Determine is this tile blocks the player.
-	 *
-	 * @param t Tile to test.
-	 * @return True if the tile blocks the player, false otherwise.
+	 * @return The default state of this tile
 	 */
-	public static boolean isTileBlocking(Tile t) {
-		for (String nonWalkable : NON_WALKABLE_TILES)
-			if (nonWalkable.equalsIgnoreCase(t.getName()))
-				return true;
-		return false;
+	public ITileState getDefaultState() {
+		return new ImplTileState(this);
+	}
+
+	/**
+	 * Determines if a tile in the world is walkable
+	 *
+	 * @param world    Current world
+	 * @param position Position of the tile
+	 * @param state    State of the tile
+	 * @return true of the tile is walkable, false otherwise
+	 */
+	public boolean isTileWalkable(World world, Position position, ITileState state) {
+		return isWalkable();
+	}
+
+	/**
+	 * Called when a block moves off a tile in the world
+	 *
+	 * @param world           Current world
+	 * @param position        Position of the tile
+	 * @param state           State of the tile
+	 * @param blockToPosition Position the block moved to
+	 * @param blockState      State of the block that moved off
+	 */
+	public void onBlockMovedOff(World world,
+								Position position, ITileState state,
+								Position blockToPosition, IBlockState blockState) {
+
+	}
+
+	/**
+	 * Called when a block moves onto a tile in the world
+	 *
+	 * @param world             Current world
+	 * @param position          Position of the tile
+	 * @param state             State of the tile
+	 * @param blockFromPosition Position the block moved from
+	 * @param blockState        State of the block that moved on
+	 */
+	public void onBlockMovedOver(World world,
+								 Position position, ITileState state,
+								 Position blockFromPosition, IBlockState blockState) {
+	}
+
+	/**
+	 * Determines if a tile in the world should be rendered.
+	 *
+	 * @param world    The current world.
+	 * @param position Position of the tile.
+	 * @param state    State of the tile.
+	 * @return true if the tile should be rendered, false otherwise. Defaults to true.
+	 */
+	public boolean shouldRenderTile(World world, Position position, ITileState state) {
+		return true;
 	}
 }

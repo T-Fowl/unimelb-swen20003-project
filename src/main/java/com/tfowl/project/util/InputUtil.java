@@ -20,6 +20,23 @@ public class InputUtil {
 	}
 
 	/**
+	 * @param in Input keys
+	 * @return A {@link Direction} representation of the current pressed keys configuration.
+	 * @see InputUtil#isUp(Input)
+	 * @see InputUtil#isDown(Input)
+	 * @see InputUtil#isRight(Input)
+	 * @see InputUtil#isLeft(Input)
+	 */
+	public static Direction getDirection(Input in) {
+		if (isUp(in)) return Direction.UP;
+		if (isDown(in)) return Direction.DOWN;
+		if (isRight(in)) return Direction.RIGHT;
+		if (isLeft(in)) return Direction.LEFT;
+		return Direction.NONE;
+	}
+
+	/**
+	 * @param in Input object
 	 * @return True if a up-movement key has been pressed (e.g. up-arrow or w)
 	 */
 	public static boolean isUp(Input in) {
@@ -27,6 +44,7 @@ public class InputUtil {
 	}
 
 	/**
+	 * @param in Input object
 	 * @return True if a down-movement key has been pressed (e.g. down-arrow or s)
 	 */
 	public static boolean isDown(Input in) {
@@ -34,6 +52,7 @@ public class InputUtil {
 	}
 
 	/**
+	 * @param in Input object
 	 * @return True if a left-movement key has been pressed (e.g. left-arrow or a)
 	 */
 	public static boolean isLeft(Input in) {
@@ -41,6 +60,7 @@ public class InputUtil {
 	}
 
 	/**
+	 * @param in Input object
 	 * @return True if a right-movement key has been pressed (e.g. right-arrow or d)
 	 */
 	public static boolean isRight(Input in) {
