@@ -43,15 +43,15 @@ public class ShadowBlocksGame extends BasicGame {
 		/* Initialise the world and then load a level */
 		world.init();
 		try {
-			world.addLevel(0, ResourceLoader.getLevelResource("test"));
-			world.addLevel(1, ResourceLoader.getLevelResource("1"));
-			world.addLevel(2, ResourceLoader.getLevelResource("2"));
-			world.addLevel(3, ResourceLoader.getLevelResource("3"));
-			world.addLevel(4, ResourceLoader.getLevelResource("4"));
-			world.addLevel(5, ResourceLoader.getLevelResource("5"));
+			world.getLevelProvider().addLevel(0, ResourceLoader.getLevelResource("test"));
+			world.getLevelProvider().addLevel(1, ResourceLoader.getLevelResource("1"));
+			world.getLevelProvider().addLevel(2, ResourceLoader.getLevelResource("2"));
+			world.getLevelProvider().addLevel(3, ResourceLoader.getLevelResource("3"));
+			world.getLevelProvider().addLevel(4, ResourceLoader.getLevelResource("4"));
+			world.getLevelProvider().addLevel(5, ResourceLoader.getLevelResource("5"));
 			world.loadFirstLevel();
 		} catch (IOException e) {
-			logger.error("Loading level 0", e);
+			logger.error("Loading level", e);
 			e.printStackTrace();
 		}
 	}
@@ -68,7 +68,7 @@ public class ShadowBlocksGame extends BasicGame {
 			world.restartLevel();
 		else if (container.getInput().isKeyPressed(Input.KEY_Z))
 			world.undo();
-		else if(container.getInput().isKeyPressed(Input.KEY_F))
+		else if (container.getInput().isKeyPressed(Input.KEY_F))
 			world.nextLevel();
 	}
 

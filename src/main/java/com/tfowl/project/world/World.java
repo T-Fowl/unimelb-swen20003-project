@@ -39,9 +39,7 @@ public class World implements IRenderable {
 
 	private static final Logger logger = LoggerFactory.getLogger(World.class);
 
-	private List<Level> levels;
-	private int currentLevelIndex = 0;
-	private Level currentLevel;
+	private WorldLevelProvider levelProvider;
 
 	private Player player;
 	private int playerMoveCount = 0;
@@ -65,31 +63,33 @@ public class World implements IRenderable {
 		blocks = new ArrayList<>();
 		effects = new ArrayList<>();
 		units = new ArrayList<>();
-		levels = new ArrayList<>();
+		levelProvider = new WorldLevelProvider();
 		history = new Stack<>();
 	}
 
-	public void addLevel(int index, Level level) {
-		levels.add(index, level);
+	public WorldLevelProvider getLevelProvider() {
+		return levelProvider;
 	}
 
 	public void nextLevel() {
-		currentLevelIndex++;
 		updateFlags |= UPDATE_FLAG_NEW_LEVEL;
-	}
-
-	public void loadFirstLevel() {
-		loadLevel(0);
-	}
-
-	private void loadLevel(int index) {
-		if (index < levels.size() && index >= 0) {
-			loadLevel(levels.get(index));
-		}
 	}
 
 	public void levelFailed() {
 		updateFlags |= UPDATE_FLAG_LEVEL_FAILED;
+	}
+
+	public void undo() {
+		updateFlags |= UPDATE_FLAG_UNDO;
+	}
+
+	public void restartLevel() {
+		levelFailed(); //Same thing
+	}
+
+	public void loadFirstLevel() {
+		//TODO
+		loadLevel(levelProvider.nextLevel());
 	}
 
 	private void restoreState(WorldState state) {
@@ -120,8 +120,7 @@ public class World implements IRenderable {
 	 *
 	 * @param level The currentLevel to load.
 	 */
-	public void loadLevel(Level level) {
-		this.currentLevel = level;
+	private void loadLevel(Level level) {
 		player.setPosition(new Position(level.getPlayerStartX(), level.getPlayerStartY()));
 
 		playerMoveCount = 0;
@@ -130,10 +129,10 @@ public class World implements IRenderable {
 		effects.clear();
 		units.clear();
 
-		for (int x = 0; x < this.currentLevel.getLocations().length; x++) {
-			for (int y = 0; y < this.currentLevel.getLocations()[x].length; y++) {
-				if (this.currentLevel.getLocations()[x][y] != null) {
-					for (String object : this.currentLevel.getLocations()[x][y].getObjects()) {
+		for (int x = 0; x < level.getLocations().length; x++) {
+			for (int y = 0; y < level.getLocations()[x].length; y++) {
+				if (level.getLocations()[x][y] != null) {
+					for (String object : level.getLocations()[x][y].getObjects()) {
 						Object registered = ObjectRegistry.get(object);
 
 						if (registered instanceof Block) {
@@ -306,12 +305,12 @@ public class World implements IRenderable {
 
 	@Override
 	public int getRenderedWidth() {
-		return Graphical.TILE_SIDE_LENGTH * currentLevel.getTileCountHorizontal();
+		return Graphical.TILE_SIDE_LENGTH * levelProvider.currentLevel().getTileCountHorizontal();
 	}
 
 	@Override
 	public int getRenderedHeight() {
-		return Graphical.TILE_SIDE_LENGTH * currentLevel.getTileCountVertical();
+		return Graphical.TILE_SIDE_LENGTH * levelProvider.currentLevel().getTileCountVertical();
 	}
 
 	@Override
@@ -380,24 +379,16 @@ public class World implements IRenderable {
 		}
 	}
 
-	public void restartLevel() {
-		loadLevel(currentLevel);
-	}
-
-	public void undo() {
-		updateFlags |= UPDATE_FLAG_UNDO;
-	}
-
 	public void update(Input input, long delta) {
 
 		if ((updateFlags & UPDATE_FLAG_LEVEL_FAILED) != 0) {
-			restartLevel();
+			loadLevel(levelProvider.currentLevel());
 			updateFlags &= ~UPDATE_FLAG_LEVEL_FAILED;
 			return;
 		}
 
 		if ((updateFlags & UPDATE_FLAG_NEW_LEVEL) != 0) {
-			loadLevel(currentLevelIndex);
+			loadLevel(levelProvider.nextLevel());
 			updateFlags &= ~UPDATE_FLAG_NEW_LEVEL;
 			return;
 		}
