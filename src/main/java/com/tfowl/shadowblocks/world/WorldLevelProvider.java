@@ -52,6 +52,16 @@ public class WorldLevelProvider {
 	}
 
 	/**
+	 * Resets the level pointer to the first level and returns that level
+	 *
+	 * @return The first level
+	 */
+	public Level rewindToFirst() {
+		currentLevelIndex = 0;
+		return currentLevel();
+	}
+
+	/**
 	 * @return true if there is a next level, false if this is the last level
 	 */
 	public boolean hasNextLevel() {

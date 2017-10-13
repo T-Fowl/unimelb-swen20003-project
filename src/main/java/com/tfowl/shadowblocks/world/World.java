@@ -129,8 +129,7 @@ public class World implements IRenderable {
 	 * Load the first registered level
 	 */
 	public void loadFirstLevel() {
-		//TODO
-		loadLevel(levelProvider.nextLevel());
+		loadLevel(levelProvider.rewindToFirst());
 		firstLevelLoadedAt = System.currentTimeMillis();
 	}
 
