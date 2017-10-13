@@ -2,73 +2,52 @@ package com.tfowl.shadowblocks.server;
 
 import com.tfowl.shadowblocks.common.HighScore;
 import com.tfowl.shadowblocks.common.HighScoreList;
+import com.tfowl.shadowblocks.common.Packet;
+import com.tfowl.shadowblocks.common.requests.GetHighScoreListRequest;
+import com.tfowl.shadowblocks.common.requests.UploadHighScoreRequest;
+import com.tfowl.shadowblocks.common.response.UploadHighScoreResponse;
 import com.tfowl.shadowblocks.logging.Logger;
 import com.tfowl.shadowblocks.logging.LoggerFactory;
 import com.tfowl.shadowblocks.net.IChannelContext;
 import com.tfowl.shadowblocks.net.IChannelHandler;
-import com.tfowl.shadowblocks.net.ISerializable;
+import com.tfowl.shadowblocks.reference.PacketIds;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class HighscoresChannelHandler implements IChannelHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(HighscoresChannelHandler.class);
 
-
-	private ByteBuffer readBuffer = ByteBuffer.allocate(2048);
-	private ByteBuffer writeBuffer = ByteBuffer.allocate(2048);
-	private Queue<ISerializable> toBeWritten = new LinkedList<>();
-
 	@Override
-	public void onReadAvailable(IChannelContext context) {
-		try {
-			int count = context.getChannel().read(readBuffer);
-			if (count < 0) {
-				logger.info("Terminating connection for {0}.", context.getChannel().getRemoteAddress());
-				context.setShouldTerminate();
-			} else {
-				readBuffer.flip();
+	public void onPacket(IChannelContext context, Packet packet) throws IOException {
 
-				int amount = readBuffer.getInt();
-				System.out.println(amount);
+		if (packet.getId() == PacketIds.HIGHSCORES_LIST_REQUEST) {
+			GetHighScoreListRequest request = new GetHighScoreListRequest();
+			request.readBuffer(packet.getBody());
 
-				HighScoreList list = new HighScoreList();
-				for (int i = 1; i <= amount; i++)
-					list.getHighscores().add(new HighScore("Player" + i, i));
-				toBeWritten.offer(list);
+			logger.info("Request for {0} hiscores from {1}", request.getAmount(), context.getChannel().getRemoteAddress());
 
-				//read
-				readBuffer.compact();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+			HighScoreList list = new HighScoreList();
+			list.getHighscores().addAll(DatabaseHighscores.getTop(request.getAmount()));
 
-	@Override
-	public void onWriteAvailable(IChannelContext context) {
-		try {
-			if (!toBeWritten.isEmpty()) {
+			context.enqueueOutbound(
+					Packet.wrap(PacketIds.HIGHSCORES_LIST_RESPONSE, list)
+			);
 
-				ISerializable serializable = toBeWritten.peek();
-				int position = writeBuffer.position();
+		} else if (packet.getId() == PacketIds.HIGHSCORES_UPLOAD_REQUEST) {
+			UploadHighScoreRequest req = new UploadHighScoreRequest();
+			req.readBuffer(packet.getBody());
 
-				if (!serializable.writeToBuffer(writeBuffer)) {
-					writeBuffer.position(position);
-				} else {
-					toBeWritten.poll();
-				}
-				writeBuffer.flip();
-				context.getChannel().write(writeBuffer);
-				writeBuffer.compact();
+			int rank = DatabaseHighscores.add(req.getHighScore());
 
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			logger.info("Upload of high score ({0},{1}) has rank {2}", req.getHighScore().getPlayerName(), req.getHighScore().getTotalTimeTaken(),
+					rank);
+
+			UploadHighScoreResponse res = new UploadHighScoreResponse(rank);
+			context.enqueueOutbound(
+					Packet.wrap(PacketIds.HIGHSCORES_UPLOAD_RESPONSE, res)
+			);
+
 		}
 	}
 }

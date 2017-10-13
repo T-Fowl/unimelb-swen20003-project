@@ -1,5 +1,7 @@
 package com.tfowl.shadowblocks.server;
 
+import com.tfowl.shadowblocks.logging.Logger;
+import com.tfowl.shadowblocks.logging.LoggerFactory;
 import com.tfowl.shadowblocks.net.ISerializable;
 
 import java.io.IOException;
@@ -16,11 +18,13 @@ import java.util.Set;
 
 public class Server implements Runnable {
 
-	private InetSocketAddress address;
-	private Selector selector;
-	private ServerSocketChannel ssc;
+	private static final Logger logger = LoggerFactory.getLogger(Server.class);
 
-	private List<ConnectedClient> clientList = new ArrayList<>();
+	private InetSocketAddress address;
+	private ServerSocketChannel ssc;
+	private Selector selector;
+
+	private List<Client> clientList = new ArrayList<>();
 
 	public Server(String bindAddress, int port) {
 		address = new InetSocketAddress(bindAddress, port);
@@ -48,20 +52,20 @@ public class Server implements Runnable {
 							SocketChannel accept = ssc.accept();
 							onAccept(accept);
 						} else if (key.isReadable()) {
-							ConnectedClient client = (ConnectedClient) key.attachment();
-							if (client.getShouldTerminate()) {
-								client.getChannel().close();
-								clientList.removeIf(c -> c == client);
-							} else {
-								onRead(client);
+							Client client = (Client) key.attachment();
+							try {
+								client.onRead();
+							} catch (Throwable e) {
+								e.printStackTrace();
+								disconnectClient(client);
 							}
 						} else if (key.isWritable()) {
-							ConnectedClient client = (ConnectedClient) key.attachment();
-							if (client.getShouldTerminate()) {
-								client.getChannel().close();
-								clientList.removeIf(c -> c == client);
-							} else {
-								onWrite(client);
+							Client client = (Client) key.attachment();
+							try {
+								client.onWrite();
+							} catch (Throwable e) {
+								e.printStackTrace();
+								disconnectClient(client);
 							}
 						}
 						iterator.remove();
@@ -73,46 +77,25 @@ public class Server implements Runnable {
 		}
 	}
 
+	public void disconnectClient(Client client) {
+		clientList.removeIf(c -> c == client);
+		client.getChannel().keyFor(selector).cancel();
+		try {
+			logger.info("Client disconnecting");
+			client.getChannel().close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void onAccept(SocketChannel channel) throws IOException {
 		channel.configureBlocking(false);
 
-		ConnectedClient connectedClient = new ConnectedClient(channel, new ConnectingState(), ByteBuffer.allocate(1), ByteBuffer.allocate(2));
-		clientList.add(connectedClient);
+		Client client = new Client(channel, this);
+		clientList.add(client);
 
-		channel.register(selector, SelectionKey.OP_WRITE | SelectionKey.OP_READ, connectedClient);
-	}
-
-	private void onRead(ConnectedClient client) throws IOException {
-		if (client.getConnectingState().connectionType == null) {
-			int count = client.getChannel().read(client.getReadBuffer());
-			client.getReadBuffer().flip();
-			if (count < 0) {
-				client.setShouldTerminate();
-			} else {
-				client.getConnectingState().update(client.getReadBuffer());
-				client.getReadBuffer().compact();
-			}
-		} else {
-			client.getHandler().onReadAvailable(client);
-		}
-	}
-
-	private void onWrite(ConnectedClient client) throws IOException {
-		if (client.getConnectingState().connectionType == null || !client.getConnectingState().writeQueue.isEmpty()) {
-			ByteBuffer writeBuffer = client.getWriteBuffer();
-			ISerializable toWrite = client.getConnectingState().writeQueue.peek();
-			int position = writeBuffer.position();
-			if (!toWrite.writeToBuffer(writeBuffer)) {
-				writeBuffer.position(position);
-			} else {
-				client.getConnectingState().writeQueue.poll();
-			}
-			writeBuffer.flip();
-			client.getChannel().write(writeBuffer);
-			writeBuffer.compact();
-		} else {
-			client.getHandler().onWriteAvailable(client);
-		}
+		channel.register(selector, SelectionKey.OP_WRITE | SelectionKey.OP_READ, client);
+		logger.info("Accepted connection from {0}", channel.getRemoteAddress());
 	}
 
 	@Override

@@ -16,8 +16,11 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+import org.newdawn.slick.state.transition.FadeInTransition;
+import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class GameStateSinglePlayer extends BasicGameState {
 
@@ -25,17 +28,32 @@ public class GameStateSinglePlayer extends BasicGameState {
 
 	public static final int STATE_ID = 100;
 
+	private AtomicLong sharedCompletionTime;
+
+	public GameStateSinglePlayer(AtomicLong sharedCompletionTime) {
+		this.sharedCompletionTime = sharedCompletionTime;
+	}
+
 	/* The word in which the player, plays */
-	private final World world = new World();
+	private final World world = new World(this);
 
 	@Override
 	public int getID() {
 		return STATE_ID;
 	}
 
+	private StateBasedGame game;
+
+	public void adviceLastLevelReached() {
+		sharedCompletionTime.set(world.getFinishTime());
+		game.enterState(GameStateSelectHighScores.STATE_ID, new FadeOutTransition(), new FadeInTransition());
+	}
+
 	@Override
 	public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
 		logger.info("Initializing game");
+
+		this.game = stateBasedGame;
 
 		Blocks.init();
 		Tiles.init();
@@ -58,6 +76,7 @@ public class GameStateSinglePlayer extends BasicGameState {
 			e.printStackTrace();
 		}
 	}
+
 
 	@Override
 	public void render(GameContainer container, StateBasedGame stateBasedGame, Graphics g) throws SlickException {
@@ -85,6 +104,7 @@ public class GameStateSinglePlayer extends BasicGameState {
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
 		super.enter(container, game);
 		world.loadFirstLevel();
+		sharedCompletionTime.set(0);
 	}
 
 	@Override

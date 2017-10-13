@@ -3,6 +3,7 @@ package com.tfowl.shadowblocks.world;
 import com.tfowl.shadowblocks.block.Block;
 import com.tfowl.shadowblocks.block.IBlockState;
 import com.tfowl.shadowblocks.effect.Effect;
+import com.tfowl.shadowblocks.game.GameStateSinglePlayer;
 import com.tfowl.shadowblocks.graphics.IRenderable;
 import com.tfowl.shadowblocks.util.TimeUtils;
 import com.tfowl.shadowblocks.world.internal.BlockInstance;
@@ -73,6 +74,11 @@ public class World implements IRenderable {
 	/* History of player positions with all the block states and positions at that time */
 	private Stack<WorldState> history;
 
+	private GameStateSinglePlayer singlePlayer;
+
+	public World(GameStateSinglePlayer singlePlayer) {
+		this.singlePlayer = singlePlayer;
+	}
 
 	/**
 	 * Initialised the world. It is required that this method be called after the OpenGL context
@@ -131,6 +137,7 @@ public class World implements IRenderable {
 	public void loadFirstLevel() {
 		loadLevel(levelProvider.rewindToFirst());
 		firstLevelLoadedAt = System.currentTimeMillis();
+		lastLevelFinishedAt = 0;
 	}
 
 	/**
@@ -146,6 +153,10 @@ public class World implements IRenderable {
 		for (BlockInstance instance : blocks) {
 			state.restoreState(instance);
 		}
+	}
+
+	public long getFinishTime() {
+		return lastLevelFinishedAt - firstLevelLoadedAt;
 	}
 
 	/**
@@ -675,8 +686,10 @@ public class World implements IRenderable {
 		if ((updateFlags & UPDATE_FLAG_NEW_LEVEL) != 0) {
 			if (levelProvider.hasNextLevel()) {
 				loadLevel(levelProvider.nextLevel());
-				if (!levelProvider.hasNextLevel())
+				if (!levelProvider.hasNextLevel()) {
 					lastLevelFinishedAt = System.currentTimeMillis();
+					singlePlayer.adviceLastLevelReached();
+				}
 			}
 			updateFlags &= ~UPDATE_FLAG_NEW_LEVEL;
 			return;

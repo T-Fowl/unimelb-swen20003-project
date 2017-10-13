@@ -22,31 +22,30 @@ public class HighScoreList implements ISerializable {
 
 
 	@Override
-	public boolean writeToBuffer(ByteBuffer buffer) {
-		try {
-			buffer.putInt(highscores.size());
-			for (HighScore highscore : highscores) {
-				highscore.writeToBuffer(buffer);
-			}
-			return true;
-		} catch (BufferOverflowException e) {
-			return false;
+	public ByteBuffer getBytes() {
+		int total = 4;
+		List<ByteBuffer> buffers = new ArrayList<>();
+		for (HighScore score : highscores) {
+			ByteBuffer bytes = score.getBytes();
+			total += bytes.limit();
+			buffers.add(bytes);
 		}
+		ByteBuffer buffer = ByteBuffer.allocate(total);
+		buffer.putInt(highscores.size());
+		for (ByteBuffer byteBuffer : buffers) {
+			buffer.put(byteBuffer);
+		}
+		buffer.flip();
+		return buffer;
 	}
 
 	@Override
-	public boolean readFromBuffer(ByteBuffer buffer) {
-		try {
-			int length = buffer.getInt();
-			this.highscores = new ArrayList<>(length);
-			for (int i = 0; i < length; i++) {
-				HighScore s = new HighScore();
-				s.readFromBuffer(buffer);
-				highscores.add(s);
-			}
-			return true;
-		} catch (BufferUnderflowException e) {
-			return false;
+	public void readBuffer(ByteBuffer buffer) {
+		int length = buffer.getInt();
+		for(int i = 0; i < length; i++) {
+			HighScore hs = new HighScore();
+			hs.readBuffer(buffer);
+			highscores.add(hs);
 		}
 	}
 }
