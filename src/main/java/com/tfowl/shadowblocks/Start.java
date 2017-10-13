@@ -19,6 +19,8 @@ import java.util.logging.LogManager;
  */
 public class Start {
 
+	public static final boolean DEBUG = true;
+
 	private static final Logger logger;
 
 	static {

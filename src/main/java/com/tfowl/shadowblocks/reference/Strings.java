@@ -17,6 +17,7 @@ public class Strings {
 	public static final String GAME_NAME = "Shadow Blocks";
 
 	public static final String DISPLAY_MOVES_STRING = "Moves: %d";
+	public static final String DISPLAY_TIME_STRING = "Time: %s";
 
 	public static final String DEFAULT_WINDOW_TITLE = GAME_NAME + " by " + STUDENT_NAME + "(" + STUDENT_ID + ")";
 

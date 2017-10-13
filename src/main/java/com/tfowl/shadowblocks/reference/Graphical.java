@@ -18,8 +18,11 @@ public class Graphical {
 	/* How many units a player should move in a single update */
 	public static final int PLAYER_MOVEMENT_UNITS = 1;
 
-	public static final int DISPLAY_MOVES_X = 0;
-	public static final int DISPLAY_MOVES_Y = 0;
+	public static final int DISPLAY_MOVES_X = 10;
+	public static final int DISPLAY_MOVES_Y = 25;
+
+	public static final int DISPLAY_TIME_X = 10;
+	public static final int DISPLAY_TIME_Y = 40;
 
 	/* No instancing */
 	private Graphical() {

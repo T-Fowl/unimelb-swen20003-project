@@ -4,6 +4,7 @@ import com.tfowl.shadowblocks.block.Block;
 import com.tfowl.shadowblocks.block.IBlockState;
 import com.tfowl.shadowblocks.effect.Effect;
 import com.tfowl.shadowblocks.graphics.IRenderable;
+import com.tfowl.shadowblocks.util.TimeUtils;
 import com.tfowl.shadowblocks.world.internal.BlockInstance;
 import com.tfowl.shadowblocks.world.internal.EffectInstance;
 import com.tfowl.shadowblocks.world.internal.TileInstance;
@@ -30,12 +31,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 /**
  * World class.
  * A world is responsible to holding all the current instances of game objects and their state in the world. It also
  * holds a reference to the current player and maintains a history for undoing moves.
- *
+ * <p>
  * Created by Thomas on 6/09/2017.
  */
 public class World implements IRenderable {
@@ -64,6 +66,11 @@ public class World implements IRenderable {
 
 	/* Current move count and past history */
 	private int playerMoveCount = 0;
+	/* Time based runs */
+	private long firstLevelLoadedAt = 0L;
+	private long lastLevelFinishedAt = 0L;
+
+	/* History of player positions with all the block states and positions at that time */
 	private Stack<WorldState> history;
 
 
@@ -124,6 +131,7 @@ public class World implements IRenderable {
 	public void loadFirstLevel() {
 		//TODO
 		loadLevel(levelProvider.nextLevel());
+		firstLevelLoadedAt = System.currentTimeMillis();
 	}
 
 	/**
@@ -601,6 +609,11 @@ public class World implements IRenderable {
 
 		g.drawString(String.format(Strings.DISPLAY_MOVES_STRING, playerMoveCount),
 				Graphical.DISPLAY_MOVES_X, Graphical.DISPLAY_MOVES_Y);
+
+		long playDuration = (lastLevelFinishedAt > 0 ? lastLevelFinishedAt : System.currentTimeMillis()) - firstLevelLoadedAt;
+		String durationString = TimeUtils.formatDuration(playDuration);
+		g.drawString(String.format(Strings.DISPLAY_TIME_STRING, durationString),
+				Graphical.DISPLAY_TIME_X, Graphical.DISPLAY_TIME_Y);
 	}
 
 	/**
@@ -661,8 +674,11 @@ public class World implements IRenderable {
 		}
 
 		if ((updateFlags & UPDATE_FLAG_NEW_LEVEL) != 0) {
-			if (levelProvider.hasNextLevel())
+			if (levelProvider.hasNextLevel()) {
 				loadLevel(levelProvider.nextLevel());
+				if (!levelProvider.hasNextLevel())
+					lastLevelFinishedAt = System.currentTimeMillis();
+			}
 			updateFlags &= ~UPDATE_FLAG_NEW_LEVEL;
 			return;
 		}

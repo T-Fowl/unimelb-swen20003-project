@@ -1,5 +1,6 @@
 package com.tfowl.shadowblocks.game;
 
+import com.tfowl.shadowblocks.Start;
 import com.tfowl.shadowblocks.init.Blocks;
 import com.tfowl.shadowblocks.init.Effects;
 import com.tfowl.shadowblocks.init.Tiles;
@@ -68,8 +69,8 @@ public class ShadowBlocksGame extends BasicGame {
 			world.restartLevel();
 		else if (container.getInput().isKeyPressed(Input.KEY_Z))
 			world.undo();
-//		else if (container.getInput().isKeyPressed(Input.KEY_F))
-//			world.nextLevel();
+		else if (container.getInput().isKeyPressed(Input.KEY_F) && Start.DEBUG)
+			world.nextLevel();
 	}
 
 	@Override
