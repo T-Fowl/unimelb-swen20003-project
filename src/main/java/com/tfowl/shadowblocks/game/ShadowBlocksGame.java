@@ -33,6 +33,7 @@ public class ShadowBlocksGame extends StateBasedGame {
 		addState(new GameStateSelectHighScores());
 		addState(new GameStateSinglePlayer(sharedCompletionTime));
 		addState(new GameStateSubmitHighScores(sharedCompletionTime));
+		addState(new GameStateMultiPlayer());
 		enterState(GameStateMenu.STATE_ID);
 	}
 }

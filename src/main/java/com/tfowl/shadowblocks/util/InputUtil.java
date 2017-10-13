@@ -9,61 +9,59 @@ import org.newdawn.slick.Input;
  */
 public class InputUtil {
 
-	/* Listen for arrow-key movements*/
-	private static final boolean LISTEN_ARROWS = true;
-	/* Listen for WASD-key movements */
-	private static final boolean LISTEN_WASD = true;
+	public static class KeyMap {
 
-	/* Returns true if either of the keys refering to a move in a specific direction are pressed */
-	private static boolean isDirectionKeyPressed(Input in, int arrowKeyCode, int wasdKeyCode) {
-		return (LISTEN_ARROWS && in.isKeyPressed(arrowKeyCode)) || (LISTEN_WASD && in.isKeyPressed(wasdKeyCode));
+		private int leftKey, rightKey, upKey, downKey, undoKey, restartKey;
+
+		public KeyMap(int leftKey, int rightKey, int upKey, int downKey, int undoKey, int restartKey) {
+			this.leftKey = leftKey;
+			this.rightKey = rightKey;
+			this.upKey = upKey;
+			this.downKey = downKey;
+			this.undoKey = undoKey;
+			this.restartKey = restartKey;
+		}
+
+		public int getLeftKey() {
+			return leftKey;
+		}
+
+		public int getRightKey() {
+			return rightKey;
+		}
+
+		public int getUpKey() {
+			return upKey;
+		}
+
+		public int getDownKey() {
+			return downKey;
+		}
+
+		public int getUndoKey() {
+			return undoKey;
+		}
+
+		public int getRestartKey() {
+			return restartKey;
+		}
+
+		public static final KeyMap WASD = new KeyMap(Input.KEY_A, Input.KEY_D, Input.KEY_W, Input.KEY_S, Input.KEY_Z, Input.KEY_R);
+
+		public static final KeyMap ARROWS = new KeyMap(Input.KEY_LEFT, Input.KEY_RIGHT, Input.KEY_UP, Input.KEY_DOWN, Input.KEY_NUMPAD0, Input.KEY_NUMPAD1);
 	}
 
+
 	/**
-	 * @param in Input keys
+	 * @param in      Input keys
+	 * @param mapping Key mapping to check for
 	 * @return A {@link Direction} representation of the current pressed keys configuration.
-	 * @see InputUtil#isUp(Input)
-	 * @see InputUtil#isDown(Input)
-	 * @see InputUtil#isRight(Input)
-	 * @see InputUtil#isLeft(Input)
 	 */
-	public static Direction getDirection(Input in) {
-		if (isUp(in)) return Direction.UP;
-		if (isDown(in)) return Direction.DOWN;
-		if (isRight(in)) return Direction.RIGHT;
-		if (isLeft(in)) return Direction.LEFT;
+	public static Direction getDirection(Input in, KeyMap mapping) {
+		if (in.isKeyPressed(mapping.getUpKey())) return Direction.UP;
+		if (in.isKeyPressed(mapping.getDownKey())) return Direction.DOWN;
+		if (in.isKeyPressed(mapping.getRightKey())) return Direction.RIGHT;
+		if (in.isKeyPressed(mapping.getLeftKey())) return Direction.LEFT;
 		return Direction.NONE;
-	}
-
-	/**
-	 * @param in Input object
-	 * @return True if a up-movement key has been pressed (e.g. up-arrow or w)
-	 */
-	public static boolean isUp(Input in) {
-		return isDirectionKeyPressed(in, Input.KEY_UP, Input.KEY_W);
-	}
-
-	/**
-	 * @param in Input object
-	 * @return True if a down-movement key has been pressed (e.g. down-arrow or s)
-	 */
-	public static boolean isDown(Input in) {
-		return isDirectionKeyPressed(in, Input.KEY_DOWN, Input.KEY_S);
-	}
-
-	/**
-	 * @param in Input object
-	 * @return True if a left-movement key has been pressed (e.g. left-arrow or a)
-	 */
-	public static boolean isLeft(Input in) {
-		return isDirectionKeyPressed(in, Input.KEY_LEFT, Input.KEY_A);
-	}
-
-	/**
-	 * @param in Input object
-	 * @return True if a right-movement key has been pressed (e.g. right-arrow or d)
-	 */
-	public static boolean isRight(Input in) {
-		return isDirectionKeyPressed(in, Input.KEY_RIGHT, Input.KEY_D);
 	}
 }

@@ -3,7 +3,6 @@ package com.tfowl.shadowblocks.world;
 import com.tfowl.shadowblocks.block.Block;
 import com.tfowl.shadowblocks.block.IBlockState;
 import com.tfowl.shadowblocks.effect.Effect;
-import com.tfowl.shadowblocks.game.GameStateSinglePlayer;
 import com.tfowl.shadowblocks.graphics.IRenderable;
 import com.tfowl.shadowblocks.util.TimeUtils;
 import com.tfowl.shadowblocks.world.internal.BlockInstance;
@@ -32,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 
 /**
  * World class.
@@ -74,10 +72,17 @@ public class World implements IRenderable {
 	/* History of player positions with all the block states and positions at that time */
 	private Stack<WorldState> history;
 
-	private GameStateSinglePlayer singlePlayer;
+	private IWorldCallbackListener callbackListener;
 
-	public World(GameStateSinglePlayer singlePlayer) {
-		this.singlePlayer = singlePlayer;
+	private InputUtil.KeyMap keymap = InputUtil.KeyMap.WASD;
+
+	public World(IWorldCallbackListener callbackListener) {
+		this(callbackListener, InputUtil.KeyMap.WASD);
+	}
+
+	public World(IWorldCallbackListener callbackListener, InputUtil.KeyMap keymap) {
+		this.callbackListener = callbackListener;
+		this.keymap = keymap;
 	}
 
 	/**
@@ -618,12 +623,12 @@ public class World implements IRenderable {
 				player.getPosition().getY() * Graphical.TILE_SIDE_LENGTH + gy);
 
 		g.drawString(String.format(Strings.DISPLAY_MOVES_STRING, playerMoveCount),
-				Graphical.DISPLAY_MOVES_X, Graphical.DISPLAY_MOVES_Y);
+				Graphical.DISPLAY_MOVES_X + gx, Graphical.DISPLAY_MOVES_Y + gy);
 
 		long playDuration = (lastLevelFinishedAt > 0 ? lastLevelFinishedAt : System.currentTimeMillis()) - firstLevelLoadedAt;
 		String durationString = TimeUtils.formatDuration(playDuration);
 		g.drawString(String.format(Strings.DISPLAY_TIME_STRING, durationString),
-				Graphical.DISPLAY_TIME_X, Graphical.DISPLAY_TIME_Y);
+				Graphical.DISPLAY_TIME_X + gx, Graphical.DISPLAY_TIME_Y + gy);
 	}
 
 	/**
@@ -688,7 +693,7 @@ public class World implements IRenderable {
 				loadLevel(levelProvider.nextLevel());
 				if (!levelProvider.hasNextLevel()) {
 					lastLevelFinishedAt = System.currentTimeMillis();
-					singlePlayer.adviceLastLevelReached();
+					callbackListener.onAllLevelsFinished(this);
 				}
 			}
 			updateFlags &= ~UPDATE_FLAG_NEW_LEVEL;
@@ -704,7 +709,16 @@ public class World implements IRenderable {
 			}
 		}
 
-		Direction playerMoveDirection = InputUtil.getDirection(input);
+		if (input.isKeyPressed(keymap.getUndoKey())) {
+			this.undo();
+			return;
+		}
+
+		if (input.isKeyPressed(keymap.getRestartKey())) {
+			this.restartLevel();
+		}
+
+		Direction playerMoveDirection = InputUtil.getDirection(input, keymap);
 		if (playerMoveDirection != Direction.NONE) {
 			/* Player is making a move, capture this point in time */
 			history.push(captureCurrentState());

@@ -32,8 +32,10 @@ public class GameStateSubmitHighScores extends BasicGameState implements Compone
 	private TextField nameInput;
 	private HighScoresClient client;
 
-	private CompletableFuture<HighScoreList> retrievedList;
-	private CompletableFuture<Integer> submittedRank;
+	private HighScoreList highscores;
+	private CompletableFuture<HighScoreList> futureHighscores;
+	private int rank = -1;
+	private CompletableFuture<Integer> futureRank;
 
 	private boolean wasConnectionError = false;
 	private String connectionError;
@@ -69,6 +71,14 @@ public class GameStateSubmitHighScores extends BasicGameState implements Compone
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
 
+		highscores = null;
+		futureHighscores = null;
+
+		rank = -1;
+		futureRank = null;
+
+		sharedCompletionTime.set(0);
+
 		try {
 			client.disconnect();
 		} catch (Throwable t) {
@@ -90,12 +100,26 @@ public class GameStateSubmitHighScores extends BasicGameState implements Compone
 				(container.getWidth() - width) / 2, 500,
 				width,
 				height, abstractComponent -> {
-			if (null == submittedRank) {
+			if (null == futureRank && rank < 0) {
 				String text = nameInput.getText().trim();
 				if (!text.trim().isEmpty()) {
 					text = text.substring(0, Math.min(12, text.length()));
-					submittedRank = client.upload(new HighScore(text, sharedCompletionTime.get()));
+					futureRank = client.upload(new HighScore(text, sharedCompletionTime.get()));
 					nameInput.setText("");
+
+					futureRank.thenAccept(r -> {
+						rank = r;
+					}).thenRun(() -> {
+						futureRank = null;
+					}).thenRun(() -> {
+						highscores = null;
+						futureHighscores = client.getHighscores(10);
+						futureHighscores.thenAccept(list -> {
+							highscores = list;
+						}).thenRun(() -> {
+							futureHighscores = null;
+						});
+					});
 				}
 			}
 		});
@@ -123,50 +147,26 @@ public class GameStateSubmitHighScores extends BasicGameState implements Compone
 		} else if (client.getState() == ConnectingState.FAILED) {
 			graphics.drawString("Error connecting to the server:\n" + client.getConnectionErrorMessage(), 100, 50);
 		} else if (client.getState() == ConnectingState.CONNECTED) {
-			if (retrievedList != null && retrievedList.isDone()) {
-				try {
-					List<HighScore> list = retrievedList.get().getHighscores();
-
-					for (int i = 0; i < 10; i++) {
-						if (i < list.size())
-							graphics.drawString(
-									String.format("%02d: %-12s %s", i, list.get(i).getPlayerName(), TimeUtils.formatDuration(list.get(i).getTotalTimeTaken())),
-									100, 50 + (graphics.getFont().getLineHeight() + 2) * (i - 1));
-						else
-							graphics.drawString(String.format("%02d: %-12s %s", i, "-", "-"),
-									100, 50 + (graphics.getFont().getLineHeight() + 2) * (i - 1));
-					}
-
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
+			if (futureHighscores != null) {
+				graphics.drawString("Loading...", 100, 50);
+			} else if (highscores != null) {
+				List<HighScore> list = this.highscores.getHighscores();
+				for (int i = 0; i < 10; i++) {
+					if (i < list.size())
+						graphics.drawString(
+								String.format("%02d: %-12s %s", i, list.get(i).getPlayerName(), TimeUtils.formatDuration(list.get(i).getTotalTimeTaken())),
+								100, 50 + (graphics.getFont().getLineHeight() + 2) * (i - 1));
+					else
+						graphics.drawString(String.format("%02d: %-12s %s", i, "-", "-"),
+								100, 50 + (graphics.getFont().getLineHeight() + 2) * (i - 1));
 				}
 			}
-			if (submittedRank != null && submittedRank.isDone()) {
-				try {
-					Integer integer = submittedRank.get();
-					graphics.drawString("Submitted rank: " + integer, 100, 500);
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				}
+			if (futureRank != null) {
+				graphics.drawString("Submitting...", 100, 500);
+			} else if (rank >= 0) {
+				graphics.drawString("Submitted rank: " + rank, 100, 500);
 			}
 		}
-
-//		if (wasConnectionError) {
-//			graphics.drawString("Error connecting to server:\n" + connectionError, 100, 50);
-//		} else if (!client.isConnected()) {
-//			graphics.drawString("Connecting", 100, 50);
-//		} else if (client.isConnected() && null != retrievedList && !retrievedList.isDone()) {
-//			graphics.drawString("Loading", 100, 50);
-//		} else if (null != retrievedList) {
-//			try {
-//				HighScoreList retrievedList = this.retrievedList.get();
-//				for (int i = 0; i < retrievedList.getHighscores().size(); i++) {
-//					graphics.drawString(retrievedList.getHighscores().get(i).getPlayerName(), 100, 50 + (graphics.getFont().getLineHeight() + 2) * (i - 1));
-//				}
-//			} catch (ExecutionException | InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//		}
 
 		if (sharedCompletionTime.get() > 0)
 
@@ -183,15 +183,17 @@ public class GameStateSubmitHighScores extends BasicGameState implements Compone
 //			stateBasedGame.enterState(GameStateSinglePlayer.STATE_ID);
 //		}
 
-		if (client.getState() == ConnectingState.CONNECTED && retrievedList == null)
-			retrievedList = client.getHighscores(10);
+		/* If we are connected, with no highscores and none in the progress of being fetched */
+		if (client.getState() == ConnectingState.CONNECTED && highscores == null && futureHighscores == null) {
+			futureHighscores = client.getHighscores(10);
+			futureHighscores.thenAccept(list -> {
+				highscores = list;
+			}).thenRun(() -> {
+				futureHighscores = null;
+			});
+		}
 
-//		if (client.isConnected() && null == retrievedList) {
-//			retrievedList = client.getHighscores();
-//		}
-//		if(null != retrievedList && retrievedList.isDone()) {
-//			System.out.println("Done");
-//		}
+
 	}
 
 	@Override

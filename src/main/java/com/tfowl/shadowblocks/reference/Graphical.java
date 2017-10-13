@@ -20,11 +20,11 @@ public class Graphical {
 
 	public static final String ICON_NAME = "icon.png";
 
-	public static final int DISPLAY_MOVES_X = 10;
-	public static final int DISPLAY_MOVES_Y = 25;
+	public static final int DISPLAY_MOVES_X = 0;
+	public static final int DISPLAY_MOVES_Y = -30;
 
-	public static final int DISPLAY_TIME_X = 10;
-	public static final int DISPLAY_TIME_Y = 40;
+	public static final int DISPLAY_TIME_X = 150;
+	public static final int DISPLAY_TIME_Y = -30;
 
 	/* No instancing */
 	private Graphical() {

@@ -1,10 +1,7 @@
 package com.tfowl.shadowblocks.game;
 
 import com.tfowl.shadowblocks.reference.Resources;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.gui.AbstractComponent;
 import org.newdawn.slick.gui.ComponentListener;
 import org.newdawn.slick.gui.MouseOverArea;
@@ -42,8 +39,10 @@ public class GameStateSelectHighScores extends BasicGameState implements Compone
 	}
 
 	@Override
-	public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
-
+	public void update(GameContainer container, StateBasedGame stateBasedGame, int i) throws SlickException {
+		/* Check for escape being pressed, exit the game */
+		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE))
+			container.exit();
 	}
 
 	@Override

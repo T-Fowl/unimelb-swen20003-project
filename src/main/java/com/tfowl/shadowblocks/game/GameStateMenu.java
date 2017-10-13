@@ -1,10 +1,7 @@
 package com.tfowl.shadowblocks.game;
 
 import com.tfowl.shadowblocks.reference.Resources;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 import org.newdawn.slick.gui.AbstractComponent;
 import org.newdawn.slick.gui.ComponentListener;
 import org.newdawn.slick.gui.MouseOverArea;
@@ -27,6 +24,7 @@ public class GameStateMenu extends BasicGameState implements ComponentListener {
 	private StateBasedGame game;
 
 	private MouseOverArea btnSinglePlayer;
+	private MouseOverArea btnMultiplayer;
 	private MouseOverArea btnHighScores;
 	private MouseOverArea btnQuit;
 
@@ -38,6 +36,7 @@ public class GameStateMenu extends BasicGameState implements ComponentListener {
 		btnSinglePlayer = new MouseOverArea(container, new Image(Resources.IMAGES_DIRECTORY + "/btnSinglePlayer.png"), 100, 100, this);
 		btnHighScores = new MouseOverArea(container, new Image(Resources.IMAGES_DIRECTORY + "/btnHighscores.png"), 100, 200, this);
 		btnQuit = new MouseOverArea(container, new Image(Resources.IMAGES_DIRECTORY + "/btnQuit.png"), 100, 300, this);
+		btnMultiplayer = new MouseOverArea(container, new Image(Resources.IMAGES_DIRECTORY + "/btnMultiplayer.png"), 100, 400, this);
 	}
 
 	@Override
@@ -46,11 +45,14 @@ public class GameStateMenu extends BasicGameState implements ComponentListener {
 		btnSinglePlayer.render(gameContainer, graphics);
 		btnHighScores.render(gameContainer, graphics);
 		btnQuit.render(gameContainer, graphics);
+		btnMultiplayer.render(gameContainer, graphics);
 	}
 
 	@Override
-	public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
-
+	public void update(GameContainer container, StateBasedGame stateBasedGame, int i) throws SlickException {
+		/* Check for escape being pressed, exit the game */
+		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE))
+			container.exit();
 	}
 
 	@Override
@@ -63,6 +65,9 @@ public class GameStateMenu extends BasicGameState implements ComponentListener {
 		}
 		if (abstractComponent == btnSinglePlayer) {
 			this.game.enterState(GameStateSinglePlayer.STATE_ID, new FadeOutTransition(), new FadeInTransition());
+		}
+		if (abstractComponent == btnMultiplayer) {
+			this.game.enterState(GameStateMultiPlayer.STATE_ID, new FadeOutTransition(), new FadeInTransition());
 		}
 	}
 }

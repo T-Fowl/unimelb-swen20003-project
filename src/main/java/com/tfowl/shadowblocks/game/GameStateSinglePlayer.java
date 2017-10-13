@@ -9,6 +9,7 @@ import com.tfowl.shadowblocks.logging.Logger;
 import com.tfowl.shadowblocks.logging.LoggerFactory;
 import com.tfowl.shadowblocks.registry.ObjectRegistry;
 import com.tfowl.shadowblocks.util.ResourceLoader;
+import com.tfowl.shadowblocks.world.IWorldCallbackListener;
 import com.tfowl.shadowblocks.world.World;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -22,7 +23,7 @@ import org.newdawn.slick.state.transition.FadeOutTransition;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class GameStateSinglePlayer extends BasicGameState {
+public class GameStateSinglePlayer extends BasicGameState implements IWorldCallbackListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(GameStateSinglePlayer.class);
 
@@ -43,11 +44,6 @@ public class GameStateSinglePlayer extends BasicGameState {
 	}
 
 	private StateBasedGame game;
-
-	public void adviceLastLevelReached() {
-		sharedCompletionTime.set(world.getFinishTime());
-		game.enterState(GameStateSelectHighScores.STATE_ID, new FadeOutTransition(), new FadeInTransition());
-	}
 
 	@Override
 	public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
@@ -92,10 +88,6 @@ public class GameStateSinglePlayer extends BasicGameState {
 		/* Check for escape being pressed, exit the game */
 		if (container.getInput().isKeyPressed(Input.KEY_ESCAPE))
 			container.exit();
-		else if (container.getInput().isKeyPressed(Input.KEY_R))
-			world.restartLevel();
-		else if (container.getInput().isKeyPressed(Input.KEY_Z))
-			world.undo();
 		else if (container.getInput().isKeyPressed(Input.KEY_F) && Start.DEBUG)
 			world.nextLevel();
 	}
@@ -110,5 +102,11 @@ public class GameStateSinglePlayer extends BasicGameState {
 	@Override
 	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
 		super.leave(container, game);
+	}
+
+	@Override
+	public void onAllLevelsFinished(World world) {
+		sharedCompletionTime.set(world.getFinishTime());
+		game.enterState(GameStateSelectHighScores.STATE_ID, new FadeOutTransition(), new FadeInTransition());
 	}
 }
