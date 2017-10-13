@@ -1,7 +1,7 @@
 package com.tfowl.shadowblocks.world;
 
 import com.tfowl.shadowblocks.block.IBlockState;
-import com.tfowl.shadowblocks.impl.BlockInstance;
+import com.tfowl.shadowblocks.world.internal.BlockInstance;
 import com.tfowl.shadowblocks.util.Position;
 
 import java.util.AbstractMap;

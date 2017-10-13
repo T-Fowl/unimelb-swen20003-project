@@ -1,6 +1,6 @@
 package com.tfowl.shadowblocks.unit;
 
-import com.tfowl.shadowblocks.impl.ImplUnitState;
+import com.tfowl.shadowblocks.impl.UnitState;
 import com.tfowl.shadowblocks.player.Player;
 import com.tfowl.shadowblocks.util.Direction;
 import com.tfowl.shadowblocks.util.Position;
@@ -34,7 +34,7 @@ public class Unit {
 	 * @return The default state of an {@link Unit}
 	 */
 	public IUnitState getDefaultState() {
-		return new ImplUnitState(this);
+		return new UnitState(this);
 	}
 
 	/**

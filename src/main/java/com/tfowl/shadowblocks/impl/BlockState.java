@@ -1,30 +1,30 @@
 package com.tfowl.shadowblocks.impl;
 
+import com.tfowl.shadowblocks.block.Block;
+import com.tfowl.shadowblocks.block.IBlockState;
 import com.tfowl.shadowblocks.states.properties.IProperty;
-import com.tfowl.shadowblocks.unit.IUnitState;
-import com.tfowl.shadowblocks.unit.Unit;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implementation of an {@link IUnitState}
+ * Implementation of a {@link IBlockState}
  */
-public class ImplUnitState implements IUnitState {
+public class BlockState implements IBlockState {
 
-	private Unit object;
+	private Block object;
 	private Map<IProperty, Object> properties;
 
-	public ImplUnitState(Unit object) {
+	public BlockState(Block object) {
 		this(object, new HashMap<>());
 	}
 
-	private ImplUnitState(Unit object, Map<IProperty, Object> properties) {
+	private BlockState(Block object, Map<IProperty, Object> properties) {
 		this.object = object;
 		this.properties = properties;
 	}
 
-	public Unit getUnit() {
+	public Block getBlock() {
 		return object;
 	}
 
@@ -40,9 +40,9 @@ public class ImplUnitState implements IUnitState {
 	}
 
 	@Override
-	public IUnitState deepCopy() {
+	public IBlockState deepCopy() {
 		Map<IProperty, Object> copyProperties = new HashMap<>(properties.size());
 		copyProperties.putAll(properties);
-		return new ImplUnitState(object, copyProperties);
+		return new BlockState(object, copyProperties);
 	}
 }

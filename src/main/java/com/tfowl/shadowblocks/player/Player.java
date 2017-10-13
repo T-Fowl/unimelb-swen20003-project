@@ -1,7 +1,7 @@
 package com.tfowl.shadowblocks.player;
 
 import com.tfowl.shadowblocks.graphics.IRenderable;
-import com.tfowl.shadowblocks.impl.UnitInstance;
+import com.tfowl.shadowblocks.world.internal.UnitInstance;
 import com.tfowl.shadowblocks.init.Units;
 
 /**

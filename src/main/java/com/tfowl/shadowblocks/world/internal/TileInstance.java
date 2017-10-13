@@ -1,4 +1,4 @@
-package com.tfowl.shadowblocks.impl;
+package com.tfowl.shadowblocks.world.internal;
 
 import com.tfowl.shadowblocks.graphics.IRenderable;
 import com.tfowl.shadowblocks.registry.ObjectRegistry;

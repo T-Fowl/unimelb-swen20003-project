@@ -2,7 +2,7 @@ package com.tfowl.shadowblocks.tile;
 
 
 import com.tfowl.shadowblocks.block.IBlockState;
-import com.tfowl.shadowblocks.impl.ImplTileState;
+import com.tfowl.shadowblocks.impl.TileState;
 import com.tfowl.shadowblocks.util.Position;
 import com.tfowl.shadowblocks.world.World;
 
@@ -41,7 +41,7 @@ public class Tile {
 	 * @return The default state of this tile
 	 */
 	public ITileState getDefaultState() {
-		return new ImplTileState(this);
+		return new TileState(this);
 	}
 
 	/**

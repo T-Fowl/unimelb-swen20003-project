@@ -1,6 +1,6 @@
 package com.tfowl.shadowblocks.block;
 
-import com.tfowl.shadowblocks.impl.ImplBlockState;
+import com.tfowl.shadowblocks.impl.BlockState;
 import com.tfowl.shadowblocks.player.Player;
 import com.tfowl.shadowblocks.unit.IUnitState;
 import com.tfowl.shadowblocks.util.Direction;
@@ -42,7 +42,7 @@ public class Block {
 	 * @return The default state of this block
 	 */
 	public IBlockState getDefaultState() {
-		return new ImplBlockState(this);
+		return new BlockState(this);
 	}
 
 
