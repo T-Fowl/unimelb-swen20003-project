@@ -18,6 +18,8 @@ public class Graphical {
 	/* How many units a player should move in a single update */
 	public static final int PLAYER_MOVEMENT_UNITS = 1;
 
+	public static final String ICON_NAME = "icon.png";
+
 	public static final int DISPLAY_MOVES_X = 10;
 	public static final int DISPLAY_MOVES_Y = 25;
 

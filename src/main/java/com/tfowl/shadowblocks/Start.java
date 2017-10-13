@@ -56,6 +56,7 @@ public class Start {
 		ShadowBlocksGame game = new ShadowBlocksGame();
 		try {
 			AppGameContainer container = new AppGameContainer(game);
+			container.setIcon(Resources.IMAGES_DIRECTORY + "/" + Graphical.ICON_NAME);
 			container.setShowFPS(true);
 //			container.setVSync(true);
 			container.setDisplayMode(Graphical.DEFAULT_SCREEN_WIDTH, Graphical.DEFAULT_SCREEN_HEIGHT, Graphical.DEFAULT_FULLSCREEN_FLAG);
